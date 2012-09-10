@@ -21,11 +21,7 @@
   </properties>
 
   <dependencies>
-    <dependency>
-        <groupId>com.googlecode.gwt.inject</groupId>
-        <artifactId>gin</artifactId>
-        <version>1.5</version>
-    </dependency>
+
     <dependency>
       <groupId>com.omegapoint</groupId>
       <artifactId>omegapoint-core</artifactId>
@@ -36,6 +32,11 @@
       <groupId>com.googlecode.playn</groupId>
       <artifactId>playn-html</artifactId>
       <version>${playn.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>13.0-final</version>
     </dependency>
   </dependencies>
 

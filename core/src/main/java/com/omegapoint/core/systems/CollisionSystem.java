@@ -2,17 +2,16 @@ package com.omegapoint.core.systems;
 
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
-import com.artemis.EntityProcessingSystem;
 import com.artemis.EntitySystem;
 import com.artemis.utils.ImmutableBag;
-import com.omegapoint.core.CollisionComponent;
+import com.google.web.bindery.event.shared.EventBus;
+import com.omegapoint.core.components.CollisionComponent;
 import com.omegapoint.core.CollisionPredicate;
 import com.omegapoint.core.PredicateAction;
-import com.omegapoint.core.components.AudioComponent;
 import com.omegapoint.core.components.PositionComponent;
-import com.omegapoint.core.components.SpriteComponent;
-import playn.core.Sound;
 import pythagoras.i.Rectangle;
+
+import javax.inject.Inject;
 
 /**
  *
@@ -20,9 +19,12 @@ import pythagoras.i.Rectangle;
 public class CollisionSystem extends EntitySystem {
     private ComponentMapper<CollisionComponent> collisionMapper;
     private ComponentMapper<PositionComponent> positionMapper;
+    private EventBus eventBus;
 
-    public CollisionSystem() {
+    @Inject
+    public CollisionSystem(EventBus eventBus) {
         super(CollisionComponent.class, PositionComponent.class);
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -44,16 +46,16 @@ public class CollisionSystem extends EntitySystem {
 
                   if (rect1.intersects(rect2)) {
                       for (CollisionPredicate cp : colComp.getPredicates()) {
-                          if (cp.collides(e, e2)) {
+                          if (cp.collides(e, e2, world)) {
                               for (PredicateAction action : cp.actions()) {
-                                  action.exec(e, e2);
+                                  action.exec(eventBus, e, e2);
                               }
                           }
                       }
                       for (CollisionPredicate cp : colComp2.getPredicates()) {
-                          if (cp.collides(e, e2)) {
+                          if (cp.collides(e, e2, world)) {
                               for (PredicateAction action : cp.actions()) {
-                                  action.exec(e2, e);
+                                  action.exec(eventBus, e2, e);
                               }
                           }
                       }

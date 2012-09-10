@@ -4,6 +4,8 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
 import com.omegapoint.core.components.AudioComponent;
+import playn.core.PlayN;
+import playn.core.ResourceCallback;
 import playn.core.Sound;
 
 /**
@@ -27,7 +29,17 @@ public class AudioSystem extends EntityProcessingSystem {
             return;
         }
         Sound sound = audioComp.getSound();
-        sound.play();
+        sound.addCallback(new ResourceCallback<Sound>() {
+            @Override
+            public void done(Sound resource) {
+                resource.play();
+            }
+
+            @Override
+            public void error(Throwable err) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
         e.removeComponent(audioComp);
         e.refresh();
     }

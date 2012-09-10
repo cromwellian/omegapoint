@@ -12,7 +12,7 @@ public class OmegaPointGameActivity extends GameActivity {
 
   @Override
   public void main(){
-    platform().assetManager().setPathPrefix("com/omegapoint/resources");
+    platform().assets().setPathPrefix("com/omegapoint/resources");
     Injector injector = Guice.createInjector(new AndroidModule());
     PlayN.run(injector.getInstance(OmegaPointGame.class));
   }

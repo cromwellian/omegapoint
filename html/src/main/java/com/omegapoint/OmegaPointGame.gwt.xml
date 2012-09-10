@@ -1,7 +1,9 @@
 <module rename-to='omegapoint'>
   <inherits name='playn.PlayN'/>
-    <inherits name="com.artemis.artemis"/>
-    <inherits name="com.google.gwt.inject.Inject"/>
+  <inherits name="com.artemis.artemis"/>
+  <inherits name="com.google.gwt.inject.Inject"/>
+  <inherits name="se.hiflyer.fettle.Fettle"/>
+  <inherits name="tripleplay.TriplePlay"/>
 
     <source path='core'/>
   <source path='html'/>

@@ -1,14 +1,17 @@
 package com.omegapoint.core.components;
 
 import com.artemis.Component;
+import playn.core.Json;
+import playn.core.PlayN;
 
 /**
  *
  */
-public class PositionComponent extends Component {
+public class PositionComponent extends BaseComponent {
     private int x;
     private int y;
     private double angle;
+    public static final String NAME = "positionComponent";
 
     public double getAngle() {
         return angle;
@@ -52,5 +55,37 @@ public class PositionComponent extends Component {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    @Override
+    public String getComponentName() {
+        return NAME;
+    }
+
+    @Override
+    public BaseComponent duplicate() {
+        return new PositionComponent(this.getX(), this.getY(), this.getAngle());
+    }
+
+    @Override
+    public Json.Object toJson() {
+        return new Codec().toJson(this);
+    }
+
+    public static class Codec implements Jsonable<PositionComponent> {
+
+        @Override
+        public PositionComponent fromJson(Json.Object object) {
+            return new PositionComponent(object.getInt("x"), object.getInt("y"), object.getDouble("angle"));
+        }
+
+        @Override
+        public Json.Object toJson(PositionComponent object) {
+            Json.Object obj = PlayN.json().createObject();
+            obj.put("x", object.getX());
+            obj.put("y", object.getY());
+            obj.put("angle", object.getAngle());
+            return obj;
+        }
     }
 }

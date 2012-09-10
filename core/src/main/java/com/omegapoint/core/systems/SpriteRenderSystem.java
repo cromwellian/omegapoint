@@ -1,12 +1,14 @@
 package com.omegapoint.core.systems;
 
 import com.artemis.*;
+import com.omegapoint.core.GameScreen;
 import com.omegapoint.core.components.PositionComponent;
 import com.omegapoint.core.components.SpriteComponent;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.PlayN;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +21,12 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
     private ComponentMapper<PositionComponent> positionMapper;
     private Map<Entity, ImageLayer> entity2imageLayer = new HashMap<Entity, ImageLayer>();
     private Map<String, Image> imageCache = new HashMap<String, Image>();
-    
-    public SpriteRenderSystem() {
+    private Playfield screen;
+
+    @Inject
+    public SpriteRenderSystem(Playfield screen) {
         super(SpriteComponent.class, PositionComponent.class);
+        this.screen = screen;
     }
 
     @Override
@@ -33,7 +38,7 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
     @Override
     protected void removed(Entity e) {
         super.removed(e);
-        PlayN.graphics().rootLayer().remove(entity2imageLayer.get(e));
+        screen.layer().remove(entity2imageLayer.get(e));
         entity2imageLayer.remove(e);
     }
 
@@ -43,14 +48,14 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
         String imgName = spriteMapper.get(e).getImg();
         Image image = imageCache.get(imgName);
         if (image == null) {
-          image = PlayN.assetManager().getImage(imgName);
+          image = PlayN.assets().getImage(imgName);
           imageCache.put(imgName, image);
         }
 
         ImageLayer layer = PlayN.graphics().createImageLayer(image);
         entity2imageLayer.put(e, layer);
         layer.setTranslation(positionMapper.get(e).getX(), positionMapper.get(e).getY());
-        PlayN.graphics().rootLayer().add(layer);
+        screen.layer().add(layer);
     }
 
     @Override
@@ -59,6 +64,7 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
         SpriteComponent spr = spriteMapper.get(e);
 
         ImageLayer layer = entity2imageLayer.get(e);
+
         float cx = (layer.width() / 2);
         float cy = (layer.height() / 2);
 
@@ -67,7 +73,7 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
             if (spr.getMsPerFrame() >= 0) {
                 int timeLeft = spr.getTimeToNextFrame() - world.getDelta();
                 if (timeLeft < 0) {
-                  spr.setCurFrame(frame + 1 % spr.getCols() * spr.getRows());
+                  spr.setCurFrame((frame + 1) % (spr.getCols() * spr.getRows()));
                   spr.setTimeToNextFrame(spr.getMsPerFrame());
                 } else {
                   spr.setTimeToNextFrame(timeLeft);
@@ -75,7 +81,8 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
             }
             int row = frame / spr.getCols();
             int col = frame % spr.getCols();
-            layer.setSourceRect(spr.getSw() * col, spr.getSh() * row, spr.getSw(), spr.getSh());
+
+            layer.setImage(imageCache.get(spriteMapper.get(e).getImg()).subImage(spr.getSw() * col, spr.getSh() * row, spr.getSw(), spr.getSh()));
             layer.setWidth(spr.getSw());
             layer.setHeight(spr.getSh());
             if (spr.getMsPerFrame() >= 0 && spr.getCurFrame() == spr.getCols() * spr.getRows() && !spr.isCyclic()) {
@@ -86,5 +93,8 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
         layer.setOrigin(cx, cy);
         layer.setTranslation(pos.getX(), pos.getY());
         layer.setRotation((float) pos.getAngle());
+        if (spr.isCyclic()) {
+            layer.setScale(2,2);
+        }
     }
 }

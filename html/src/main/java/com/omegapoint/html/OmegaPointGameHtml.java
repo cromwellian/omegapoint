@@ -16,8 +16,7 @@ public class OmegaPointGameHtml extends HtmlGame {
   public void start() {
     HtmlPlatform platform = HtmlPlatform.register();
     WebInjector injector = GWT.create(WebInjector.class);
-    platform.assetManager().setPathPrefix("omegapoint/");
+    platform.assets().setPathPrefix("omegapoint/");
     PlayN.run(injector.getGame());
-
   }
 }

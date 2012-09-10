@@ -14,7 +14,7 @@
   <name>OmegaPointGame Metaproject</name>
 
   <properties>
-    <playn.version>1.0.3</playn.version>
+    <playn.version>1.5-SNAPSHOT</playn.version>
   </properties>
 
   <modules>

@@ -25,14 +25,30 @@ public class MovementSystem extends EntityProcessingSystem {
 
     @Override
     protected void process(Entity e) {
-       MovementComponent move = movementMapper.get(e);
-       PositionComponent pos = positionMapper.get(e);
-       pos.setX(pos.getX() + move.getVx());
-       if (move.getMoveType() == MovementComponent.MotionType.LINEAR) {
-         pos.setY(pos.getY() + move.getVy());
-       }  else {
-         pos.setY((int) (Math.sin(pos.getX()/(double)PlayN.graphics().width() * 2*Math.PI) * PlayN.graphics().height()/2 + PlayN.graphics().height()/2));
-       }
-       pos.setDirty(true);
+        MovementComponent move = movementMapper.get(e);
+        PositionComponent pos = positionMapper.get(e);
+        pos.setX(pos.getX() + move.getVx());
+        int width = PlayN.graphics().width();
+        int height = PlayN.graphics().height();
+
+        if (move.getMoveType() == MovementComponent.MotionType.LINEAR) {
+            pos.setY(pos.getY() + move.getVy());
+            if (move.isWrapAround()) {
+                if (pos.getX() < 0) {
+                    pos.setX(width + pos.getX());
+                } else if (pos.getX() >= width) {
+                    pos.setX(pos.getX() - width);
+                }
+                if (pos.getY() < 0) {
+                    pos.setY(height + pos.getY());
+                } else if (pos.getY() >= height) {
+                    pos.setX(pos.getY() - height);
+                }
+            }
+        } else {
+            pos.setY((int) (Math.sin(pos.getX() / (double) width * 2 * Math.PI) * PlayN.graphics().height() / 2 + PlayN.graphics().height() / 2));
+        }
+
+        pos.setDirty(true);
     }
 }
