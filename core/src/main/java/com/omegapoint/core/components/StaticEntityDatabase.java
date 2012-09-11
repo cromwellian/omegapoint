@@ -20,7 +20,32 @@ public class StaticEntityDatabase implements EntityDatabase {
     public Collection<String> getTemplates() {
         return Arrays.asList(toString(makePlayerShip()), toString(makeTitleMusic()), toString(makeTitleText()),
                 toString(makeTopBounds()), toString(makeLeftBounds()), toString(makeRightBounds()),
-                toString(makeBottomBounds()), toString(makeLaser()), toString(makeBeam()));
+                toString(makeBottomBounds()), toString(makeLaser()), toString(makeBeam()),
+                toString(makeTiles()));
+    }
+
+    private Json.Object makeTiles() {
+        Json.Object tiles = json().createObject();
+        tiles.put("name", "level1tiles");
+        tiles.put(TileComponent.NAME, new TileComponent("images/defaultTileset.png", 16, 16, 10, 19, 0, 2,
+                new TileComponent.TileArrangement(makeLevel1())).toJson());
+        return tiles;
+    }
+
+    private TileComponent.TileRow[] makeLevel1() {
+        TileComponent.TileRow[] rows = new TileComponent.TileRow[PlayN.graphics().height() / 16 / 2];
+        for (int i = 0; i < rows.length; i++) {
+          int[] indices = new int[100];
+          for (int j = 0; j < indices.length; j++) {
+              indices[j] = (int) (Math.random() * 90);
+              if (Math.random() > 0.7) {
+                  // testing empty space
+                  indices[j] = TileComponent.EMPTY_SPACE;
+              }
+          }
+            rows[i] = new TileComponent.TileRow(indices);
+        }
+        return rows;
     }
 
     // TODO(cromwellian) handle resize

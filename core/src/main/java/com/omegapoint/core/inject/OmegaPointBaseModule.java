@@ -33,6 +33,7 @@ public abstract class OmegaPointBaseModule {
         binder.bind(BeamRenderSystem.class).in(Singleton.class);
         binder.bind(AudioSystem.class).in(Singleton.class);
         binder.bind(StarRenderSystem.class).in(Singleton.class);
+        binder.bind(TileRenderSystem.class).in(Singleton.class);
         binder.bind(GameScreen.class).in(Singleton.class);
         binder.bind(Playfield.class).in(Singleton.class);
 //        binder.bind(ScreenStack.class).to(ScreenStackImpl.class).in(Singleton.class);
@@ -51,7 +52,8 @@ public abstract class OmegaPointBaseModule {
                                           SpriteRenderSystem spriteRenderSystem,
                                           BeamRenderSystem beamRenderSystem,
                                           AudioSystem audioSystem,
-                                          StarRenderSystem starRenderSystem) {
+                                          StarRenderSystem starRenderSystem,
+                                          TileRenderSystem tileRenderSystem) {
         SystemManager sm = world.getSystemManager();
         sm.setSystem(simpleTweenSystem);
         sm.setSystem(textRenderSystem);
@@ -62,6 +64,7 @@ public abstract class OmegaPointBaseModule {
         sm.setSystem(beamRenderSystem);
         sm.setSystem(audioSystem);
         sm.setSystem(starRenderSystem);
+        sm.setSystem(tileRenderSystem);
         return sm;
     }
 
@@ -73,13 +76,15 @@ public abstract class OmegaPointBaseModule {
                                                     SpriteRenderSystem spriteRenderSystem,
                                                     BeamRenderSystem beamRenderSystem,
                                                     AudioSystem audioSystem,
-                                                    StarRenderSystem starRenderSystem) {
+                                                    StarRenderSystem starRenderSystem,
+                                                    TileRenderSystem tileRenderSystem) {
         ArrayList<EntitySystem> list = new ArrayList<EntitySystem>();
         list.add(textRenderSystem);
         list.add(starRenderSystem);
         list.add(spriteRenderSystem);
         list.add(beamRenderSystem);
         list.add(audioSystem);
+        list.add(tileRenderSystem);
         return list;
     }
 
@@ -113,6 +118,7 @@ public abstract class OmegaPointBaseModule {
         registry.register(DamageComponent.NAME, new DamageComponent.Codec());
         registry.register(EnemyComponent.NAME, new EnemyComponent.Codec());
         registry.register(CollisionComponent.NAME, new CollisionComponent.Codec());
+        registry.register(TileComponent.NAME, new TileComponent.Codec());
         return registry;
     }
 

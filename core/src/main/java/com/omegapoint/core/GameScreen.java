@@ -71,6 +71,7 @@ public class GameScreen extends Screen {
         makeGameBounds();
         makeStars();
         makeBackgroundMusic();
+        templateManager.lookupAndInstantiate("level1tiles", world);
         layer().add(playfield.layer());
         eventBus.addHandler(BulletDeleteEvent.TYPE, new BulletDeleteHandler() {
             @Override
