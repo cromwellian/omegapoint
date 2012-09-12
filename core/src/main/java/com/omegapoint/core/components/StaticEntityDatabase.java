@@ -1,6 +1,8 @@
 package com.omegapoint.core.components;
 
+import com.artemis.Entity;
 import com.omegapoint.core.CollisionPredicate;
+import com.omegapoint.core.EnemyCollisionPredicate;
 import playn.core.Font;
 import playn.core.Json;
 import playn.core.PlayN;
@@ -18,10 +20,33 @@ import static playn.core.PlayN.json;
 public class StaticEntityDatabase implements EntityDatabase {
     @Override
     public Collection<String> getTemplates() {
-        return Arrays.asList(toString(makePlayerShip()), toString(makeTitleMusic()), toString(makeTitleText()),
+        return Arrays.asList(toString(makePlayerShip()), toString(makeEnemyShip1()),
+                toString(makeExplosion()), toString(makeTitleMusic()), toString(makeTitleText()),
                 toString(makeTopBounds()), toString(makeLeftBounds()), toString(makeRightBounds()),
                 toString(makeBottomBounds()), toString(makeLaser()), toString(makeBeam()),
                 toString(makeTiles()));
+    }
+
+    private Json.Object makeEnemyShip1() {
+        Json.Object obj = json().createObject();
+        obj.put("name", "enemy1");
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/tarentulaAlpha.png", 60, 60, 10, 4, 0, -1, false).toJson());
+        obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.SINUSOIDAL, false).toJson());
+        obj.put("group", "ENEMY");
+        Json.Object colComp = new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson();
+        Json.Array predicates = json().createArray();
+        predicates.add("enemy");
+        colComp.put("predicates", predicates);
+        obj.put(CollisionComponent.NAME, colComp);
+        return obj;
+    }
+
+    private Json.Object makeExplosion() {
+        Json.Object obj = json().createObject();
+        obj.put("name", "explosion");
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/explode2Alpha.png", 80, 80, 4, 11, 0, 8, false).toJson());
+        obj.put(AudioComponent.NAME, new AudioComponent("sounds/bomb").toJson());
+        return obj;
     }
 
     private Json.Object makeTiles() {
@@ -33,9 +58,9 @@ public class StaticEntityDatabase implements EntityDatabase {
     }
 
     private TileComponent.TileRow[] makeLevel1() {
-        TileComponent.TileRow[] rows = new TileComponent.TileRow[PlayN.graphics().height() / 16 / 2];
+        TileComponent.TileRow[] rows = new TileComponent.TileRow[PlayN.graphics().height() / 16 / 4];
         for (int i = 0; i < rows.length; i++) {
-          int[] indices = new int[100];
+          int[] indices = new int[300];
           for (int j = 0; j < indices.length; j++) {
               indices[j] = (int) (Math.random() * 90);
               if (Math.random() > 0.7) {

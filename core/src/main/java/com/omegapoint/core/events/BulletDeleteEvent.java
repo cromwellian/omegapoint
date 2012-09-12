@@ -15,6 +15,6 @@ public class BulletDeleteEvent extends Event<BulletDeleteHandler> {
 
     @Override
     protected void dispatch(BulletDeleteHandler handler) {
-        handler.onBulletDelete();
+        handler.onBulletDelete(this);
     }
 }

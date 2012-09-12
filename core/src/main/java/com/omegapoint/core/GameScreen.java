@@ -7,8 +7,7 @@ import com.artemis.World;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.components.*;
-import com.omegapoint.core.events.BulletDeleteEvent;
-import com.omegapoint.core.events.BulletDeleteHandler;
+import com.omegapoint.core.events.*;
 import com.omegapoint.core.systems.Playfield;
 import playn.core.*;
 import tripleplay.game.Screen;
@@ -35,6 +34,7 @@ public class GameScreen extends Screen {
     private List<EntitySystem> renderSystems;
     private EntityTemplates templateManager;
     private EventBus eventBus;
+    private Enemies enemies;
     private Entity shipEntity;
 
     private Entity titleTextEntity;
@@ -49,7 +49,8 @@ public class GameScreen extends Screen {
                       @Named("updateSystems") List<EntitySystem> updateSystems,
                       @Named("renderSystems") List<EntitySystem> renderSystems,
                       EntityTemplates templateManager,
-                      EventBus eventBus) {
+                      EventBus eventBus,
+                      Enemies enemies) {
         this.world = world;
         this.systemManager = systemManager;
         this.playfield = playfield;
@@ -58,6 +59,7 @@ public class GameScreen extends Screen {
         this.renderSystems = renderSystems;
         this.templateManager = templateManager;
         this.eventBus = eventBus;
+        this.enemies = enemies;
     }
 
     public GroupLayer layer() {
@@ -75,8 +77,26 @@ public class GameScreen extends Screen {
         layer().add(playfield.layer());
         eventBus.addHandler(BulletDeleteEvent.TYPE, new BulletDeleteHandler() {
             @Override
-            public void onBulletDelete() {
+            public void onBulletDelete(BulletDeleteEvent bulletDeleteEvent) {
                 Bullets.dec();
+            }
+        });
+
+        eventBus.addHandler(EnemyDeleteEvent.TYPE, new EnemyDeleteHandler() {
+            @Override
+            public void onEnemyDelete(EnemyDeleteEvent event) {
+                enemies.decrementCurrentLive();
+            }
+        });
+
+        eventBus.addHandler(EnemyKilledEvent.TYPE, new EnemyKilledHandler() {
+            int numKilled = 0;
+            @Override
+            public void onEnemyKilled(EnemyKilledEvent event) {
+                numKilled++;
+                if (numKilled % 5 == 0) {
+                    GameScreen.useBeam = !GameScreen.useBeam;
+                }
             }
         });
     }

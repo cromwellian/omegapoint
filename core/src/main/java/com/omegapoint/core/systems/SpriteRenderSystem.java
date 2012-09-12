@@ -70,22 +70,25 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
 
         if (spr.getCols() > 0) {
             int frame = spr.getCurFrame();
+            int prev = frame;
             if (spr.getMsPerFrame() >= 0) {
                 int timeLeft = spr.getTimeToNextFrame() - world.getDelta();
                 if (timeLeft < 0) {
-                  spr.setCurFrame((frame + 1) % (spr.getCols() * spr.getRows()));
+                  frame += spr.getTimeToNextFrame() > 0 ? world.getDelta() / spr.getTimeToNextFrame() : 1;
+                  spr.setCurFrame(frame % (spr.getCols() * spr.getRows()));
                   spr.setTimeToNextFrame(spr.getMsPerFrame());
                 } else {
                   spr.setTimeToNextFrame(timeLeft);
                 }
             }
-            int row = frame / spr.getCols();
-            int col = frame % spr.getCols();
+
+            int row = prev / spr.getCols();
+            int col = prev % spr.getCols();
 
             layer.setImage(imageCache.get(spriteMapper.get(e).getImg()).subImage(spr.getSw() * col, spr.getSh() * row, spr.getSw(), spr.getSh()));
             layer.setWidth(spr.getSw());
             layer.setHeight(spr.getSh());
-            if (spr.getMsPerFrame() >= 0 && spr.getCurFrame() == spr.getCols() * spr.getRows() && !spr.isCyclic()) {
+            if (spr.getMsPerFrame() >= 0 && frame >= spr.getCols() * spr.getRows() && !spr.isCyclic()) {
                 e.delete();
             }
         }

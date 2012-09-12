@@ -64,15 +64,15 @@ public class WaveSystem extends EntitySystem {
                 public PredicateAction[] actions() {
                     return new PredicateAction[]{new PredicateAction() {
                         @Override
-                        public void exec(EventBus eventBus, Entity... collisionEntities) {
-                            if ("BOUNDS".equals(world.getGroupManager().getGroupOf(collisionEntities[1]))) {
+                        public void exec(EventBus eventBus, World world, EntityTemplates templateManager, Entity... collisionEntities) {
+                            if ("BOUNDS".equals(WaveSystem.this.world.getGroupManager().getGroupOf(collisionEntities[1]))) {
                                 if (posComp.getX() <= -100) {
                                     enemyEntity.delete();
                                     totalEnemies--;
                                 }
                             } else {
                                 enemyEntity.delete();
-                                Entity explosionEntity = world.createEntity();
+                                Entity explosionEntity = WaveSystem.this.world.createEntity();
                                 explosionEntity.addComponent(posComp);
                                 explosionEntity.addComponent(new SpriteComponent("images/explode2.png", 80, 80, 4, 11, 0, 120, false));
                                 explosionEntity.addComponent(movementComponent);

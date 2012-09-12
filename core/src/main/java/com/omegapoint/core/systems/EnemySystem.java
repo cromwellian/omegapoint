@@ -2,13 +2,13 @@ package com.omegapoint.core.systems;
 
 import com.artemis.*;
 import com.artemis.utils.ImmutableBag;
-import com.google.web.bindery.event.shared.EventBus;
-import com.omegapoint.core.GameScreen;
+import com.omegapoint.core.Enemies;
+import com.omegapoint.core.EnemyCollisionPredicate;
 import com.omegapoint.core.components.CollisionComponent;
-import com.omegapoint.core.CollisionPredicate;
-import com.omegapoint.core.PredicateAction;
 import com.omegapoint.core.components.*;
 import playn.core.PlayN;
+
+import javax.inject.Inject;
 
 /**
  *
@@ -17,11 +17,14 @@ public class EnemySystem extends EntitySystem {
 
     private ComponentMapper<EnemyComponent> enemyMapper;
     private long lastSpawn = 0;
-    private int totalEnemies = 0;
-    private static int MAX_ENEMIES = 5;
+    private Enemies enemies;
+    private EntityTemplates templateManager;
 
-    public EnemySystem() {
+    @Inject
+    public EnemySystem(Enemies enemies, EntityTemplates templateManager) {
         super(EnemyComponent.class, PositionComponent.class);
+        this.enemies = enemies;
+        this.templateManager = templateManager;
     }
 
     @Override
@@ -40,54 +43,11 @@ public class EnemySystem extends EntitySystem {
     int numKilled = 0;
 
     private void spawnEnemies() {
-        for (int i = totalEnemies; i < MAX_ENEMIES; i++) {
-            totalEnemies++;
-            final Entity enemyEntity = world.createEntity();
+        for (int i = enemies.currentLiveEnemies(); i < Enemies.MAX_ENEMIES; i++) {
+            enemies.incrementLiveEnemies();
+            final Entity enemyEntity = templateManager.lookupAndInstantiate("enemy1", world);
             final PositionComponent posComp = new PositionComponent(PlayN.graphics().width() + i * 45, 0, -Math.PI / 2 * 3);
             enemyEntity.addComponent(posComp);
-            enemyEntity.addComponent(new SpriteComponent("images/tarentula.png", 60, 60, 10, 4, 0, -1, false));
-            final MovementComponent movementComponent = new MovementComponent(-10, 0, MovementComponent.MotionType.SINUSOIDAL, false);
-            enemyEntity.addComponent(movementComponent);
-            enemyEntity.setGroup("ENEMY");
-
-            enemyEntity.addComponent(new CollisionComponent(0, 0, 72, 72, new CollisionPredicate() {
-
-                @Override
-                public boolean collides(Entity entity, Entity collidesWith, World world) {
-                    boolean xx = collidesWith.getComponent(DamageComponent.class) != null || "BOUNDS".equals(EnemySystem.this.world.getGroupManager().getGroupOf(collidesWith));
-                    return xx;
-                }
-
-                @Override
-                public PredicateAction[] actions() {
-                    return new PredicateAction[]{new PredicateAction() {
-                        @Override
-                        public void exec(EventBus eventBus, Entity... collisionEntities) {
-                            if ("BOUNDS".equals(world.getGroupManager().getGroupOf(collisionEntities[1]))) {
-                                if (posComp.getX() <= -100) {
-                                    enemyEntity.delete();
-                                    totalEnemies--;
-                                }
-                            } else {
-                                enemyEntity.delete();
-                                Entity explosionEntity = world.createEntity();
-                                explosionEntity.addComponent(posComp);
-                                explosionEntity.addComponent(new SpriteComponent("images/explode2.png", 80, 80, 4, 11, 0, 120, false));
-                                explosionEntity.addComponent(movementComponent);
-                                explosionEntity.addComponent(new AudioComponent("sounds/bomb"));
-                                explosionEntity.refresh();
-                                collisionEntities[1].delete();
-                                totalEnemies--;
-                                numKilled++;
-                                if (numKilled % 5 == 0) {
-                                    GameScreen.useBeam = !GameScreen.useBeam;
-                                }
-                            }
-                        }
-                    }};
-                }
-            }));
-            enemyEntity.refresh();
         }
     }
 

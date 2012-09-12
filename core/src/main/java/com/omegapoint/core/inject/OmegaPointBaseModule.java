@@ -9,6 +9,8 @@ import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.omegapoint.core.BulletCollisionPredicate;
+import com.omegapoint.core.Enemies;
+import com.omegapoint.core.EnemyCollisionPredicate;
 import com.omegapoint.core.GameScreen;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.systems.*;
@@ -36,6 +38,7 @@ public abstract class OmegaPointBaseModule {
         binder.bind(TileRenderSystem.class).in(Singleton.class);
         binder.bind(GameScreen.class).in(Singleton.class);
         binder.bind(Playfield.class).in(Singleton.class);
+        binder.bind(Enemies.class).in(Singleton.class);
 //        binder.bind(ScreenStack.class).to(ScreenStackImpl.class).in(Singleton.class);
 //        binder.bind(EntityDatabase.class).to(StaticEntityDatabase.class).in(Singleton.class);
 //        binder.bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
@@ -148,6 +151,7 @@ public abstract class OmegaPointBaseModule {
     @Named("entityDatabases")
     public List<EntityDatabase> providesEntityDatabases(@Named("persistentEntityDatabase") EntityDatabase persistent) {
         CollisionPredicates.register(BulletCollisionPredicate.NAME, new BulletCollisionPredicate());
+        CollisionPredicates.register(EnemyCollisionPredicate.NAME, new EnemyCollisionPredicate());
         ArrayList<EntityDatabase> list = new ArrayList<EntityDatabase>();
         list.add(new StaticEntityDatabase());
         list.add(persistent);

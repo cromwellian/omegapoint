@@ -8,6 +8,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.components.CollisionComponent;
 import com.omegapoint.core.CollisionPredicate;
 import com.omegapoint.core.PredicateAction;
+import com.omegapoint.core.components.EntityTemplates;
 import com.omegapoint.core.components.PositionComponent;
 import pythagoras.i.Rectangle;
 
@@ -20,11 +21,13 @@ public class CollisionSystem extends EntitySystem {
     private ComponentMapper<CollisionComponent> collisionMapper;
     private ComponentMapper<PositionComponent> positionMapper;
     private EventBus eventBus;
+    private EntityTemplates templateManager;
 
     @Inject
-    public CollisionSystem(EventBus eventBus) {
+    public CollisionSystem(EventBus eventBus, EntityTemplates templateManager) {
         super(CollisionComponent.class, PositionComponent.class);
         this.eventBus = eventBus;
+        this.templateManager = templateManager;
     }
 
     @Override
@@ -48,14 +51,14 @@ public class CollisionSystem extends EntitySystem {
                       for (CollisionPredicate cp : colComp.getPredicates()) {
                           if (cp.collides(e, e2, world)) {
                               for (PredicateAction action : cp.actions()) {
-                                  action.exec(eventBus, e, e2);
+                                  action.exec(eventBus, world, templateManager, e, e2);
                               }
                           }
                       }
                       for (CollisionPredicate cp : colComp2.getPredicates()) {
                           if (cp.collides(e, e2, world)) {
                               for (PredicateAction action : cp.actions()) {
-                                  action.exec(eventBus, e2, e);
+                                  action.exec(eventBus, world, templateManager, e2, e);
                               }
                           }
                       }
