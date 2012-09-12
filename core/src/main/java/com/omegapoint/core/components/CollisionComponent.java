@@ -12,6 +12,7 @@ import java.util.ArrayList;
  *
  */
 public class CollisionComponent extends BaseComponent {
+    public static final String X = "x";
     private CollisionPredicate[] predicates;
     private Rectangle bounds;
     public static final String NAME = "collisionComponent";
@@ -46,10 +47,15 @@ public class CollisionComponent extends BaseComponent {
 
     public static class Codec implements Jsonable<CollisionComponent> {
 
+        public static final String Y = "y";
+        public static final String WIDTH = "width";
+        public static final String HEIGHT = "height";
+        public static final String PREDICATES = "predicates";
+
         @Override
         public CollisionComponent fromJson(Json.Object object) {
-            return new CollisionComponent(object.getInt("x"), object.getInt("y"),
-                    object.getInt("width"), object.getInt("height"), decodePredicates(object.getArray("predicates")));
+            return new CollisionComponent(object.getInt(X), object.getInt(Y),
+                    object.getInt(WIDTH), object.getInt(HEIGHT), decodePredicates(object.getArray(PREDICATES)));
         }
 
         private CollisionPredicate[] decodePredicates(Json.Array predicates) {
@@ -73,11 +79,11 @@ public class CollisionComponent extends BaseComponent {
         @Override
         public Json.Object toJson(CollisionComponent object) {
             Json.Object obj = PlayN.json().createObject();
-            obj.put("x", object.getBounds().x);
-            obj.put("y", object.getBounds().y);
-            obj.put("width", object.getBounds().width);
-            obj.put("height", object.getBounds().height);
-            obj.put("predicates", encodePredicates(object.getPredicates()));
+            obj.put(X, object.getBounds().x);
+            obj.put(Y, object.getBounds().y);
+            obj.put(WIDTH, object.getBounds().width);
+            obj.put(HEIGHT, object.getBounds().height);
+            obj.put(PREDICATES, encodePredicates(object.getPredicates()));
             return obj;
         }
     }

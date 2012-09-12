@@ -10,6 +10,7 @@ import com.omegapoint.core.components.*;
 import com.omegapoint.core.events.*;
 import com.omegapoint.core.systems.Playfield;
 import playn.core.*;
+import react.UnitSlot;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 import tripleplay.game.UIAnimScreen;
@@ -99,6 +100,7 @@ public class GameScreen extends Screen {
                 }
             }
         });
+        templateManager.lookupAndInstantiate("wave1", world);
     }
 
 
@@ -143,10 +145,25 @@ public class GameScreen extends Screen {
                         @Override
                         public void wasAdded() {
                             super.wasAdded();
-                            _root = iface.createRoot(AxisLayout.vertical().gap(0).offStretch(), SimpleStyles.newSheet(), layer);
+                            _root = iface.createRoot(AxisLayout.vertical().gap(10).offEqualize(), SimpleStyles.newSheet(), layer);
                             _root.setSize(width(), height());
-                            Button button = new Button("Hello");
+                            Button button = new Button("Inventory");
                             _root.add(button);
+                            Button button2 = new Button("Entity Browser");
+                            _root.add(button2);
+                            Button button3 = new Button("Level Editor");
+                            _root.add(button3);
+                            Button button4 = new Button("Debug Console");
+                            _root.add(button4);
+                            Button button5 = new Button("Return to Game");
+                            _root.add(button5);
+                            button5.clicked().connect(new UnitSlot() {
+                                @Override
+                                public void onEmit() {
+                                    _root.setVisible(false);
+                                   screens.popTo(GameScreen.this, screens.flip().unflip());
+                                }
+                            });
                         }
 
                         @Override
@@ -159,7 +176,7 @@ public class GameScreen extends Screen {
                         protected float updateRate() {
                             return 15;
                         }
-                    });
+                    }, screens.flip());
                 }
                 if (event.typedChar() == 'z') {
                     screens.popTo(GameScreen.this);

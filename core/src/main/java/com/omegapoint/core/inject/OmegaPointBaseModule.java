@@ -26,7 +26,7 @@ import java.util.List;
 public abstract class OmegaPointBaseModule {
     public void bindAll(BindProvider binder) {
         binder.bind(World.class).in(Singleton.class);
-        binder.bind(EnemySystem.class).in(Singleton.class);
+        binder.bind(WaveSystem.class).in(Singleton.class);
         binder.bind(SimpleTweenSystem.class).in(Singleton.class);
         binder.bind(MovementSystem.class).in(Singleton.class);
         binder.bind(CollisionSystem.class).in(Singleton.class);
@@ -49,7 +49,7 @@ public abstract class OmegaPointBaseModule {
     public SystemManager getSystemManager(World world,
                                           SimpleTweenSystem simpleTweenSystem,
                                           TextRenderSystem textRenderSystem,
-                                          EnemySystem enemySystem,
+                                          WaveSystem enemySystem,
                                           MovementSystem movementSystem,
                                           CollisionSystem collisionSystem,
                                           SpriteRenderSystem spriteRenderSystem,
@@ -95,7 +95,7 @@ public abstract class OmegaPointBaseModule {
     @Singleton
     @Named("updateSystems")
     public List<EntitySystem> providesUpdateSystems(SimpleTweenSystem simpleTweenSystem,
-                                                    EnemySystem enemySystem,
+                                                    WaveSystem enemySystem,
                                                     MovementSystem movementSystem,
                                                     CollisionSystem collisionSystem) {
         ArrayList<EntitySystem> list = new ArrayList<EntitySystem>();
@@ -122,6 +122,7 @@ public abstract class OmegaPointBaseModule {
         registry.register(EnemyComponent.NAME, new EnemyComponent.Codec());
         registry.register(CollisionComponent.NAME, new CollisionComponent.Codec());
         registry.register(TileComponent.NAME, new TileComponent.Codec());
+        registry.register(WaveComponent.NAME, new WaveComponent.Codec());
         return registry;
     }
 

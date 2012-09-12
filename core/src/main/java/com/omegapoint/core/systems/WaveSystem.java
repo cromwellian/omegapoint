@@ -1,96 +1,87 @@
 package com.omegapoint.core.systems;
 
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.EntitySystem;
-import com.artemis.World;
+import com.artemis.*;
 import com.artemis.utils.ImmutableBag;
 import com.google.web.bindery.event.shared.EventBus;
-import com.omegapoint.core.CollisionPredicate;
-import com.omegapoint.core.GameScreen;
-import com.omegapoint.core.PredicateAction;
+import com.omegapoint.core.Enemies;
+import com.omegapoint.core.EnemyCollisionPredicate;
+import com.omegapoint.core.components.CollisionComponent;
 import com.omegapoint.core.components.*;
+import com.omegapoint.core.events.ChangeStateEvent;
 import playn.core.PlayN;
+
+import javax.inject.Inject;
 
 /**
  *
  */
-public class WaveSystem extends EntitySystem {
+public class WaveSystem extends EntityProcessingSystem {
 
-    private ComponentMapper<EnemyComponent> enemyMapper;
+    private ComponentMapper<WaveComponent> waveMapper;
+    private ComponentMapper<PositionComponent> posMapper;
+
     private long lastSpawn = 0;
-    private int totalEnemies = 0;
-    private static int MAX_ENEMIES = 5;
+    private Enemies enemies;
+    private EntityTemplates templateManager;
+    private EventBus eventBus;
 
-    public WaveSystem() {
-        super(EnemyComponent.class, PositionComponent.class);
+    @Inject
+    public WaveSystem(Enemies enemies, EntityTemplates templateManager, EventBus eventBus) {
+        super(WaveComponent.class);
+        this.enemies = enemies;
+        this.templateManager = templateManager;
+        this.eventBus = eventBus;
     }
 
-    @Override
-    protected void processEntities(ImmutableBag<Entity> entities) {
-        if (System.currentTimeMillis() - lastSpawn > 5000) {
-            spawnEnemies();
-            lastSpawn = System.currentTimeMillis();
-        } else {
-            for (int i = 0, s = entities.size(); s > i; i++) {
-
-            }
-        }
-
-    }
+//    @Override
+//    protected void processEntities(ImmutableBag<Entity> entities) {
+//        if (System.currentTimeMillis() - lastSpawn > 5000) {
+//            spawnEnemies();
+//            lastSpawn = System.currentTimeMillis();
+//        } else {
+//            for (int i = 0, s = entities.size(); s > i; i++) {
+//
+//            }
+//        }
+//
+//    }
 
     int numKilled = 0;
 
     private void spawnEnemies() {
-        for (int i = totalEnemies; i < MAX_ENEMIES; i++) {
-            totalEnemies++;
-            final Entity enemyEntity = world.createEntity();
+        for (int i = enemies.currentLiveEnemies(); i < Enemies.MAX_ENEMIES; i++) {
+            enemies.incrementLiveEnemies();
+            final Entity enemyEntity = templateManager.lookupAndInstantiate("enemy1", world);
             final PositionComponent posComp = new PositionComponent(PlayN.graphics().width() + i * 45, 0, -Math.PI / 2 * 3);
             enemyEntity.addComponent(posComp);
-            enemyEntity.addComponent(new SpriteComponent("images/tarentula.png", 60, 60, 10, 4, 0, -1, false));
-            final MovementComponent movementComponent = new MovementComponent(-10, 0, MovementComponent.MotionType.SINUSOIDAL, false);
-            enemyEntity.addComponent(movementComponent);
-            enemyEntity.setGroup("ENEMY");
-
-            enemyEntity.addComponent(new CollisionComponent(0, 0, 72, 72, new CollisionPredicate() {
-
-                @Override
-                public boolean collides(Entity entity, Entity collidesWith, World world) {
-                    boolean xx = collidesWith.getComponent(DamageComponent.class) != null || "BOUNDS".equals(WaveSystem.this.world.getGroupManager().getGroupOf(collidesWith));
-                    return xx;
-                }
-
-                @Override
-                public PredicateAction[] actions() {
-                    return new PredicateAction[]{new PredicateAction() {
-                        @Override
-                        public void exec(EventBus eventBus, World world, EntityTemplates templateManager, Entity... collisionEntities) {
-                            if ("BOUNDS".equals(WaveSystem.this.world.getGroupManager().getGroupOf(collisionEntities[1]))) {
-                                if (posComp.getX() <= -100) {
-                                    enemyEntity.delete();
-                                    totalEnemies--;
-                                }
-                            } else {
-                                enemyEntity.delete();
-                                Entity explosionEntity = WaveSystem.this.world.createEntity();
-                                explosionEntity.addComponent(posComp);
-                                explosionEntity.addComponent(new SpriteComponent("images/explode2.png", 80, 80, 4, 11, 0, 120, false));
-                                explosionEntity.addComponent(movementComponent);
-                                explosionEntity.addComponent(new AudioComponent("sounds/bomb"));
-                                explosionEntity.refresh();
-                                collisionEntities[1].delete();
-                                totalEnemies--;
-                                numKilled++;
-                                if (numKilled % 5 == 0) {
-                                    GameScreen.useBeam = !GameScreen.useBeam;
-                                }
-                            }
-                        }
-                    }};
-                }
-            }));
-            enemyEntity.refresh();
         }
+    }
+
+    @Override
+    protected void process(Entity e) {
+      WaveComponent wave = waveMapper.get(e);
+      if (wave != null) {
+          if (!wave.done()) {
+            if (PlayN.currentTime() - wave.getLastSpawned() > wave.getNextDelay()) {
+               WaveComponent.SpawnComponent spawnComponent = wave.dequeueNextSpawn();
+               Entity spawned = templateManager.lookupAndInstantiate(spawnComponent.getEntityName(), world);
+               PositionComponent pos = posMapper.get(spawned);
+               // relative coordinates 0 .. 100%
+               pos.setX(pos.getX() * PlayN.graphics().width() / 100);
+               pos.setY(pos.getY() * PlayN.graphics().height() / 100);
+            }
+            wave.setDirty(true);
+          } else {
+              if (wave.getNextWave() != null) {
+                  templateManager.lookupAndInstantiate(wave.getNextWave(), world);
+              }
+              if (wave.getNextState() != null) {
+                 eventBus.fireEvent(new ChangeStateEvent(wave.getNextState()));
+              }
+              e.delete();
+          }
+
+      }
     }
 
     @Override
@@ -100,7 +91,8 @@ public class WaveSystem extends EntitySystem {
 
     @Override
     protected void initialize() {
-        enemyMapper = new ComponentMapper<EnemyComponent>(EnemyComponent.class, world);
+        waveMapper = new ComponentMapper<WaveComponent>(WaveComponent.class, world);
+        posMapper = new ComponentMapper<PositionComponent>(PositionComponent.class, world);
     }
 
 

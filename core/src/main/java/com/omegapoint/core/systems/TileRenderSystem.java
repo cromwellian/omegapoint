@@ -86,15 +86,20 @@ public class TileRenderSystem extends EntityProcessingSystem {
 
                 for (int i = startIndice; i < indices.length; i++) {
                     int indice = indices[i];
-
+                    if (indice == TileComponent.EMPTY_SPACE) {
+                        startx += tileComponent.getTileWidth();
+                        if (startx > PlayN.graphics().width()) {
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
                     int spriteCol = indice % tileComponent.getTileCols();
                     int spriteRow = indice / tileComponent.getTileCols();
                     int tileOffsetX = spriteCol * tileComponent.getTileWidth();
                     int tileOffsetY = spriteRow * tileComponent.getTileHeight();
-                    if (indice != TileComponent.EMPTY_SPACE) {
-                      surface.drawImage(image.subImage(tileOffsetX, tileOffsetY, tileComponent.getTileWidth(),
+                    surface.drawImage(image.subImage(tileOffsetX, tileOffsetY, tileComponent.getTileWidth(),
                             tileComponent.getTileHeight()), startx, starty);
-                    }
                     startx += tileComponent.getTileWidth();
                     if (startx > PlayN.graphics().width()) {
                         break;

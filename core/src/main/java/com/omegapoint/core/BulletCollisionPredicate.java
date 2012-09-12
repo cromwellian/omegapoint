@@ -4,12 +4,13 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.components.EntityTemplates;
+import com.omegapoint.core.components.HasName;
 import com.omegapoint.core.events.BulletDeleteEvent;
 
 /**
 *
 */
-public class BulletCollisionPredicate implements CollisionPredicate {
+public class BulletCollisionPredicate implements CollisionPredicate, HasName {
     public static final String NAME = "bullet";
 
     public BulletCollisionPredicate() {
@@ -33,5 +34,10 @@ public class BulletCollisionPredicate implements CollisionPredicate {
             }
         };
         return actions;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 }

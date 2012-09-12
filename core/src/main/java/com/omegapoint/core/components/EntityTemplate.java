@@ -13,6 +13,8 @@ import java.util.Collection;
  * entity from a JSON template.
  */
 public class EntityTemplate implements Jsonable<EntityTemplate> {
+    public static final String NAME = "name";
+    public static final String GROUP = "group";
     private Collection<BaseComponent> components = new ArrayList<BaseComponent>();
     private JsonableRegistry<BaseComponent> jsonableComponentRegistry;
     private String group;

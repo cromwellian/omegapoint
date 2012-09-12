@@ -4,17 +4,14 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.google.web.bindery.event.shared.EventBus;
-import com.omegapoint.core.components.DamageComponent;
-import com.omegapoint.core.components.EntityTemplates;
-import com.omegapoint.core.components.MovementComponent;
-import com.omegapoint.core.components.PositionComponent;
+import com.omegapoint.core.components.*;
 import com.omegapoint.core.events.EnemyDeleteEvent;
 import com.omegapoint.core.events.EnemyKilledEvent;
 
 /**
  *
  */
-public class EnemyCollisionPredicate implements CollisionPredicate {
+public class EnemyCollisionPredicate implements CollisionPredicate, HasName {
 
 
     public static final String NAME = "enemy";
@@ -54,5 +51,10 @@ public class EnemyCollisionPredicate implements CollisionPredicate {
                 }
             }
         }};
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 }
