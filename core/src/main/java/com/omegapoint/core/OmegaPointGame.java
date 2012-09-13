@@ -44,7 +44,7 @@ public class OmegaPointGame implements Game {
                 stateMachine.fireEvent(changeStateEvent.getNextState(), new Arguments(screens));
             }
         });
-        eventBus.fireEvent(new ChangeStateEvent("play"));
+        eventBus.fireEvent(new ChangeStateEvent("load"));
     }
 
 

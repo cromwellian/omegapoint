@@ -1,5 +1,7 @@
 package com.omegapoint.core.state;
 
+import com.google.web.bindery.event.shared.EventBus;
+import com.omegapoint.core.events.ChangeStateEvent;
 import se.hiflyer.fettle.Action;
 import se.hiflyer.fettle.Arguments;
 import se.hiflyer.fettle.StateMachine;
@@ -12,14 +14,16 @@ import javax.inject.Inject;
  */
 public class IntroGameState extends AbstractGameState implements Action<GameState, String> {
     private IntroScreen screen;
+    private EventBus eventBus;
 
     @Inject
-    public IntroGameState(IntroScreen screen) {
+    public IntroGameState(IntroScreen screen, EventBus eventBus) {
         super(screen);
+        this.eventBus = eventBus;
     }
 
     @Override
     public void onTransition(GameState gameState, GameState gameState1, String s, Arguments arguments, StateMachine<GameState, String> gameStateStringStateMachine) {
-        //To change body of implemented methods use File | Settings | File Templates.
+       eventBus.fireEvent(new ChangeStateEvent("play"));
     }
 }
