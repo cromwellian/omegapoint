@@ -1,21 +1,32 @@
 package com.omegapoint.core;
 
 import com.google.inject.Inject;
+import com.google.web.bindery.event.shared.EventBus;
+import com.omegapoint.core.events.ChangeStateEvent;
+import com.omegapoint.core.events.ChangeStateHandler;
+import com.omegapoint.core.state.GameState;
 import playn.core.Game;
 import playn.core.Platform;
 import playn.core.PlayN;
+import se.hiflyer.fettle.Arguments;
+import se.hiflyer.fettle.StateMachine;
 import tripleplay.game.ScreenStack;
 
 public class OmegaPointGame implements Game {
 
+    private StateMachine<GameState, String> stateMachine;
     private ScreenStack screens;
     private GameScreen screen;
+    private EventBus eventBus;
 
 
     @Inject
-    public OmegaPointGame(ScreenStack screens, GameScreen screen) {
+    public OmegaPointGame(StateMachine<GameState, String> stateMachine,
+                          ScreenStack screens, GameScreen screen, EventBus eventBus) {
+        this.stateMachine = stateMachine;
         this.screens = screens;
         this.screen = screen;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -27,7 +38,13 @@ public class OmegaPointGame implements Game {
 //            PlayN.graphics().setSize(960, 640);
         }
         screen.init();
-        screens.push(screen);
+        eventBus.addHandler(ChangeStateEvent.TYPE, new ChangeStateHandler() {
+            @Override
+            public void onStateChange(ChangeStateEvent changeStateEvent) {
+                stateMachine.fireEvent(changeStateEvent.getNextState(), new Arguments(screens));
+            }
+        });
+        eventBus.fireEvent(new ChangeStateEvent("play"));
     }
 
 

@@ -125,6 +125,7 @@ public class GameScreen extends Screen {
     public void wasHidden() {
         super.wasHidden();
         PlayN.mouse().setListener(null);
+        PlayN.keyboard().setListener(null);
     }
 
     @Override
@@ -138,48 +139,7 @@ public class GameScreen extends Screen {
             @Override
             public void onKeyTyped(Keyboard.TypedEvent event) {
                 if (event.typedChar() == 'e') {
-
-                    screens.push(new UIAnimScreen() {
-                        public Root _root;
-
-                        @Override
-                        public void wasAdded() {
-                            super.wasAdded();
-                            _root = iface.createRoot(AxisLayout.vertical().gap(10).offEqualize(), SimpleStyles.newSheet(), layer);
-                            _root.setSize(width(), height());
-                            Button button = new Button("Inventory");
-                            _root.add(button);
-                            Button button2 = new Button("Entity Browser");
-                            _root.add(button2);
-                            Button button3 = new Button("Level Editor");
-                            _root.add(button3);
-                            Button button4 = new Button("Debug Console");
-                            _root.add(button4);
-                            Button button5 = new Button("Return to Game");
-                            _root.add(button5);
-                            button5.clicked().connect(new UnitSlot() {
-                                @Override
-                                public void onEmit() {
-                                    _root.setVisible(false);
-                                   screens.popTo(GameScreen.this, screens.flip().unflip());
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void wasRemoved() {
-                            super.wasRemoved();
-                            iface.destroyRoot(_root);
-                        }
-
-                        @Override
-                        protected float updateRate() {
-                            return 15;
-                        }
-                    }, screens.flip());
-                }
-                if (event.typedChar() == 'z') {
-                    screens.popTo(GameScreen.this);
+                    eventBus.fireEvent(new ChangeStateEvent("pause"));
                 }
             }
         });

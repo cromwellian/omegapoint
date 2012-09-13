@@ -13,8 +13,11 @@ import com.omegapoint.core.Enemies;
 import com.omegapoint.core.EnemyCollisionPredicate;
 import com.omegapoint.core.GameScreen;
 import com.omegapoint.core.components.*;
+import com.omegapoint.core.state.*;
 import com.omegapoint.core.systems.*;
 import playn.core.PlayN;
+import se.hiflyer.fettle.StateMachine;
+import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 
 import java.util.ArrayList;
@@ -39,6 +42,12 @@ public abstract class OmegaPointBaseModule {
         binder.bind(GameScreen.class).in(Singleton.class);
         binder.bind(Playfield.class).in(Singleton.class);
         binder.bind(Enemies.class).in(Singleton.class);
+        binder.bind(OmegaStateMachineBuilder.class).in(Singleton.class);
+        binder.bind(LoadGameState.class).in(Singleton.class);
+        binder.bind(IntroGameState.class).in(Singleton.class);
+        binder.bind(PlayGameState.class).in(Singleton.class);
+        binder.bind(PauseGameState.class).in(Singleton.class);
+
 //        binder.bind(ScreenStack.class).to(ScreenStackImpl.class).in(Singleton.class);
 //        binder.bind(EntityDatabase.class).to(StaticEntityDatabase.class).in(Singleton.class);
 //        binder.bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
@@ -172,10 +181,24 @@ public abstract class OmegaPointBaseModule {
         return new ScreenStackImpl();
     }
 
+    @Provides
+    @Singleton
+    public StateMachine<GameState, String> providesStateMachine(OmegaStateMachineBuilder builder) {
+        return builder.build();
+    }
+
     public static class ScreenStackImpl extends ScreenStack {
         @Override
         protected void handleError(RuntimeException error) {
             PlayN.log().debug(error.toString(), error);
+        }
+
+        public boolean contains(Screen screen) {
+            return _screens.contains(screen);
+        }
+
+        public boolean isTop(Screen screen) {
+            return top() == screen;
         }
     }
 }

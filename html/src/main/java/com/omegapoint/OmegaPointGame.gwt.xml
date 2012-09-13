@@ -4,8 +4,9 @@
   <inherits name="com.google.gwt.inject.Inject"/>
   <inherits name="se.hiflyer.fettle.Fettle"/>
   <inherits name="tripleplay.TriplePlay"/>
-
-    <source path='core'/>
+  <inherits name="javax.Annotations"/>
+  <inherits name="javax.AnnotationsMock"/>
+  <source path='core'/>
   <source path='html'/>
 
   <public path="resources" />

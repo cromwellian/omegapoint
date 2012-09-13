@@ -38,6 +38,11 @@
         <artifactId>guava-gwt</artifactId>
         <version>13.0-final</version>
     </dependency>
+    <dependency>
+        <groupId>com.threerings</groupId>
+        <artifactId>gwt-utils</artifactId>
+        <version>1.5</version>
+    </dependency>
   </dependencies>
 
   <build>

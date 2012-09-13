@@ -66,11 +66,11 @@ public class TileRenderSystem extends EntityProcessingSystem {
 
     class TileRenderer implements ImmediateLayer.Renderer {
 
-        private Image image;
+        private Image.Region image;
         private TileComponent tileComponent;
 
         public TileRenderer(Image image, TileComponent tileComponent) {
-            this.image = image;
+            this.image = image.subImage(0, 0, image.width(), image.height());
             this.tileComponent = tileComponent;
         }
 
@@ -98,8 +98,9 @@ public class TileRenderSystem extends EntityProcessingSystem {
                     int spriteRow = indice / tileComponent.getTileCols();
                     int tileOffsetX = spriteCol * tileComponent.getTileWidth();
                     int tileOffsetY = spriteRow * tileComponent.getTileHeight();
-                    surface.drawImage(image.subImage(tileOffsetX, tileOffsetY, tileComponent.getTileWidth(),
-                            tileComponent.getTileHeight()), startx, starty);
+                    image.setBounds(tileOffsetX, tileOffsetY, tileComponent.getTileWidth(),
+                            tileComponent.getTileHeight());
+                    surface.drawImage(image, startx, starty);
                     startx += tileComponent.getTileWidth();
                     if (startx > PlayN.graphics().width()) {
                         break;
