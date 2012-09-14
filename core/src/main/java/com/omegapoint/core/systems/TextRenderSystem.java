@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static playn.core.PlayN.graphics;
+
 /**
  *
  */
@@ -98,7 +100,7 @@ public class TextRenderSystem extends EntityProcessingSystem {
         ImageLayer layer = entity2ImageLayer.get(e);
 
         if (layer == null) {
-            layer = PlayN.graphics().createImageLayer();
+            layer = graphics().createImageLayer();
             entity2ImageLayer.put(e, layer);
             screen.layer().add(layer);
         }
@@ -106,10 +108,10 @@ public class TextRenderSystem extends EntityProcessingSystem {
         // TODO: reuse canvases
         CacheText ct = text2image.get(textComp);
         if (ct == null) {
-            TextLayout tl = PlayN.graphics().layoutText(textComp.getText(),
-                    new TextFormat(textComp.getFont(), PlayN.graphics().width(), textComp.getAlign()));
+            TextLayout tl = graphics().layoutText(textComp.getText(),
+                    new TextFormat(textComp.getFont(), graphics().width(), textComp.getAlign()));
 
-            CanvasImage cimage = PlayN.graphics().createImage((int) tl.width(), (int) tl.height());
+            CanvasImage cimage = graphics().createImage((int) tl.width(), (int) tl.height());
             cimage.canvas().setFillColor(textComp.getColor());
             cimage.canvas().fillText(tl, 0, 0);
             ct = new CacheText(cimage, tl, e);
@@ -119,8 +121,8 @@ public class TextRenderSystem extends EntityProcessingSystem {
 
         int x = 0;
         if (textComp.getAlign() == TextFormat.Alignment.CENTER) {
-            x = (int) ((PlayN.graphics().width() - ct.getTl().width()) / 2);
+            x = (int) ((graphics().width() - ct.getTl().width()) / 2);
         }
-        layer.setTranslation(posComp.getX() + x, posComp.getY());
+        layer.setTranslation(posComp.getX()/100.0f * graphics().width() + x, posComp.getY()/100.0f * graphics().height());
     }
 }

@@ -2,10 +2,18 @@ package com.omegapoint.core.state;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.components.*;
+import com.omegapoint.core.events.ChangeStateEvent;
 import com.omegapoint.core.systems.*;
-import playn.core.*;
-import tripleplay.game.Screen;
+import playn.core.CanvasImage;
+import playn.core.PlayN;
+import playn.core.ResourceCallback;
+import playn.core.Sound;
+import react.UnitSlot;
+import tripleplay.game.UIScreen;
+import tripleplay.ui.*;
+import tripleplay.ui.layout.AxisLayout;
 
 import javax.inject.Inject;
 
@@ -14,8 +22,9 @@ import static playn.core.PlayN.graphics;
 /**
  *
  */
-public class IntroScreen extends Screen  {
+public class IntroScreen extends UIScreen {
     private final EntityTemplates templateManager;
+    private EventBus eventBus;
     private final World world;
     private final MovementSystem movementSystem;
     private final TextRenderSystem textRenderSystem;
@@ -23,11 +32,14 @@ public class IntroScreen extends Screen  {
     private CanvasImage title;
     private final StarRenderSystem starSystem;
     private final Playfield introPlayField;
-    private final Sound sound;
+    private Sound sound;
+    private Root _root;
 
     @Inject
-    public IntroScreen(EntityTemplates templateManager) {
+    public IntroScreen(EntityTemplates templateManager, EventBus eventBus) {
+        //TODO(ray) clean this up, use injection and share more code with GameScreen
         this.templateManager = templateManager;
+        this.eventBus = eventBus;
         this.world = new World();
         introPlayField = new Playfield();
         this.starSystem = new StarRenderSystem(introPlayField);
@@ -40,16 +52,40 @@ public class IntroScreen extends Screen  {
         this.world.getSystemManager().setSystem(simpleTweenSystem);
         this.world.getSystemManager().initializeAll();
         makeStars();
-        sound = PlayN.assets().getSound("sounds/cybernoid2");
-        sound.play();
-        sound.setLooping(true);
+
         templateManager.lookupAndInstantiate("titleText", world);
+        templateManager.lookupAndInstantiate("titleTextCredits", world);
     }
 
     @Override
     public void wasAdded() {
         super.wasAdded();
         layer.add(introPlayField.layer());
+        sound = PlayN.assets().getSound("sounds/cybernoid2");
+        sound.addCallback(new ResourceCallback<Sound>() {
+            @Override
+            public void done(Sound resource) {
+                resource.setLooping(true);
+                resource.setVolume(1);
+                resource.play();
+            }
+
+            @Override
+            public void error(Throwable err) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+         _root = iface.createRoot(AxisLayout.vertical().gap(10).offEqualize(), SimpleStyles.newSheet(), layer);
+        _root.setSize(width(), height());
+        Button button = new Button("Start Game");
+        button.clicked().connect(new UnitSlot() {
+            @Override
+            public void onEmit() {
+                eventBus.fireEvent(new ChangeStateEvent("play"));
+            }
+        });
+        _root.add(button);
+
     }
 
     @Override

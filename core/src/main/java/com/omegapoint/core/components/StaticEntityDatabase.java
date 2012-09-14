@@ -27,7 +27,8 @@ public class StaticEntityDatabase implements EntityDatabase {
                 toString(makeTopBounds()), toString(makeLeftBounds()), toString(makeRightBounds()),
                 toString(makeBottomBounds()), toString(makeLaser()), toString(makeBeam()),
                 toString(makeTiles()),
-                toString(makeWave()));
+                toString(makeWave()),
+                toString(makeTitleCredits()));
     }
 
     private Json.Object makeEnemyShip1() {
@@ -133,10 +134,21 @@ public class StaticEntityDatabase implements EntityDatabase {
         return titleText;
     }
 
+    private Json.Object makeTitleCredits() {
+        Json.Object titleText = json().createObject();
+        titleText.put(EntityTemplate.NAME, "titleTextCredits");
+        titleText.put(TextComponent.NAME, new TextComponent("by Ray Cromwell", PlayN.graphics().createFont("spaceage", Font.Style.PLAIN, 30),
+                TextFormat.Alignment.CENTER, 0xff802020).toJson());
+        titleText.put(PositionComponent.NAME, new PositionComponent(0, 75, 0).toJson());
+        titleText.put(SimpleTweenComponent.NAME, new SimpleTweenComponent(0.0f, 1.0f, 500, new TextColorChanger(0xff800080, 0xff0000ff), true, true).toJson());
+        return titleText;
+    }
+
+
     private Json.Object makeTitleMusic() {
         Json.Object titleMusic = json().createObject();
         titleMusic.put(EntityTemplate.NAME, "backgroundMusic");
-        titleMusic.put(AudioComponent.NAME, new AudioComponent("sounds/angryrobot3", 0.5).toJson());
+        titleMusic.put(AudioComponent.NAME, new AudioComponent("sounds/angryrobot3", 0.7).toJson());
         return titleMusic;
     }
 

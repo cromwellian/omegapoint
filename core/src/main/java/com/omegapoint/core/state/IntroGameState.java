@@ -28,13 +28,5 @@ public class IntroGameState extends AbstractGameState implements Action<GameStat
     public void onTransition(GameState gameState, GameState gameState1, String s, Arguments arguments, StateMachine<GameState, String> gameStateStringStateMachine) {
         ScreenStack screens = (ScreenStack) arguments.getFirst();
         screens.push(getScreen());
-        PlayN.mouse().setListener(new Mouse.Adapter() {
-            @Override
-            public void onMouseUp(Mouse.ButtonEvent event) {
-                event.setPreventDefault(true);
-                PlayN.mouse().setListener(null);
-                eventBus.fireEvent(new ChangeStateEvent("play"));
-            }
-        });
     }
 }
