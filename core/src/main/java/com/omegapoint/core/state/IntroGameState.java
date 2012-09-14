@@ -13,7 +13,6 @@ import javax.inject.Inject;
  *
  */
 public class IntroGameState extends AbstractGameState implements Action<GameState, String> {
-    private IntroScreen screen;
     private EventBus eventBus;
 
     @Inject
