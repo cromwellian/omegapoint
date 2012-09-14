@@ -69,7 +69,6 @@ public class GameScreen extends Screen {
 
     public void init() {
         systemManager.initializeAll();
-        makeTitle();
         shipPosition = makeShip();
         makeGameBounds();
         makeStars();
@@ -194,10 +193,6 @@ public class GameScreen extends Screen {
         shield.addComponent(new SpriteComponent("images/shieldAlphaGreen.png", 48, 48, 10, 4, 0, 16, true));
         shield.refresh();
         return shipPosition;
-    }
-
-    private void makeTitle() {
-        templateManager.lookupAndInstantiate("titleText", world);
     }
 
     private void makeGameBounds() {

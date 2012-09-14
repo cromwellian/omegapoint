@@ -2,6 +2,7 @@ package com.omegapoint.core.components;
 
 import com.omegapoint.core.BulletCollisionPredicate;
 import com.omegapoint.core.EnemyCollisionPredicate;
+import com.omegapoint.core.tween.TextColorChanger;
 import playn.core.Font;
 import playn.core.Json;
 import playn.core.PlayN;
@@ -72,14 +73,14 @@ public class StaticEntityDatabase implements EntityDatabase {
     private TileComponent.TileRow[] makeLevel1() {
         TileComponent.TileRow[] rows = new TileComponent.TileRow[PlayN.graphics().height() / 16 / 4];
         for (int i = 0; i < rows.length; i++) {
-          int[] indices = new int[100];
-          for (int j = 0; j < indices.length; j++) {
-              indices[j] = (int) (Math.random() * 90);
-              if (Math.random() > 0.2) {
-                  // testing empty space
-                  indices[j] = TileComponent.EMPTY_SPACE;
-              }
-          }
+            int[] indices = new int[100];
+            for (int j = 0; j < indices.length; j++) {
+                indices[j] = (int) (Math.random() * 90);
+                if (Math.random() > 0.2) {
+                    // testing empty space
+                    indices[j] = TileComponent.EMPTY_SPACE;
+                }
+            }
             rows[i] = new TileComponent.TileRow(indices);
         }
         return rows;
@@ -128,13 +129,14 @@ public class StaticEntityDatabase implements EntityDatabase {
         titleText.put(TextComponent.NAME, new TextComponent("OMEGA POINT", PlayN.graphics().createFont("spaceage", Font.Style.PLAIN, 80),
                 TextFormat.Alignment.CENTER, 0xff000080).toJson());
         titleText.put(PositionComponent.NAME, new PositionComponent(0, 0, 0).toJson());
+        titleText.put(SimpleTweenComponent.NAME, new SimpleTweenComponent(0.0f, 1.0f, 250, new TextColorChanger(0xff000080, 0xff0000ff), true, true).toJson());
         return titleText;
     }
 
     private Json.Object makeTitleMusic() {
         Json.Object titleMusic = json().createObject();
         titleMusic.put(EntityTemplate.NAME, "backgroundMusic");
-        titleMusic.put(AudioComponent.NAME, new AudioComponent("sounds/cybernoid2", 0.5).toJson());
+        titleMusic.put(AudioComponent.NAME, new AudioComponent("sounds/angryrobot3", 0.5).toJson());
         return titleMusic;
     }
 

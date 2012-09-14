@@ -132,6 +132,7 @@ public abstract class OmegaPointBaseModule {
         registry.register(CollisionComponent.NAME, new CollisionComponent.Codec());
         registry.register(TileComponent.NAME, new TileComponent.Codec());
         registry.register(WaveComponent.NAME, new WaveComponent.Codec());
+        registry.register(SimpleTweenComponent.NAME, new SimpleTweenComponent.Codec());
         return registry;
     }
 

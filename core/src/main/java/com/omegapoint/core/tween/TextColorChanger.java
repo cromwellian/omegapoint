@@ -2,7 +2,10 @@ package com.omegapoint.core.tween;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.omegapoint.core.components.Jsonable;
 import com.omegapoint.core.components.TextComponent;
+import playn.core.Json;
+import playn.core.PlayN;
 
 /**
  *
@@ -40,5 +43,25 @@ public class TextColorChanger {
         int b = (int) (b1 + (b2 - b1) * value);
         comp.setColor(a << 24 | r << 16 | g << 8 | b);
         comp.setDirty(true);
+    }
+
+    public Json.Object toJson() {
+        return new Codec().toJson(this);
+    }
+
+    public static class Codec implements Jsonable<TextColorChanger> {
+        @Override
+        public TextColorChanger fromJson(Json.Object object) {
+            return new TextColorChanger(object.getInt("startColor"), object.getInt("endColor"));
+        }
+
+        @Override
+        public Json.Object toJson(TextColorChanger object) {
+            Json.Object obj = PlayN.json().createObject();
+            obj.put("name", "colorChanger");
+            obj.put("startColor", object.start);
+            obj.put("endColor", object.end);
+            return obj;
+        }
     }
 }

@@ -2,11 +2,14 @@ package com.omegapoint.core.components;
 
 import com.artemis.Component;
 import com.omegapoint.core.tween.TextColorChanger;
+import playn.core.Json;
+import playn.core.PlayN;
 
 /**
  *
  */
-public class SimpleTweenComponent extends Component {
+public class SimpleTweenComponent extends BaseComponent {
+    public static final String NAME = "tweenComponent";
     private float startVal;
     private float endVal;
     private int duration;
@@ -85,6 +88,43 @@ public class SimpleTweenComponent extends Component {
           t = 0.5f - t;
           t *= 2;
           return Math.max(startVal + t * (endVal - startVal), startVal);
+        }
+    }
+
+    @Override
+    public String getComponentName() {
+        return NAME;
+    }
+
+    @Override
+    public BaseComponent duplicate() {
+        return new SimpleTweenComponent(startVal, endVal, duration, propertyChanger, repeat, mirror);
+    }
+
+    @Override
+    public Json.Object toJson() {
+        return new Codec().toJson(this);
+    }
+
+    public static class Codec implements Jsonable<SimpleTweenComponent> {
+
+        @Override
+        public SimpleTweenComponent fromJson(Json.Object object) {
+           return new SimpleTweenComponent(object.getNumber("start"), object.getNumber("end"),
+                   object.getInt("duration"), new TextColorChanger.Codec().fromJson(object.getObject("operation")),
+                   object.getBoolean("repeat"), object.getBoolean("mirror"));
+        }
+
+        @Override
+        public Json.Object toJson(SimpleTweenComponent object) {
+            Json.Object obj = PlayN.json().createObject();
+            obj.put("start", object.getStartVal());
+            obj.put("end", object.getEndVal());
+            obj.put("duration", object.getDuration());
+            obj.put("operation", object.getPropertyChanger().toJson());
+            obj.put("repeat", object.repeat);
+            obj.put("mirror", object.mirror);
+            return obj;
         }
     }
 }
