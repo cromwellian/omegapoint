@@ -111,13 +111,26 @@ public class TextComponent extends BaseComponent {
         public TextComponent fromJson(Json.Object object) {
           return new TextComponent(object.getString("text"),
                   decodeFont(object.getObject("font")),
-                  TextFormat.Alignment.valueOf(object.getString("align").toUpperCase()),
+                  decodeAlign(object.getString("align").toUpperCase()),
                   (int) Long.parseLong(object.getString("color").substring(2), 16));
+        }
+
+        private TextFormat.Alignment decodeAlign(String align) {
+            if ("LEFT".equals(align)) {
+                return TextFormat.Alignment.LEFT;
+            }
+            if ("RIGHT".equals(align)) {
+                return TextFormat.Alignment.RIGHT;
+            }
+            if ("CENTER".equals(align)) {
+                return TextFormat.Alignment.CENTER;
+            }
+            return TextFormat.Alignment.CENTER;
         }
 
         private Font decodeFont(Json.Object font) {
            return PlayN.graphics().createFont(font.getString("name"),
-                   Font.Style.valueOf(font.getString("style").toUpperCase()), font.getInt("size"));
+                   /*Font.Style.valueOf(font.getString("style").toUpperCase())*/ Font.Style.PLAIN, font.getInt("size"));
         }
 
         @Override

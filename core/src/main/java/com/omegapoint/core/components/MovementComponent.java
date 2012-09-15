@@ -52,7 +52,9 @@ public class MovementComponent extends BaseComponent  {
     public static class Codec implements Jsonable<MovementComponent> {
         public MovementComponent fromJson(Json.Object object) {
             return new MovementComponent(object.getInt("vx"), object.getInt("vy"),
-                    MotionType.valueOf(object.getString("motionType").toUpperCase()), object.getBoolean("wrapAround"));
+                    /*MotionType.valueOf(object.getString("motionType").toUpperCase())*/
+                    "LINEAR".equalsIgnoreCase(object.getString("motionType")) ? MotionType.LINEAR : MotionType.SINUSOIDAL,
+                    object.getBoolean("wrapAround"));
         }
 
         public Json.Object toJson(MovementComponent object) {
