@@ -50,10 +50,14 @@ public class TileRenderSystem extends EntityProcessingSystem {
             imageCache.put(imgName, image);
         }
 
-        Layer layer = PlayN.graphics().createImmediateLayer(new TileRenderer(image, tileComponent));
+        Layer layer = getTileRenderer(tileComponent, image);
         entity2imageLayer.put(e, layer);
         layer.setDepth(tileComponent.getDepth());
         screen.layer().add(layer);
+    }
+
+    protected ImmediateLayer getTileRenderer(TileComponent tileComponent, Image image) {
+        return PlayN.graphics().createImmediateLayer(new TileRenderer(image, tileComponent));
     }
 
     @Override
@@ -66,7 +70,7 @@ public class TileRenderSystem extends EntityProcessingSystem {
     class TileRenderer implements ImmediateLayer.Renderer {
 
         private Image.Region image;
-        private TileComponent tileComponent;
+        protected TileComponent tileComponent;
 
         public TileRenderer(Image image, TileComponent tileComponent) {
             this.image = image.subImage(0, 0, image.width(), image.height());

@@ -37,6 +37,7 @@ public abstract class OmegaPointBaseModule {
         binder.bind(CollisionSystem.class).in(Singleton.class);
         binder.bind(SpriteRenderSystem.class).in(Singleton.class);
         binder.bind(TextRenderSystem.class).in(Singleton.class);
+        binder.bind(TileEditorRenderSystem.class).in(Singleton.class);
         binder.bind(BeamRenderSystem.class).in(Singleton.class);
         binder.bind(AudioSystem.class).in(Singleton.class);
         binder.bind(StarRenderSystem.class).in(Singleton.class);
@@ -67,7 +68,8 @@ public abstract class OmegaPointBaseModule {
                                           BeamRenderSystem beamRenderSystem,
                                           AudioSystem audioSystem,
                                           StarRenderSystem starRenderSystem,
-                                          TileRenderSystem tileRenderSystem) {
+                                          TileRenderSystem tileRenderSystem,
+                                          TileEditorRenderSystem tileEditorRenderSystem) {
         SystemManager sm = world.getSystemManager();
         sm.setSystem(simpleTweenSystem);
         sm.setSystem(textRenderSystem);
@@ -91,7 +93,8 @@ public abstract class OmegaPointBaseModule {
                                                     BeamRenderSystem beamRenderSystem,
                                                     AudioSystem audioSystem,
                                                     StarRenderSystem starRenderSystem,
-                                                    TileRenderSystem tileRenderSystem) {
+                                                    TileRenderSystem tileRenderSystem,
+                                                    TileEditorRenderSystem tileEditorRenderSystem) {
         ArrayList<EntitySystem> list = new ArrayList<EntitySystem>();
         list.add(textRenderSystem);
         list.add(starRenderSystem);

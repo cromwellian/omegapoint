@@ -50,12 +50,15 @@ public class IOSInjector {
         AudioSystem audioSystem = new AudioSystem();
         StarRenderSystem starRenderSystem = new StarRenderSystem(playfield);
         TileRenderSystem tileRenderSystem = new TileRenderSystem(playfield);
+        TileEditorRenderSystem tileEditorRenderSystem = new TileEditorRenderSystem(playfield);
+
         List<EntitySystem> renderSystems = module.providesRenderSystems(textRenderSystem,
-                spriteRenderSystem, beamRenderSystem, audioSystem, starRenderSystem, tileRenderSystem);
+                spriteRenderSystem, beamRenderSystem, audioSystem, starRenderSystem, tileRenderSystem,
+                tileEditorRenderSystem);
         GameScreen gameScreen = new GameScreen(world,
                 module.getSystemManager(world, simpleTweenSystem, textRenderSystem, enemySystem, movementSystem,
                         collisionSystem, spriteRenderSystem, beamRenderSystem, audioSystem, starRenderSystem,
-                        tileRenderSystem), playfield,
+                        tileRenderSystem, tileEditorRenderSystem), playfield,
                 screens, updateSystems,
                 renderSystems,
                 templateManager, eventBus, enemies);
