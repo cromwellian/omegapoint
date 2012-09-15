@@ -5,13 +5,10 @@ import com.artemis.World;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Enemies;
 import com.omegapoint.core.Playfield;
-import com.omegapoint.core.screens.GameScreen;
+import com.omegapoint.core.screens.*;
 import com.omegapoint.core.OmegaPointGame;
 import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.data.MemoryEntityDatabase;
-import com.omegapoint.core.screens.IntroScreen;
-import com.omegapoint.core.screens.LoadScreen;
-import com.omegapoint.core.screens.PauseMenuScreen;
 import com.omegapoint.core.state.*;
 import com.omegapoint.core.systems.*;
 import playn.core.Game;
@@ -64,7 +61,8 @@ public class IOSInjector {
                 templateManager, eventBus, enemies);
         PlayGameState playState = new PlayGameState(gameScreen);
         return new OmegaPointGame(module.providesStateMachine(new OmegaStateMachineBuilder(screens, loadState,
-                introGameState, playState, new PauseGameState(new PauseMenuScreen(eventBus)))), screens, gameScreen,
+                introGameState, playState, new PauseGameState(new PauseMenuScreen(eventBus)),
+                new TileEditorState(new TileEditorScreen(templateManager, eventBus)))), screens, gameScreen,
                 eventBus);
     }
 }

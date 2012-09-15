@@ -65,6 +65,67 @@ public class TileComponent extends BaseComponent {
         return depth;
     }
 
+
+    static class TilePos {
+
+        private final TileRow row;
+        private final int col;
+
+        public int getCol() {
+            return col;
+        }
+
+        public TileRow getRow() {
+
+            return row;
+        }
+
+        public TilePos(TileRow row, int col) {
+
+            this.row = row;
+            this.col = col;
+        }
+
+        public int getTile() {
+            return row.getIndices()[col];
+        }
+
+        public void setTile(int tile) {
+            row.getIndices()[col] = tile;
+        }
+    }
+
+    public TilePos localCoord2TilePos(float x, float y) {
+        float starty = PlayN.graphics().height() - getTileHeight() * getArrangement().getRows().length;
+        float startx = 0 - getCurrentScreenPosition() % getTileWidth();
+        if (y < starty) {
+            return null;
+        }
+        int row = (int) ((y - starty) / getTileHeight());
+        int col = (int) ((x - startx) / getTileWidth());
+        TileRow[] rows = getArrangement().getRows();
+        if (row >= 0 && row < rows.length) {
+            if (col > 0 && col < rows[0].getIndices().length) {
+                return new TilePos(rows[row], col);
+            }
+        }
+        return null;
+    }
+
+    public void clickTile(float x, float y) {
+        TilePos pos = localCoord2TilePos(x, y);
+        if (pos != null) {
+            pos.setTile(0);
+        }
+    }
+
+    public void eraseTile(float x, float y) {
+        TilePos pos = localCoord2TilePos(x, y);
+        if (pos != null) {
+            pos.setTile(TileComponent.EMPTY_SPACE);
+        }
+    }
+
     public static class TileRow {
         private int[] indices;
 

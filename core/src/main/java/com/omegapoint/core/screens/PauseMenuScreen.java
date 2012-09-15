@@ -36,6 +36,12 @@ public class PauseMenuScreen extends UIAnimScreen {
         _root.add(button2);
         Button button3 = new Button("Level Editor");
         _root.add(button3);
+        button3.clicked().connect(new UnitSlot() {
+            @Override
+            public void onEmit() {
+                eventBus.fireEvent(new ChangeStateEvent("tileEditor"));
+            }
+        });
         Button button4 = new Button("Debug Console");
         _root.add(button4);
         Button button5 = new Button("Return to Game");

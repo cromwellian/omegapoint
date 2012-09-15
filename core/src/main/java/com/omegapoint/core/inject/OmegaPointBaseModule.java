@@ -50,6 +50,7 @@ public abstract class OmegaPointBaseModule {
         binder.bind(IntroGameState.class).in(Singleton.class);
         binder.bind(PlayGameState.class).in(Singleton.class);
         binder.bind(PauseGameState.class).in(Singleton.class);
+        binder.bind(TileEditorState.class).in(Singleton.class);
 
 //        binder.bind(ScreenStack.class).to(ScreenStackImpl.class).in(Singleton.class);
 //        binder.bind(EntityDatabase.class).to(StaticEntityDatabase.class).in(Singleton.class);

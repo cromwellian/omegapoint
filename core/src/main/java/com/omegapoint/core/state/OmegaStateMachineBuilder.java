@@ -17,6 +17,7 @@ public class OmegaStateMachineBuilder {
     private final IntroGameState introState;
     private final PlayGameState playState;
     private final PauseGameState pauseState;
+    private TileEditorState tileEditorState;
     private final Arguments arguments;
     private final GameState initState;
 
@@ -24,12 +25,14 @@ public class OmegaStateMachineBuilder {
     public OmegaStateMachineBuilder(ScreenStack screens, LoadGameState loadState,
                                     IntroGameState introState,
                                     PlayGameState playState,
-                                    PauseGameState pauseState) {
+                                    PauseGameState pauseState,
+                                    TileEditorState tileEditorState) {
         this.screens = screens;
         this.loadState = loadState;
         this.introState = introState;
         this.playState = playState;
         this.pauseState = pauseState;
+        this.tileEditorState = tileEditorState;
         this.arguments = new Arguments(screens);
         this.initState = new GameState(){
             @Override
@@ -51,7 +54,11 @@ public class OmegaStateMachineBuilder {
         builder.transition().from(playState).to(pauseState).on("pause");
         builder.onEntry(pauseState).perform(pauseState);
         builder.onExit(pauseState).perform(pauseState);
+        builder.transition().from(pauseState).to(tileEditorState).on("tileEditor");
+        builder.onEntry(tileEditorState).perform(tileEditorState);
+        builder.transition().from(tileEditorState).to(pauseState).on("pause");
         builder.transition().from(pauseState).to(playState).on("play");
+
 
         StateMachine<GameState, String> stateMachine = builder.build(initState);
         return stateMachine;

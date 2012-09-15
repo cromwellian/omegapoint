@@ -1,10 +1,10 @@
 package com.omegapoint.core.state;
 
+import com.omegapoint.core.inject.OmegaPointBaseModule;
 import com.omegapoint.core.screens.PauseMenuScreen;
 import se.hiflyer.fettle.Action;
 import se.hiflyer.fettle.Arguments;
 import se.hiflyer.fettle.StateMachine;
-import tripleplay.game.ScreenStack;
 
 import javax.inject.Inject;
 
@@ -19,11 +19,11 @@ public class PauseGameState extends AbstractGameState implements Action<GameStat
 
     @Override
     public void onTransition(GameState from, GameState to, String event, Arguments arguments, StateMachine<GameState, String> gameStateStringStateMachine) {
-        ScreenStack screens = (ScreenStack) arguments.getFirst();
+        OmegaPointBaseModule.ScreenStackImpl screens = (OmegaPointBaseModule.ScreenStackImpl) arguments.getFirst();
         // entry
-        if (to == this) {
+        if (to == this && !screens.contains(getScreen())) {
           screens.push(getScreen(), screens.slide().up());
-        } else {
+        } else if (screens.contains(to.getScreen())) {
           screens.popTo(to.getScreen(), screens.slide().down());
         }
     }

@@ -79,9 +79,9 @@ public class TileRenderSystem extends EntityProcessingSystem {
 
         @Override
         public void render(Surface surface) {
-            float starty = PlayN.graphics().height() - tileComponent.getTileHeight();
-            float startx = 0;
             TileComponent.TileArrangement arr = tileComponent.getArrangement();
+            float starty = PlayN.graphics().height() - tileComponent.getTileHeight() * arr.getRows().length;
+            float startx = 0;
             for (TileComponent.TileRow row : arr.getRows()) {
                 int[] indices = row.getIndices();
                 int startIndice = (int) (tileComponent.getCurrentScreenPosition() / tileComponent.getTileWidth());
@@ -109,7 +109,7 @@ public class TileRenderSystem extends EntityProcessingSystem {
                         break;
                     }
                 }
-                starty -= tileComponent.getTileHeight();
+                starty += tileComponent.getTileHeight();
             }
         }
     }
