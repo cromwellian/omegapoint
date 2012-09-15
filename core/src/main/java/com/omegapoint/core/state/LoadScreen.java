@@ -20,7 +20,7 @@ public class LoadScreen extends Screen implements ImmediateLayer.Renderer {
         image = PlayN.assets().getImage("images/horsehead.jpg");
         layer.add(graphics().createImmediateLayer(this));
         TextLayout tl = graphics().layoutText("Loading Omega Point",
-                new TextFormat(graphics().createFont("spaceage", Font.Style.PLAIN, 80),
+                new TextFormat(graphics().createFont("Space Age", Font.Style.PLAIN, 80),
                         graphics().width() - 40, TextFormat.Alignment.CENTER));
         title = graphics().createImage(tl.width(), tl.height());
         title.canvas().setFillColor(0xffffffff);
