@@ -1,10 +1,12 @@
-package com.omegapoint.core.components;
+package com.omegapoint.core.data;
+
+import com.omegapoint.core.data.EntityDatabase;
 
 import java.util.Collection;
 import java.util.Collections;
 
 /**
- *  A transient implementation fo a mutable {@link EntityDatabase} that uses memory instead of persistency storage.
+ *  A transient implementation fo a mutable {@link com.omegapoint.core.data.EntityDatabase} that uses memory instead of persistency storage.
  */
 public class MemoryEntityDatabase implements EntityDatabase {
     @Override

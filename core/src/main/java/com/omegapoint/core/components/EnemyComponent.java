@@ -1,9 +1,8 @@
 package com.omegapoint.core.components;
 
-import com.artemis.Component;
+import com.omegapoint.core.data.Jsonable;
 import playn.core.Json;
 import playn.core.PlayN;
-import playn.core.Sound;
 
 /**
  *

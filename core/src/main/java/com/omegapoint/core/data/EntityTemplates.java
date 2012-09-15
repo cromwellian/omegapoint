@@ -1,9 +1,11 @@
-package com.omegapoint.core.components;
+package com.omegapoint.core.data;
 
 
-import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.World;
+import com.omegapoint.core.components.BaseComponent;
+import com.omegapoint.core.data.EntityDatabase;
+import com.omegapoint.core.data.EntityTemplate;
 import playn.core.Json;
 import playn.core.PlayN;
 
@@ -12,18 +14,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Registry of all loaded {@link EntityTemplate}s.
+ * Registry of all loaded {@link com.omegapoint.core.data.EntityTemplate}s.
  */
 public class EntityTemplates {
     private Map<String, EntityTemplate> templates = new HashMap<String, EntityTemplate>();
-    private JsonableRegistry<BaseComponent> jsonableComponentRegistry;
+    private EntityDatabase.JsonableRegistry<BaseComponent> jsonableComponentRegistry;
 
     public void registerByName(String entityName, EntityTemplate entityTemplate) {
        templates.put(entityName, entityTemplate);
     }
 
     @Inject
-    public EntityTemplates(JsonableRegistry<BaseComponent> jsonableComponentRegistry) {
+    public EntityTemplates(EntityDatabase.JsonableRegistry<BaseComponent> jsonableComponentRegistry) {
         this.jsonableComponentRegistry = jsonableComponentRegistry;
     }
 

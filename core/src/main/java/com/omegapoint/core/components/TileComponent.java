@@ -1,5 +1,6 @@
 package com.omegapoint.core.components;
 
+import com.omegapoint.core.data.Jsonable;
 import com.omegapoint.core.util.Base91;
 import playn.core.Json;
 import playn.core.PlayN;

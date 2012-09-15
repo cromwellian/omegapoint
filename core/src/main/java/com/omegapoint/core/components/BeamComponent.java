@@ -1,7 +1,6 @@
 package com.omegapoint.core.components;
 
-import com.artemis.Component;
-import playn.core.Color;
+import com.omegapoint.core.data.Jsonable;
 import playn.core.Json;
 import playn.core.PlayN;
 

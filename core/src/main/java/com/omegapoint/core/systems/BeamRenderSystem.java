@@ -3,10 +3,9 @@ package com.omegapoint.core.systems;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
-import com.omegapoint.core.GameScreen;
+import com.omegapoint.core.Playfield;
 import com.omegapoint.core.components.BeamComponent;
 import com.omegapoint.core.components.PositionComponent;
-import com.omegapoint.core.components.SpriteComponent;
 import playn.core.*;
 
 import javax.inject.Inject;

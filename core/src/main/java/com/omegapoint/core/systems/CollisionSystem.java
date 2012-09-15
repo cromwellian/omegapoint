@@ -6,9 +6,9 @@ import com.artemis.EntitySystem;
 import com.artemis.utils.ImmutableBag;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.components.CollisionComponent;
-import com.omegapoint.core.CollisionPredicate;
-import com.omegapoint.core.PredicateAction;
-import com.omegapoint.core.components.EntityTemplates;
+import com.omegapoint.core.predicates.CollisionPredicate;
+import com.omegapoint.core.predicates.PredicateAction;
+import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.components.PositionComponent;
 import pythagoras.i.Rectangle;
 

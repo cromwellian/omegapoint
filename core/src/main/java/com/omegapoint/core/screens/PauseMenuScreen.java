@@ -1,4 +1,4 @@
-package com.omegapoint.core.state;
+package com.omegapoint.core.screens;
 
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.events.ChangeStateEvent;

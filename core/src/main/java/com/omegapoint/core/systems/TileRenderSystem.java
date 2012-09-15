@@ -3,8 +3,7 @@ package com.omegapoint.core.systems;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
-import com.omegapoint.core.components.PositionComponent;
-import com.omegapoint.core.components.SpriteComponent;
+import com.omegapoint.core.Playfield;
 import com.omegapoint.core.components.TileComponent;
 import playn.core.*;
 

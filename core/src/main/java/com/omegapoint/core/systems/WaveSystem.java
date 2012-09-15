@@ -1,12 +1,10 @@
 package com.omegapoint.core.systems;
 
 import com.artemis.*;
-import com.artemis.utils.ImmutableBag;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Enemies;
-import com.omegapoint.core.EnemyCollisionPredicate;
-import com.omegapoint.core.components.CollisionComponent;
 import com.omegapoint.core.components.*;
+import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.events.ChangeStateEvent;
 import playn.core.PlayN;
 

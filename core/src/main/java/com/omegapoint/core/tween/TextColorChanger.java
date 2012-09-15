@@ -2,7 +2,7 @@ package com.omegapoint.core.tween;
 
 import com.artemis.Entity;
 import com.artemis.World;
-import com.omegapoint.core.components.Jsonable;
+import com.omegapoint.core.data.Jsonable;
 import com.omegapoint.core.components.TextComponent;
 import playn.core.Json;
 import playn.core.PlayN;

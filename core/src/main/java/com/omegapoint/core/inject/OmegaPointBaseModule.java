@@ -8,10 +8,12 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import com.omegapoint.core.BulletCollisionPredicate;
+import com.omegapoint.core.data.*;
+import com.omegapoint.core.predicates.BulletCollisionPredicate;
 import com.omegapoint.core.Enemies;
-import com.omegapoint.core.EnemyCollisionPredicate;
-import com.omegapoint.core.GameScreen;
+import com.omegapoint.core.predicates.EnemyCollisionPredicate;
+import com.omegapoint.core.Playfield;
+import com.omegapoint.core.screens.GameScreen;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.state.*;
 import com.omegapoint.core.systems.*;
@@ -118,8 +120,8 @@ public abstract class OmegaPointBaseModule {
     @Provides
     @Singleton
     @Named("jsonableComponentRegistry")
-    public JsonableRegistry<BaseComponent> providesJsonableComponentRegistry() {
-        JsonableRegistry<BaseComponent> registry = new JsonableRegistry<BaseComponent>();
+    public EntityDatabase.JsonableRegistry<BaseComponent> providesJsonableComponentRegistry() {
+        EntityDatabase.JsonableRegistry<BaseComponent> registry = new EntityDatabase.JsonableRegistry<BaseComponent>();
 
         registry.register(MovementComponent.NAME, new MovementComponent.Codec());
         registry.register(PositionComponent.NAME, new PositionComponent.Codec());
@@ -140,7 +142,7 @@ public abstract class OmegaPointBaseModule {
     @Provides
     @Singleton
     public EntityTemplates providesEntityTemplates(@Named("entityDatabases") List<EntityDatabase> databases,
-                                                   @Named("jsonableComponentRegistry") JsonableRegistry<BaseComponent> registry) {
+                                                   @Named("jsonableComponentRegistry") EntityDatabase.JsonableRegistry<BaseComponent> registry) {
         EntityTemplates templates = new EntityTemplates(registry);
         for (EntityDatabase database : databases) {
             for (String entityTemplateJson : database.getTemplates()) {

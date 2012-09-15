@@ -1,4 +1,4 @@
-package com.omegapoint.core;
+package com.omegapoint.core.predicates;
 
 import com.artemis.Entity;
 import com.artemis.World;

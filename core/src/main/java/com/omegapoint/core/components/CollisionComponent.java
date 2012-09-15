@@ -1,7 +1,9 @@
 package com.omegapoint.core.components;
 
-import com.artemis.Component;
-import com.omegapoint.core.CollisionPredicate;
+import com.omegapoint.core.data.CollisionPredicates;
+import com.omegapoint.core.data.HasName;
+import com.omegapoint.core.data.Jsonable;
+import com.omegapoint.core.predicates.CollisionPredicate;
 import playn.core.Json;
 import playn.core.PlayN;
 import pythagoras.i.Rectangle;

@@ -1,4 +1,4 @@
-package com.omegapoint.core.systems;
+package com.omegapoint.core;
 
 import playn.core.GroupLayer;
 import playn.core.PlayN;

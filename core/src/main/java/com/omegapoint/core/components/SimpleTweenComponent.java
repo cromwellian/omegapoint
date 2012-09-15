@@ -1,6 +1,6 @@
 package com.omegapoint.core.components;
 
-import com.artemis.Component;
+import com.omegapoint.core.data.Jsonable;
 import com.omegapoint.core.tween.TextColorChanger;
 import playn.core.Json;
 import playn.core.PlayN;

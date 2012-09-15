@@ -1,9 +1,11 @@
-package com.omegapoint.core.state;
+package com.omegapoint.core.screens;
 
 import com.artemis.Entity;
 import com.artemis.World;
 import com.google.web.bindery.event.shared.EventBus;
+import com.omegapoint.core.Playfield;
 import com.omegapoint.core.components.*;
+import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.events.ChangeStateEvent;
 import com.omegapoint.core.systems.*;
 import playn.core.CanvasImage;

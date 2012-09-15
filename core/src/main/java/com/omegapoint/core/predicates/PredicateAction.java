@@ -1,9 +1,9 @@
-package com.omegapoint.core;
+package com.omegapoint.core.predicates;
 
 import com.artemis.Entity;
 import com.artemis.World;
 import com.google.web.bindery.event.shared.EventBus;
-import com.omegapoint.core.components.EntityTemplates;
+import com.omegapoint.core.data.EntityTemplates;
 
 /**
  *

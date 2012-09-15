@@ -1,6 +1,6 @@
-package com.omegapoint.core.components;
+package com.omegapoint.core.data;
 
-import com.omegapoint.core.CollisionPredicate;
+import com.omegapoint.core.predicates.CollisionPredicate;
 
 import java.util.HashMap;
 import java.util.Map;

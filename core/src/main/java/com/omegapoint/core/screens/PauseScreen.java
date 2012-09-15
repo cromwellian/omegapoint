@@ -1,4 +1,4 @@
-package com.omegapoint.core.state;
+package com.omegapoint.core.screens;
 
 import tripleplay.game.Screen;
 

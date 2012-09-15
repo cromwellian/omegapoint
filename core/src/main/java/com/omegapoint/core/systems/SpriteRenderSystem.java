@@ -1,7 +1,7 @@
 package com.omegapoint.core.systems;
 
 import com.artemis.*;
-import com.omegapoint.core.GameScreen;
+import com.omegapoint.core.Playfield;
 import com.omegapoint.core.components.PositionComponent;
 import com.omegapoint.core.components.SpriteComponent;
 import playn.core.Image;

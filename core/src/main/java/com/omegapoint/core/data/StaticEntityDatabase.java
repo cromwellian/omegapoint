@@ -1,7 +1,8 @@
-package com.omegapoint.core.components;
+package com.omegapoint.core.data;
 
-import com.omegapoint.core.BulletCollisionPredicate;
-import com.omegapoint.core.EnemyCollisionPredicate;
+import com.omegapoint.core.components.*;
+import com.omegapoint.core.predicates.BulletCollisionPredicate;
+import com.omegapoint.core.predicates.EnemyCollisionPredicate;
 import com.omegapoint.core.tween.TextColorChanger;
 import playn.core.Font;
 import playn.core.Json;
@@ -17,7 +18,7 @@ import static playn.core.PlayN.graphics;
 import static playn.core.PlayN.json;
 
 /**
- * Hardcoded {@link EntityDatabase} to be loaded prior to mutable databases.
+ * Hardcoded {@link com.omegapoint.core.data.EntityDatabase} to be loaded prior to mutable databases.
  */
 public class StaticEntityDatabase implements EntityDatabase {
     @Override

@@ -2,7 +2,7 @@ package com.omegapoint.core.state;
 
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.events.ChangeStateEvent;
-import playn.core.Mouse;
+import com.omegapoint.core.screens.LoadScreen;
 import playn.core.PlayN;
 import playn.core.ResourceCallback;
 import playn.core.Sound;

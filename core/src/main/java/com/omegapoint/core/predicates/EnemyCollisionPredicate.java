@@ -1,10 +1,12 @@
-package com.omegapoint.core;
+package com.omegapoint.core.predicates;
 
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.components.*;
+import com.omegapoint.core.data.EntityTemplates;
+import com.omegapoint.core.data.HasName;
 import com.omegapoint.core.events.EnemyDeleteEvent;
 import com.omegapoint.core.events.EnemyKilledEvent;
 

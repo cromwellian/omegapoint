@@ -1,10 +1,7 @@
 package com.omegapoint.core.state;
 
-import com.omegapoint.core.GameScreen;
-import se.hiflyer.fettle.Action;
 import se.hiflyer.fettle.Arguments;
 import se.hiflyer.fettle.StateMachine;
-import se.hiflyer.fettle.TransitionModel;
 import se.hiflyer.fettle.builder.StateMachineBuilder;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;

@@ -1,9 +1,9 @@
 package com.omegapoint.core.state;
 
+import com.omegapoint.core.screens.PauseMenuScreen;
 import se.hiflyer.fettle.Action;
 import se.hiflyer.fettle.Arguments;
 import se.hiflyer.fettle.StateMachine;
-import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 
 import javax.inject.Inject;

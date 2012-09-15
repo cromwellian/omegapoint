@@ -1,7 +1,7 @@
-package com.omegapoint.core.components;
+package com.omegapoint.core.data;
 
-import com.artemis.Component;
 import com.artemis.Entity;
+import com.omegapoint.core.components.BaseComponent;
 import playn.core.Json;
 import playn.core.PlayN;
 
@@ -16,10 +16,10 @@ public class EntityTemplate implements Jsonable<EntityTemplate> {
     public static final String NAME = "name";
     public static final String GROUP = "group";
     private Collection<BaseComponent> components = new ArrayList<BaseComponent>();
-    private JsonableRegistry<BaseComponent> jsonableComponentRegistry;
+    private EntityDatabase.JsonableRegistry<BaseComponent> jsonableComponentRegistry;
     private String group;
 
-    public EntityTemplate(JsonableRegistry<BaseComponent> jsonableComponentRegistry) {
+    public EntityTemplate(EntityDatabase.JsonableRegistry<BaseComponent> jsonableComponentRegistry) {
         this.jsonableComponentRegistry = jsonableComponentRegistry;
     }
 

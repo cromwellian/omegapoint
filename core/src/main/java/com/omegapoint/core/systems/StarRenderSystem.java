@@ -3,18 +3,15 @@ package com.omegapoint.core.systems;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
-import com.omegapoint.core.GameScreen;
+import com.omegapoint.core.Playfield;
 import com.omegapoint.core.components.AppearanceComponent;
 import com.omegapoint.core.components.PositionComponent;
-import com.omegapoint.core.components.SpriteComponent;
 import com.omegapoint.core.components.StarComponent;
 import playn.core.*;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static playn.core.PlayN.graphics;
 

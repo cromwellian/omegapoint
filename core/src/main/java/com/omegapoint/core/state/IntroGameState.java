@@ -1,13 +1,10 @@
 package com.omegapoint.core.state;
 
 import com.google.web.bindery.event.shared.EventBus;
-import com.omegapoint.core.events.ChangeStateEvent;
-import playn.core.Mouse;
-import playn.core.PlayN;
+import com.omegapoint.core.screens.IntroScreen;
 import se.hiflyer.fettle.Action;
 import se.hiflyer.fettle.Arguments;
 import se.hiflyer.fettle.StateMachine;
-import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
 
 import javax.inject.Inject;

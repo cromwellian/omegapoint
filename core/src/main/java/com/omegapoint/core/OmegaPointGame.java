@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.events.ChangeStateEvent;
 import com.omegapoint.core.events.ChangeStateHandler;
+import com.omegapoint.core.screens.GameScreen;
 import com.omegapoint.core.state.GameState;
 import playn.core.Game;
 import playn.core.Platform;

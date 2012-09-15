@@ -1,4 +1,4 @@
-package com.omegapoint.core;
+package com.omegapoint.core.screens;
 
 import com.artemis.Entity;
 import com.artemis.EntitySystem;
@@ -6,18 +6,15 @@ import com.artemis.SystemManager;
 import com.artemis.World;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
+import com.omegapoint.core.Bullets;
+import com.omegapoint.core.Enemies;
 import com.omegapoint.core.components.*;
+import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.events.*;
-import com.omegapoint.core.systems.Playfield;
+import com.omegapoint.core.Playfield;
 import playn.core.*;
-import react.UnitSlot;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
-import tripleplay.game.UIAnimScreen;
-import tripleplay.ui.Button;
-import tripleplay.ui.Root;
-import tripleplay.ui.SimpleStyles;
-import tripleplay.ui.layout.AxisLayout;
 
 import javax.inject.Inject;
 import java.util.List;

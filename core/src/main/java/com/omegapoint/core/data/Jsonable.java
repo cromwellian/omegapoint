@@ -1,4 +1,4 @@
-package com.omegapoint.core.components;
+package com.omegapoint.core.data;
 
 import playn.core.Json;
 
