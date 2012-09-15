@@ -20,10 +20,14 @@
   <modules>
     <module>core</module>
     <module>java</module>
-    <module>html</module>
   </modules>
 
   <profiles>
+   <profile>
+      <id>html</id>
+      <modules><module>html</module></modules>
+    </profile>
+
    <profile>
       <id>android</id>
       <modules><module>android</module></modules>

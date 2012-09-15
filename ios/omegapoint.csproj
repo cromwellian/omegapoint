@@ -30,13 +30,15 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
-    <Optimize>False</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <MtouchLink>None</MtouchLink>
     <MtouchArch>ARMv7</MtouchArch>
+    <MtouchI18n />
+    <MtouchUseSGen>True</MtouchUseSGen>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>True</DebugSymbols>
@@ -70,6 +72,7 @@
     <MtouchI18n />
     <MtouchSdkVersion>5.1</MtouchSdkVersion>
     <MtouchLink>None</MtouchLink>
+    <MtouchUseLlvm>True</MtouchUseLlvm>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -99,21 +102,15 @@
     <None Include="assets\sounds\PreFlagship-Gun.wav" />
     <None Include="assets\sounds\Space.txt" />
     <None Include="assets\sounds\Umgah-Backzip.wav" />
-    <None Include="assets\sounds\angryrobot3.mp3" />
     <None Include="assets\sounds\blastf1a.wav" />
     <None Include="assets\sounds\blkfoot4.wav" />
     <None Include="assets\sounds\blkfoot4.wav.mp3" />
-    <None Include="assets\sounds\bomb.mp3" />
     <None Include="assets\sounds\bomb.wav" />
     <None Include="assets\sounds\boom.mp3" />
     <None Include="assets\sounds\boom.wav" />
-    <None Include="assets\sounds\cybernoid2.mp3" />
     <None Include="assets\sounds\firebig_1.wav" />
-    <None Include="assets\sounds\laser.mp3" />
-    <None Include="assets\sounds\laserheavy.mp3" />
     <None Include="assets\sounds\laserheavy.wav" />
     <None Include="assets\sounds\missile_df.wav" />
-    <None Include="assets\sounds\space age.ttf" />
     <None Include="assets\sounds\stomp.wav" />
     <None Include="assets\sounds\stomp.wav.mp3" />
   </ItemGroup>
@@ -122,6 +119,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Content Include="assets\sounds\angryrobot3.mp3" />
+    <Content Include="assets\sounds\bomb.mp3" />
+    <Content Include="assets\sounds\cybernoid2.mp3" />
+    <Content Include="assets\sounds\laser.mp3" />
+    <Content Include="assets\sounds\laserheavy.mp3" />
+    <Content Include="assets\sounds\space age.ttf" />
     <Content Include="assets\images\bg.png" />
     <Content Include="assets\images\NotFound.png" />
     <Content Include="assets\images\audit_ship.png" />
@@ -170,5 +173,6 @@
     <Content Include="assets\images\textbox_border.png" />
     <Content Include="assets\images\turret.png" />
     <Content Include="assets\images\warp.png" />
+    <Content Include="assets\fonts\spaceage.ttf" />
   </ItemGroup>
 </Project>

@@ -127,7 +127,7 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeTitleText() {
         Json.Object titleText = json().createObject();
         titleText.put(EntityTemplate.NAME, "titleText");
-        titleText.put(TextComponent.NAME, new TextComponent("OMEGA POINT", PlayN.graphics().createFont("spaceage", Font.Style.PLAIN, 80),
+        titleText.put(TextComponent.NAME, new TextComponent("OMEGA POINT", PlayN.graphics().createFont("Space Age", Font.Style.PLAIN, 80),
                 TextFormat.Alignment.CENTER, 0xff000080).toJson());
         titleText.put(PositionComponent.NAME, new PositionComponent(0, 0, 0).toJson());
         titleText.put(SimpleTweenComponent.NAME, new SimpleTweenComponent(0.0f, 1.0f, 250, new TextColorChanger(0xff000080, 0xff0000ff), true, true).toJson());
@@ -137,7 +137,7 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeTitleCredits() {
         Json.Object titleText = json().createObject();
         titleText.put(EntityTemplate.NAME, "titleTextCredits");
-        titleText.put(TextComponent.NAME, new TextComponent("by Ray Cromwell", PlayN.graphics().createFont("spaceage", Font.Style.PLAIN, 30),
+        titleText.put(TextComponent.NAME, new TextComponent("by Ray Cromwell", PlayN.graphics().createFont("Space Age", Font.Style.PLAIN, 30),
                 TextFormat.Alignment.CENTER, 0xff802020).toJson());
         titleText.put(PositionComponent.NAME, new PositionComponent(0, 75, 0).toJson());
         titleText.put(SimpleTweenComponent.NAME, new SimpleTweenComponent(0.0f, 1.0f, 500, new TextColorChanger(0xff800080, 0xff0000ff), true, true).toJson());

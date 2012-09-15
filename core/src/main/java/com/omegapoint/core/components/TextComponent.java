@@ -116,21 +116,26 @@ public class TextComponent extends BaseComponent {
         }
 
         private TextFormat.Alignment decodeAlign(String align) {
-            if ("LEFT".equals(align)) {
-                return TextFormat.Alignment.LEFT;
-            }
-            if ("RIGHT".equals(align)) {
-                return TextFormat.Alignment.RIGHT;
-            }
-            if ("CENTER".equals(align)) {
-                return TextFormat.Alignment.CENTER;
-            }
-            return TextFormat.Alignment.CENTER;
+           try {
+               return TextFormat.Alignment.valueOf(align);
+           } catch (IllegalArgumentException ae) {
+               PlayN.log().warn("Error decoding Alignment " + align);
+               return TextFormat.Alignment.LEFT;
+           }
         }
 
         private Font decodeFont(Json.Object font) {
            return PlayN.graphics().createFont(font.getString("name"),
-                   /*Font.Style.valueOf(font.getString("style").toUpperCase())*/ Font.Style.PLAIN, font.getInt("size"));
+                   decodeStyle(font), font.getInt("size"));
+        }
+
+        private Font.Style decodeStyle(Json.Object font) {
+            try {
+                return Font.Style.valueOf(font.getString("style").toUpperCase());
+            } catch (Exception e) {
+                PlayN.log().warn("Error decoding Style " + font.getString("style").toUpperCase());
+                return Font.Style.PLAIN;
+            }
         }
 
         @Override
