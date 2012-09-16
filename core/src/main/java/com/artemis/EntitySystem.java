@@ -108,6 +108,7 @@ public abstract class EntitySystem {
 
 	protected final void setWorld(World world) {
 		this.world = world;
+        actives.clear();
 	}
 	
 	/**

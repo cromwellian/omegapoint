@@ -1,11 +1,13 @@
 package com.omegapoint.core.data;
 
 
+import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.omegapoint.core.components.BaseComponent;
 import com.omegapoint.core.data.EntityDatabase;
 import com.omegapoint.core.data.EntityTemplate;
+import com.omegapoint.core.util.JsonUtil;
 import playn.core.Json;
 import playn.core.PlayN;
 
@@ -46,5 +48,12 @@ public class EntityTemplates {
         template.addComponentsToEntity(entity);
         entity.refresh();
         return entity;
+    }
+
+    public void persist(String name, World world, Entity e) {
+        EntityTemplate template = templates.get(name);
+        template.setGroup(world.getGroupManager().getGroupOf(e));
+        template.updateComponents(e.getComponents());
+        PlayN.log().debug("Persist " + name + ":" + JsonUtil.toString(template.toJson(template)));
     }
 }

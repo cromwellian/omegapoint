@@ -1,6 +1,8 @@
 package com.omegapoint.core.data;
 
+import com.artemis.Component;
 import com.artemis.Entity;
+import com.artemis.utils.ImmutableBag;
 import com.omegapoint.core.components.BaseComponent;
 import playn.core.Json;
 import playn.core.PlayN;
@@ -78,5 +80,19 @@ public class EntityTemplate implements Jsonable<EntityTemplate> {
 
     public String getGroup() {
         return group;
+    }
+
+    public void updateComponents(ImmutableBag<Component> replacements) {
+        components.clear();
+        for (int i = 0; i < replacements.size(); i++) {
+            Component c = replacements.get(i);
+            if (c instanceof BaseComponent) {
+                components.add((BaseComponent) c);
+            }
+        }
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 }

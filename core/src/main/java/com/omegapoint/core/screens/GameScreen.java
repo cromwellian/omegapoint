@@ -38,6 +38,8 @@ public class GameScreen extends Screen {
     private Entity titleTextEntity;
     private PositionComponent shipPosition;
     private ScreenStack screens;
+    private Entity tileEntity;
+    private Entity waveEntity;
 
     @Inject
     public GameScreen(World world,
@@ -65,12 +67,6 @@ public class GameScreen extends Screen {
     }
 
     public void init() {
-        systemManager.initializeAll();
-        shipPosition = makeShip();
-        makeGameBounds();
-        makeStars();
-        makeBackgroundMusic();
-        templateManager.lookupAndInstantiate("level1tiles", world);
         layer().add(playfield.layer());
         eventBus.addHandler(BulletDeleteEvent.TYPE, new BulletDeleteHandler() {
             @Override
@@ -88,6 +84,7 @@ public class GameScreen extends Screen {
 
         eventBus.addHandler(EnemyKilledEvent.TYPE, new EnemyKilledHandler() {
             int numKilled = 0;
+
             @Override
             public void onEnemyKilled(EnemyKilledEvent event) {
                 numKilled++;
@@ -96,9 +93,35 @@ public class GameScreen extends Screen {
                 }
             }
         });
-        templateManager.lookupAndInstantiate("wave1", world);
+        initEntities();
     }
 
+    private void initEntities() {
+        systemManager.initializeAll();
+        shipPosition = makeShip();
+        makeGameBounds();
+        makeStars();
+        makeBackgroundMusic();
+        tileEntity = templateManager.lookupAndInstantiate("level1tiles", world);
+        waveEntity = templateManager.lookupAndInstantiate("wave1", world);
+    }
+
+
+    public void reset() {
+      world = new World();
+      systemManager = world.getSystemManager();
+      for (EntitySystem sys : updateSystems) {
+          systemManager.setSystem(sys);
+      }
+
+      for (EntitySystem sys : renderSystems) {
+          systemManager.setSystem(sys);
+      }
+      playfield.layer().clear();
+      initEntities();
+      Enemies.reset();
+      Bullets.reset();
+    }
 
     private void makeStars() {
         for (int i = 0; i < 50; i++) {
@@ -127,22 +150,25 @@ public class GameScreen extends Screen {
     @Override
     public void wasShown() {
         super.wasShown();
-        setupControls(shipPosition);
+        setupControls();
     }
 
-    private void setupControls(final PositionComponent shipPosition) {
+    private void setupControls() {
         PlayN.keyboard().setListener(new Keyboard.Adapter() {
             @Override
             public void onKeyTyped(Keyboard.TypedEvent event) {
                 if (event.typedChar() == 'e') {
                     eventBus.fireEvent(new ChangeStateEvent("pause"));
                 }
+                if (event.typedChar() == 'r') {
+                    reset();
+                }
             }
         });
-        listenMouse(shipPosition);
+        listenMouse();
     }
 
-    private void listenMouse(final PositionComponent shipPosition) {
+    private void listenMouse() {
         if (PlayN.mouse() != null) {
             PlayN.mouse().setListener(new Mouse.Adapter() {
                 @Override

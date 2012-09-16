@@ -76,6 +76,5 @@ public class CollisionSystem extends EntitySystem {
     public void initialize() {
         collisionMapper = new ComponentMapper<CollisionComponent>(CollisionComponent.class, world);
         positionMapper = new ComponentMapper<PositionComponent>(PositionComponent.class, world);
-
     }
 }

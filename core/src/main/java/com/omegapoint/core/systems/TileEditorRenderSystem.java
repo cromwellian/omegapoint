@@ -61,7 +61,7 @@ public class TileEditorRenderSystem extends TileRenderSystem {
             float starty = PlayN.graphics().height() - tileComponent.getTileHeight() * arr.getRows().length;
             float startx = 0 - tileComponent.getCurrentScreenPosition() % tileComponent.getTileWidth();
 
-            surface.setFillColor(0xffffffff);
+            surface.setFillColor(0x40ffffff);
             float numCols = (PlayN.graphics().width() - startx) / tileComponent.getTileWidth() + 1;
             for (int i = 0; i < numCols; i++) {
                 surface.drawLine(startx, starty, startx, PlayN.graphics().height(), 1);

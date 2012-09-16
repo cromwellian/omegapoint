@@ -33,6 +33,7 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
     protected void initialize() {
         spriteMapper = new ComponentMapper<SpriteComponent>(SpriteComponent.class, world);
         positionMapper = new ComponentMapper<PositionComponent>(PositionComponent.class, world);
+        entity2imageLayer.clear();
     }
 
     @Override

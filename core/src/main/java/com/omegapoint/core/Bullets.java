@@ -18,4 +18,8 @@ public class Bullets {
     public static boolean maxedOut() {
         return bullets >= MAX_BULLETS;
     }
+
+    public static void reset() {
+        bullets = 0;
+    }
 }

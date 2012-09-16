@@ -4,6 +4,7 @@ import com.omegapoint.core.components.*;
 import com.omegapoint.core.predicates.BulletCollisionPredicate;
 import com.omegapoint.core.predicates.EnemyCollisionPredicate;
 import com.omegapoint.core.tween.TextColorChanger;
+import com.omegapoint.core.util.JsonUtil;
 import playn.core.Font;
 import playn.core.Json;
 import playn.core.PlayN;
@@ -23,13 +24,13 @@ import static playn.core.PlayN.json;
 public class StaticEntityDatabase implements EntityDatabase {
     @Override
     public Collection<String> getTemplates() {
-        return Arrays.asList(toString(makePlayerShip()), toString(makeEnemyShip1()),
-                toString(makeExplosion()), toString(makeTitleMusic()), toString(makeTitleText()),
-                toString(makeTopBounds()), toString(makeLeftBounds()), toString(makeRightBounds()),
-                toString(makeBottomBounds()), toString(makeLaser()), toString(makeBeam()),
-                toString(makeTiles()),
-                toString(makeWave()),
-                toString(makeTitleCredits()));
+        return Arrays.asList(JsonUtil.toString(makePlayerShip()), JsonUtil.toString(makeEnemyShip1()),
+                JsonUtil.toString(makeExplosion()), JsonUtil.toString(makeTitleMusic()), JsonUtil.toString(makeTitleText()),
+                JsonUtil.toString(makeTopBounds()), JsonUtil.toString(makeLeftBounds()), JsonUtil.toString(makeRightBounds()),
+                JsonUtil.toString(makeBottomBounds()), JsonUtil.toString(makeLaser()), JsonUtil.toString(makeBeam()),
+                JsonUtil.toString(makeTiles()),
+                JsonUtil.toString(makeWave()),
+                JsonUtil.toString(makeTitleCredits()));
     }
 
     private Json.Object makeEnemyShip1() {
@@ -185,10 +186,4 @@ public class StaticEntityDatabase implements EntityDatabase {
         return beamShot;
     }
 
-    private String toString(Json.Object obj) {
-        Json.Writer sink = json().newWriter().object();
-        obj.write(sink);
-        sink.end();
-        return sink.write();
-    }
 }

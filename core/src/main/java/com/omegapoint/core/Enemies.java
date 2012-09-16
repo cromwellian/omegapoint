@@ -18,4 +18,8 @@ public class Enemies {
     public void decrementCurrentLive() {
         currentLive--;
     }
+
+    public static void reset() {
+        currentLive = 0;
+    }
 }

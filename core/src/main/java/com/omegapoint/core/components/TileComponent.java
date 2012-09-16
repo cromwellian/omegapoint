@@ -66,7 +66,7 @@ public class TileComponent extends BaseComponent {
     }
 
 
-    static class TilePos {
+    public static class TilePos {
 
         private final TileRow row;
         private final int col;
@@ -102,28 +102,27 @@ public class TileComponent extends BaseComponent {
             return null;
         }
         int row = (int) ((y - starty) / getTileHeight());
-        int col = (int) ((x - startx) / getTileWidth());
+        int col = (int) ((x - startx) / getTileWidth()) + getCurrentScreenPosition() / getTileWidth();
         TileRow[] rows = getArrangement().getRows();
         if (row >= 0 && row < rows.length) {
-            if (col > 0 && col < rows[0].getIndices().length) {
+            if (col >= 0 && col < rows[0].getIndices().length) {
                 return new TilePos(rows[row], col);
             }
         }
         return null;
     }
 
-    public void clickTile(float x, float y) {
+    public TilePos setTile(float x, float y, int tile) {
         TilePos pos = localCoord2TilePos(x, y);
         if (pos != null) {
-            pos.setTile(0);
+            pos.setTile(tile);
+            return pos;
         }
+        return null;
     }
 
-    public void eraseTile(float x, float y) {
-        TilePos pos = localCoord2TilePos(x, y);
-        if (pos != null) {
-            pos.setTile(TileComponent.EMPTY_SPACE);
-        }
+    public TilePos eraseTile(float x, float y) {
+        return setTile(x, y, TileComponent.EMPTY_SPACE);
     }
 
     public static class TileRow {
@@ -136,6 +135,12 @@ public class TileComponent extends BaseComponent {
         public int[] getIndices() {
             return indices;
         }
+
+        public TileRow duplicate() {
+            int[] dup = new int[indices.length];
+            System.arraycopy(indices, 0, dup, 0, dup.length);
+            return new TileRow(dup);
+        }
     }
 
     public static class TileArrangement {
@@ -147,6 +152,14 @@ public class TileComponent extends BaseComponent {
 
         public TileArrangement(TileRow[] rows) {
             this.rows = rows;
+        }
+
+        public TileArrangement duplicate() {
+            TileRow[] dupRows = new TileRow[rows.length];
+            for (int i = 0; i < dupRows.length; i++) {
+                dupRows[i] = rows[i].duplicate();
+            }
+            return new TileArrangement(dupRows);
         }
 
         public static class Codec implements Jsonable<TileArrangement> {
@@ -199,7 +212,7 @@ public class TileComponent extends BaseComponent {
 
     @Override
     public BaseComponent duplicate() {
-        return new TileComponent(assetPath, tileWidth, tileHeight, tileRows, tileCols, depth, parallaxSpeed, arrangement);
+        return new TileComponent(assetPath, tileWidth, tileHeight, tileRows, tileCols, depth, parallaxSpeed, arrangement.duplicate());
     }
 
     @Override

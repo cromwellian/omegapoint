@@ -27,6 +27,9 @@ public class MovementSystem extends EntityProcessingSystem {
     protected void process(Entity e) {
         MovementComponent move = movementMapper.get(e);
         PositionComponent pos = positionMapper.get(e);
+        if (pos == null) {
+            return;
+        }
         pos.setX(pos.getX() + move.getVx());
         int width = PlayN.graphics().width();
         int height = PlayN.graphics().height();
