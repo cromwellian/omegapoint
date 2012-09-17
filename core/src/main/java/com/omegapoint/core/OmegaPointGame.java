@@ -38,7 +38,6 @@ public class OmegaPointGame implements Game {
         } else {
 //            PlayN.graphics().setSize(960, 640);
         }
-        screen.init();
         eventBus.addHandler(ChangeStateEvent.TYPE, new ChangeStateHandler() {
             @Override
             public void onStateChange(ChangeStateEvent changeStateEvent) {

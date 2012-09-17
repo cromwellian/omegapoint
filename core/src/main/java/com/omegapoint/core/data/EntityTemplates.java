@@ -8,8 +8,10 @@ import com.omegapoint.core.components.BaseComponent;
 import com.omegapoint.core.data.EntityDatabase;
 import com.omegapoint.core.data.EntityTemplate;
 import com.omegapoint.core.util.JsonUtil;
+import playn.core.AssetWatcher;
 import playn.core.Json;
 import playn.core.PlayN;
+import playn.core.util.Callback;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import java.util.Map;
  */
 public class EntityTemplates {
     private Map<String, EntityTemplate> templates = new HashMap<String, EntityTemplate>();
+    private EntityDatabase persistenceDatabase;
     private EntityDatabase.JsonableRegistry<BaseComponent> jsonableComponentRegistry;
 
     public void registerByName(String entityName, EntityTemplate entityTemplate) {
@@ -27,7 +30,9 @@ public class EntityTemplates {
     }
 
     @Inject
-    public EntityTemplates(EntityDatabase.JsonableRegistry<BaseComponent> jsonableComponentRegistry) {
+    public EntityTemplates(EntityDatabase persistenceDatabase,
+                           EntityDatabase.JsonableRegistry<BaseComponent> jsonableComponentRegistry) {
+        this.persistenceDatabase = persistenceDatabase;
         this.jsonableComponentRegistry = jsonableComponentRegistry;
     }
 
@@ -55,5 +60,17 @@ public class EntityTemplates {
         template.setGroup(world.getGroupManager().getGroupOf(e));
         template.updateComponents(e.getComponents());
         PlayN.log().debug("Persist " + name + ":" + JsonUtil.toString(template.toJson(template)));
+        persistenceDatabase.persist(templates.values());
+    }
+
+    public void waitForAllAssets(AssetWatcher watcher) {
+        for (EntityTemplate template : templates.values()) {
+          for (Component c : template.getComponents()) {
+            if (c instanceof BaseComponent) {
+                ((BaseComponent) c).addAssetsToWatcher(watcher);
+            }
+          }
+        }
+        watcher.start();
     }
 }

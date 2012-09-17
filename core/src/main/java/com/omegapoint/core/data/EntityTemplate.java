@@ -95,4 +95,8 @@ public class EntityTemplate implements Jsonable<EntityTemplate> {
     public void setGroup(String group) {
         this.group = group;
     }
+
+    public Collection<BaseComponent> getComponents() {
+        return components;
+    }
 }

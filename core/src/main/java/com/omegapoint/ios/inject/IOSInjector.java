@@ -5,6 +5,7 @@ import com.artemis.World;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Enemies;
 import com.omegapoint.core.Playfield;
+import com.omegapoint.core.data.PlayNStorageEntityDatabase;
 import com.omegapoint.core.screens.*;
 import com.omegapoint.core.OmegaPointGame;
 import com.omegapoint.core.data.EntityTemplates;
@@ -26,12 +27,12 @@ public class IOSInjector {
 
         ScreenStack screens = module.providesScreenStack();
         EventBus eventBus = module.providesEventBus();
-        EntityTemplates templateManager = module.providesEntityTemplates(module.providesEntityDatabases(new MemoryEntityDatabase()),
+        EntityTemplates templateManager = module.providesEntityTemplates(module.providesEntityDatabases(new PlayNStorageEntityDatabase()),
                 module.providesJsonableComponentRegistry());
 
         IntroScreen screen = new IntroScreen(templateManager, eventBus);
         IntroGameState introGameState = new IntroGameState(screen, eventBus);
-        LoadGameState loadState = new LoadGameState(new LoadScreen(), eventBus);
+        LoadGameState loadState = new LoadGameState(new LoadScreen(), templateManager, eventBus);
         World world = new World();
         Enemies enemies = new Enemies();
         Playfield playfield = new Playfield();

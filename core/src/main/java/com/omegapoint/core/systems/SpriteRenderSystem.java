@@ -4,25 +4,24 @@ import com.artemis.*;
 import com.omegapoint.core.Playfield;
 import com.omegapoint.core.components.PositionComponent;
 import com.omegapoint.core.components.SpriteComponent;
-import playn.core.Image;
-import playn.core.ImageLayer;
-import playn.core.PlayN;
+import playn.core.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  *
  */
-public class SpriteRenderSystem extends EntityProcessingSystem {
+public class SpriteRenderSystem extends EntityProcessingSystem implements ImmediateLayer.Renderer {
 
     private ComponentMapper<SpriteComponent> spriteMapper;
     private ComponentMapper<PositionComponent> positionMapper;
-    private Map<Entity, ImageLayer> entity2imageLayer = new HashMap<Entity, ImageLayer>();
-    private Map<String, Image> imageCache = new HashMap<String, Image>();
+    private Map<String, Image.Region> imageCache = new HashMap<String, Image.Region>();
     private Playfield screen;
-
+    private List<Entity> toBeDrawn = new ArrayList<Entity>();
     @Inject
     public SpriteRenderSystem(Playfield screen) {
         super(SpriteComponent.class, PositionComponent.class);
@@ -33,14 +32,12 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
     protected void initialize() {
         spriteMapper = new ComponentMapper<SpriteComponent>(SpriteComponent.class, world);
         positionMapper = new ComponentMapper<PositionComponent>(PositionComponent.class, world);
-        entity2imageLayer.clear();
+        screen.layer().add(PlayN.graphics().createImmediateLayer(this));
     }
 
     @Override
     protected void removed(Entity e) {
         super.removed(e);
-        screen.layer().remove(entity2imageLayer.get(e));
-        entity2imageLayer.remove(e);
     }
 
     @Override
@@ -50,55 +47,71 @@ public class SpriteRenderSystem extends EntityProcessingSystem {
         Image image = imageCache.get(imgName);
         if (image == null) {
           image = PlayN.assets().getImage(imgName);
-          imageCache.put(imgName, image);
+          imageCache.put(imgName, image.subImage(0, 0, image.width(), image.height()));
         }
+    }
 
-        ImageLayer layer = PlayN.graphics().createImageLayer(image);
-        entity2imageLayer.put(e, layer);
-        layer.setTranslation(positionMapper.get(e).getX(), positionMapper.get(e).getY());
-        screen.layer().add(layer);
+    @Override
+    protected void begin() {
+        toBeDrawn.clear();
     }
 
     @Override
     protected void process(Entity e) {
-        PositionComponent pos = positionMapper.get(e);
-        SpriteComponent spr = spriteMapper.get(e);
+        toBeDrawn.add(e);
+    }
 
-        ImageLayer layer = entity2imageLayer.get(e);
+    @Override
+    public void render(Surface surface) {
+      for(Entity e : toBeDrawn) {
+          surface.save();
+          PositionComponent pos = positionMapper.get(e);
+          SpriteComponent spr = spriteMapper.get(e);
 
-        float cx = (layer.width() / 2);
-        float cy = (layer.height() / 2);
+          Image.Region image = imageCache.get(spr.getImg());
 
-        if (spr.getCols() > 0) {
-            int frame = spr.getCurFrame();
-            int prev = frame;
-            if (spr.getMsPerFrame() >= 0) {
-                int timeLeft = spr.getTimeToNextFrame() - world.getDelta();
-                if (timeLeft < 0) {
-                  frame += spr.getTimeToNextFrame() > 0 ? world.getDelta() / spr.getTimeToNextFrame() : 1;
-                  spr.setCurFrame(frame % (spr.getCols() * spr.getRows()));
-                  spr.setTimeToNextFrame(spr.getMsPerFrame());
-                } else {
-                  spr.setTimeToNextFrame(timeLeft);
-                }
-            }
+          int width = spr.getSw();
+          int height = spr.getSh();
+          if (width == 0) {
+              width = (int) image.width();
+              height = (int) image.height();
+          }
+          if (width == 0) {
+              width = height = 64;
+          }
+          float cx = (width / 2);
+          float cy = (height/ 2);
 
-            int row = prev / spr.getCols();
-            int col = prev % spr.getCols();
+          if (spr.getCols() > 0) {
+              int frame = spr.getCurFrame();
+              int prev = frame;
+              if (spr.getMsPerFrame() >= 0) {
+                  int timeLeft = spr.getTimeToNextFrame() - world.getDelta();
+                  if (timeLeft < 0) {
+                      frame += spr.getTimeToNextFrame() > 0 ? world.getDelta() / spr.getTimeToNextFrame() : 1;
+                      spr.setCurFrame(frame % (spr.getCols() * spr.getRows()));
+                      spr.setTimeToNextFrame(spr.getMsPerFrame());
+                  } else {
+                      spr.setTimeToNextFrame(timeLeft);
+                  }
+              }
 
-            layer.setImage(imageCache.get(spriteMapper.get(e).getImg()).subImage(spr.getSw() * col, spr.getSh() * row, spr.getSw(), spr.getSh()));
-            layer.setWidth(spr.getSw());
-            layer.setHeight(spr.getSh());
-            if (spr.getMsPerFrame() >= 0 && frame >= spr.getCols() * spr.getRows() && !spr.isCyclic()) {
-                e.delete();
-            }
-        }
+              int row = prev / spr.getCols();
+              int col = prev % spr.getCols();
 
-        layer.setOrigin(cx, cy);
-        layer.setTranslation(pos.getX(), pos.getY());
-        layer.setRotation((float) pos.getAngle());
-        if (spr.isCyclic()) {
-            layer.setScale(2,2);
-        }
+              image.setBounds(spr.getSw() * col, spr.getSh() * row, spr.getSw(), spr.getSh());
+              if (spr.getMsPerFrame() >= 0 && frame >= spr.getCols() * spr.getRows() && !spr.isCyclic()) {
+                  e.delete();
+              }
+          }
+
+          surface.translate(pos.getX(), pos.getY());
+          surface.rotate((float) pos.getAngle());
+          if (spr.isCyclic()) {
+                  surface.scale(2, 2);
+          }
+          surface.drawImage(image, -cx, -cy);
+          surface.restore();
+      }
     }
 }

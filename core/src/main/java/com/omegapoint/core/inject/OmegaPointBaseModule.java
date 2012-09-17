@@ -147,7 +147,7 @@ public abstract class OmegaPointBaseModule {
     @Singleton
     public EntityTemplates providesEntityTemplates(@Named("entityDatabases") List<EntityDatabase> databases,
                                                    @Named("jsonableComponentRegistry") EntityDatabase.JsonableRegistry<BaseComponent> registry) {
-        EntityTemplates templates = new EntityTemplates(registry);
+        EntityTemplates templates = new EntityTemplates(databases.get(databases.size()-1), registry);
         for (EntityDatabase database : databases) {
             for (String entityTemplateJson : database.getTemplates()) {
                 templates.parseAndRegister(entityTemplateJson);
@@ -160,7 +160,7 @@ public abstract class OmegaPointBaseModule {
     @Named("persistentEntityDatabase")
     @Singleton
     public EntityDatabase providesPersistentEntityDatabase() {
-        return new MemoryEntityDatabase();
+        return new PlayNStorageEntityDatabase();
     }
 
     @Provides

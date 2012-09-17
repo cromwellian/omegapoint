@@ -1,6 +1,7 @@
 package com.omegapoint.core.components;
 
 import com.artemis.Component;
+import playn.core.AssetWatcher;
 import playn.core.Json;
 
 /**
@@ -21,4 +22,6 @@ public abstract class BaseComponent extends Component {
     public String getGroup() {
         return group;
     }
+
+    public void addAssetsToWatcher(AssetWatcher watcher) {}
 }

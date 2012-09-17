@@ -1,6 +1,7 @@
 package com.omegapoint.core.components;
 
 import com.omegapoint.core.data.Jsonable;
+import playn.core.AssetWatcher;
 import playn.core.Json;
 import playn.core.PlayN;
 
@@ -101,6 +102,11 @@ public class SpriteComponent extends BaseComponent {
     @Override
     public Json.Object toJson() {
         return new Codec().toJson(this);
+    }
+
+    @Override
+    public void addAssetsToWatcher(AssetWatcher watcher) {
+        watcher.add(PlayN.assets().getImage(getImg()));
     }
 
     public static class Codec implements Jsonable<SpriteComponent> {

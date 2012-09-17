@@ -30,14 +30,28 @@ public class StaticEntityDatabase implements EntityDatabase {
                 JsonUtil.toString(makeBottomBounds()), JsonUtil.toString(makeLaser()), JsonUtil.toString(makeBeam()),
                 JsonUtil.toString(makeTiles()),
                 JsonUtil.toString(makeWave()),
-                JsonUtil.toString(makeTitleCredits()));
+                JsonUtil.toString(makeTitleCredits()),
+                JsonUtil.toString(makeShield()));
+    }
+
+    private Json.Object makeShield() {
+        Json.Object obj = json().createObject();
+        obj.put(EntityTemplate.NAME, "shield");
+        obj.put(EntityTemplate.GROUP, "PASSIVES");
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shieldAlphaGreen.png", 48, 48, 10, 4, 0, 16, true).toJson());
+        return obj;
+    }
+
+    @Override
+    public void persist(Collection<EntityTemplate> toBePersisted) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private Json.Object makeEnemyShip1() {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "enemy1");
         obj.put(SpriteComponent.NAME, new SpriteComponent("images/tarentulaAlpha.png", 60, 60, 10, 4, 0, -1, false).toJson());
-        obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.SINUSOIDAL, false).toJson());
+        obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates

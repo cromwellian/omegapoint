@@ -11,7 +11,7 @@ import playn.core.PlayN;
 public class TileComponent extends BaseComponent {
 
     private int depth;
-    public static final int EMPTY_SPACE = 91;
+    public static final int EMPTY_SPACE = -1;
 
     public String getAssetPath() {
         return assetPath;
@@ -169,13 +169,17 @@ public class TileComponent extends BaseComponent {
                 Json.Array arrayRows = object.getArray("rows");
                 TileRow[] rows = new TileRow[arrayRows.length()];
                 for (int i = 0; i < arrayRows.length(); i++) {
-                   rows[i] = decodeRow(arrayRows.getString(i));
+                   rows[i] = decodeRow(arrayRows.getArray(i));
                 }
                 return new TileArrangement(rows);
             }
 
-            private TileRow decodeRow(String string) {
-                return new TileRow(Base91.decodeFromBytes(string.getBytes()));
+            private TileRow decodeRow(Json.Array row) {
+                int indices[] = new int[row.length()];
+                for (int i = 0; i < indices.length; i++) {
+                    indices[i] = row.getInt(i);
+                }
+                return new TileRow(indices);
             }
 
             @Override
@@ -189,8 +193,12 @@ public class TileComponent extends BaseComponent {
                 return obj;
             }
 
-            private String encodeRow(TileRow row) {
-                return new String(Base91.encodeToBytes(row.getIndices()));
+            private Json.Array encodeRow(TileRow row) {
+                Json.Array arr = PlayN.json().createArray();
+                for (int i = 0; i < row.getIndices().length; i++) {
+                    arr.add(row.getIndices()[i]);
+                }
+                return arr;
             }
         }
     }

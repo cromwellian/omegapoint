@@ -13,4 +13,9 @@ public class MemoryEntityDatabase implements EntityDatabase {
     public Collection<String> getTemplates() {
         return Collections.EMPTY_LIST;
     }
+
+    @Override
+    public void persist(Collection<EntityTemplate> toBePersisted) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

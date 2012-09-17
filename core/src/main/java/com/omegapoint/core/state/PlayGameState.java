@@ -20,6 +20,8 @@ public class PlayGameState extends AbstractGameState implements Action<GameState
     @Override
     public void onTransition(GameState from, GameState to, String event, Arguments arguments, StateMachine<GameState, String> gameStateStringStateMachine) {
         OmegaPointBaseModule.ScreenStackImpl screens = (OmegaPointBaseModule.ScreenStackImpl) arguments.getFirst();
+        ((GameScreen) getScreen()).init();
+
         if (!screens.contains(getScreen())) {
             screens.push(getScreen());
         } else if (!screens.isTop(getScreen())) {

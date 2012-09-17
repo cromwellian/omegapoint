@@ -40,6 +40,7 @@ public class GameScreen extends Screen {
     private ScreenStack screens;
     private Entity tileEntity;
     private Entity waveEntity;
+    private boolean inited = false;
 
     @Inject
     public GameScreen(World world,
@@ -67,6 +68,12 @@ public class GameScreen extends Screen {
     }
 
     public void init() {
+
+        if (inited) {
+            return;
+        }
+        inited = true;
+
         layer().add(playfield.layer());
         eventBus.addHandler(BulletDeleteEvent.TYPE, new BulletDeleteHandler() {
             @Override
@@ -211,10 +218,9 @@ public class GameScreen extends Screen {
     private PositionComponent makeShip() {
         shipEntity = templateManager.lookupAndInstantiate("playerShip", world);
         shipPosition = shipEntity.getComponent(PositionComponent.class);
-        Entity shield = world.createEntity();
-        shield.addComponent(shipPosition);
-        shield.addComponent(new SpriteComponent("images/shieldAlphaGreen.png", 48, 48, 10, 4, 0, 16, true));
-        shield.refresh();
+//        Entity shield =templateManager.lookupAndInstantiate("shield", world);
+//        shield.addComponent(shipPosition);
+//        shield.refresh();
         return shipPosition;
     }
 

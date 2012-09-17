@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public interface EntityDatabase {
     Collection<String> getTemplates();
+    void persist(Collection<EntityTemplate> toBePersisted);
 
     /**
      *
