@@ -1,9 +1,6 @@
 package com.omegapoint.core.screens;
 
-import com.artemis.Entity;
-import com.artemis.EntitySystem;
-import com.artemis.SystemManager;
-import com.artemis.World;
+import com.artemis.*;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Bullets;
@@ -12,6 +9,8 @@ import com.omegapoint.core.components.*;
 import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.events.*;
 import com.omegapoint.core.Playfield;
+import com.omegapoint.core.predicates.CollisionPredicate;
+import com.omegapoint.core.predicates.PredicateAction;
 import playn.core.*;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
@@ -41,6 +40,8 @@ public class GameScreen extends Screen {
     private Entity tileEntity;
     private Entity waveEntity;
     private boolean inited = false;
+    private TileComponent tileComponent;
+    private Image shipImage;
 
     @Inject
     public GameScreen(World world,
@@ -105,12 +106,13 @@ public class GameScreen extends Screen {
 
     private void initEntities() {
         systemManager.initializeAll();
+        tileEntity = templateManager.lookupAndInstantiate("level1tiles", world);
+        waveEntity = templateManager.lookupAndInstantiate("wave1", world);
         shipPosition = makeShip();
         makeGameBounds();
         makeStars();
         makeBackgroundMusic();
-        tileEntity = templateManager.lookupAndInstantiate("level1tiles", world);
-        waveEntity = templateManager.lookupAndInstantiate("wave1", world);
+
     }
 
 
@@ -218,6 +220,40 @@ public class GameScreen extends Screen {
     private PositionComponent makeShip() {
         shipEntity = templateManager.lookupAndInstantiate("playerShip", world);
         shipPosition = shipEntity.getComponent(PositionComponent.class);
+        SpriteComponent ship = new ComponentMapper<SpriteComponent>(SpriteComponent.class, world).get(shipEntity);
+        final Image image = PlayN.assets().getImage(ship.getImg());
+        tileComponent = new ComponentMapper<TileComponent>(TileComponent.class, world).get(tileEntity);
+        image.addCallback(new ResourceCallback<Image>() {
+            @Override
+            public void done(final Image resource) {
+                shipImage = resource;
+                CollisionComponent colComp = new CollisionComponent(0, 0, (int) image.height(), (int) image.width(),
+                        new CollisionPredicate() {
+                            @Override
+                            public boolean collides(Entity entity, Entity collidesWith, World world) {
+                                String group = world.getGroupManager().getGroupOf(collidesWith);
+                                if ("ENEMY".equals(group) || "BULLET".equals(group)) {
+                                    return true;
+                                }
+
+                                return false;
+                            }
+
+                            @Override
+                            public PredicateAction[] actions() {
+                                PlayN.log().debug("Ship hit");
+                                return new PredicateAction[0];
+                            }
+                        });
+                shipEntity.addComponent(colComp);
+
+            }
+
+            @Override
+            public void error(Throwable err) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
         Entity shield =templateManager.lookupAndInstantiate("shield", world);
         shield.addComponent(shipPosition);
         shield.refresh();
@@ -272,6 +308,11 @@ public class GameScreen extends Screen {
 
         for (EntitySystem es : updateSystems) {
             es.process();
+        }
+
+        if (shipImage != null && tileComponent != null && tileComponent.collides(shipPosition, shipImage.height(),
+                shipImage.width())) {
+            PlayN.log().debug("Tile collision");
         }
     }
 

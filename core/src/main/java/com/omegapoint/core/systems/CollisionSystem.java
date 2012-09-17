@@ -37,7 +37,7 @@ public class CollisionSystem extends EntitySystem {
           CollisionComponent colComp = collisionMapper.get(e);
           PositionComponent pos = positionMapper.get(e);
           Rectangle rect1 = colComp.getBounds().clone();
-          rect1.translate(pos.getX(), pos.getY());
+          rect1.translate(pos.getX() - colComp.getBounds().width/2 , pos.getY()  - colComp.getBounds().height/2);
           
           for (int j = 0; j < entities.size(); j++) {
               if (i != j) {
@@ -45,7 +45,7 @@ public class CollisionSystem extends EntitySystem {
                   CollisionComponent colComp2 = collisionMapper.get(e2);
                   PositionComponent pos2 = positionMapper.get(e2);
                   Rectangle rect2 = colComp2.getBounds().clone();
-                  rect2.translate(pos2.getX(), pos2.getY());
+                  rect2.translate(pos2.getX() - colComp2.getBounds().width/2, pos2.getY() - colComp2.getBounds().height/2);
 
                   if (rect1.intersects(rect2)) {
                       for (CollisionPredicate cp : colComp.getPredicates()) {

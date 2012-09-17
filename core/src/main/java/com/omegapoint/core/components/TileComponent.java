@@ -11,6 +11,7 @@ public class TileComponent extends BaseComponent {
 
     private int depth;
     public static final int EMPTY_SPACE = -1;
+    private int[] heightMap;
 
     public String getAssetPath() {
         return assetPath;
@@ -50,6 +51,25 @@ public class TileComponent extends BaseComponent {
         this.depth = depth;
         this.parallaxSpeed = parallaxSpeed;
         this.arrangement = arrangement;
+        computeHeightMap();
+    }
+
+    private void computeHeightMap() {
+        TileRow[] rows = arrangement.getRows();
+        float starty = PlayN.graphics().height() - rows.length * getTileHeight();
+        heightMap = new int[rows[0].getIndices().length];
+        for (int i = 0; i < heightMap.length; i++) {
+            heightMap[i] = 32767;
+        }
+        for (int row = 0; row < rows.length; row++) {
+            int[] indices = rows[row].getIndices();
+            for (int col = 0; col < indices.length; col++) {
+               if (indices[col] != EMPTY_SPACE) {
+                   heightMap[col] = (int) Math.min(heightMap[col], starty + row * getTileHeight());
+               }
+            }
+        }
+
     }
 
     public int getCurrentScreenPosition() {
@@ -62,6 +82,22 @@ public class TileComponent extends BaseComponent {
 
     public int getDepth() {
         return depth;
+    }
+
+    public boolean collides(PositionComponent shipPosition, float width, float height) {
+        TilePos tilePos = localCoord2TilePos(shipPosition.getX(), shipPosition.getY() + height/2);
+        TilePos tilePosEnd = localCoord2TilePos(shipPosition.getX() + width, shipPosition.getY() + height/2);
+        if (tilePos == null || tilePosEnd == null) {
+            return false;
+        }
+        float bottom = shipPosition.getY() + height/2;
+        for (int col = tilePos.getCol(); col <= tilePosEnd.getCol(); col++) {
+            if (bottom >= heightMap[col]) {
+               // bottom of ship bounding box intersects highest tile somwhere
+                return true;
+            }
+        }
+        return false;
     }
 
 
