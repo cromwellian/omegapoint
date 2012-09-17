@@ -110,7 +110,8 @@ public class SpriteRenderSystem extends EntityProcessingSystem implements Immedi
           if (spr.isCyclic()) {
                   surface.scale(2, 2);
           }
-          surface.drawImage(image, -cx, -cy);
+          surface.translate(-cx, -cy);
+          surface.drawImage(image, 0, 0);
           surface.restore();
       }
     }

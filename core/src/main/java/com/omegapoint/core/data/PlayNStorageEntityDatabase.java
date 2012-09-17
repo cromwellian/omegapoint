@@ -17,7 +17,7 @@ public class PlayNStorageEntityDatabase implements EntityDatabase {
     public Collection<String> getTemplates() {
         String entityDataString = PlayN.storage().getItem("entityDatabase");
 
-        if (entityDataString != null) {
+        if (false && entityDataString != null) {
           Json.Object jsonTemplatesObj = PlayN.json().parse(entityDataString);
           Json.Array jsonTemplates = jsonTemplatesObj.getArray("templates");
 

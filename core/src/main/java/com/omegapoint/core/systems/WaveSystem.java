@@ -46,6 +46,13 @@ public class WaveSystem extends EntityProcessingSystem {
 
     int numKilled = 0;
 
+    @Override
+    protected void added(Entity e) {
+        super.added(e);
+        waveMapper.get(e).initTimeStamp();
+        PlayN.log().debug("Wave added");
+    }
+
     private void spawnEnemies() {
         for (int i = enemies.currentLiveEnemies(); i < Enemies.MAX_ENEMIES; i++) {
             enemies.incrementLiveEnemies();
@@ -54,6 +61,7 @@ public class WaveSystem extends EntityProcessingSystem {
             enemyEntity.addComponent(posComp);
         }
     }
+
 
     @Override
     protected void process(Entity e) {
@@ -76,6 +84,7 @@ public class WaveSystem extends EntityProcessingSystem {
               if (wave.getNextState() != null) {
                  eventBus.fireEvent(new ChangeStateEvent(wave.getNextState()));
               }
+              wave.initTimeStamp();
               e.delete();
           }
 

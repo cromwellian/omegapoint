@@ -49,7 +49,9 @@ public class MovementSystem extends EntityProcessingSystem {
                 }
             }
         } else {
-            pos.setY((int) (Math.sin(pos.getX() / (double) width * 2 * Math.PI) * PlayN.graphics().height() / 2 + PlayN.graphics().height() / 2));
+            double theta = pos.getX() / (double) width * 2 * Math.PI;
+            pos.setY((int) (Math.sin(theta) * PlayN.graphics().height() / 2 + PlayN.graphics().height() / 2));
+            pos.setAngle(theta < Math.PI ? Math.PI-theta : theta - Math.PI);
         }
 
         pos.setDirty(true);

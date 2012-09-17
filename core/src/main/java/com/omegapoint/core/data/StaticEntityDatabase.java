@@ -24,12 +24,19 @@ import static playn.core.PlayN.json;
 public class StaticEntityDatabase implements EntityDatabase {
     @Override
     public Collection<String> getTemplates() {
-        return Arrays.asList(JsonUtil.toString(makePlayerShip()), JsonUtil.toString(makeEnemyShip1()),
+        return Arrays.asList(JsonUtil.toString(makePlayerShip()),
                 JsonUtil.toString(makeExplosion()), JsonUtil.toString(makeTitleMusic()), JsonUtil.toString(makeTitleText()),
                 JsonUtil.toString(makeTopBounds()), JsonUtil.toString(makeLeftBounds()), JsonUtil.toString(makeRightBounds()),
                 JsonUtil.toString(makeBottomBounds()), JsonUtil.toString(makeLaser()), JsonUtil.toString(makeBeam()),
                 JsonUtil.toString(makeTiles()),
-                JsonUtil.toString(makeWave()),
+                JsonUtil.toString(makeEnemyShip1()),
+                JsonUtil.toString(makeEnemyShip2()),
+                JsonUtil.toString(makeEnemyShip3()),
+                JsonUtil.toString(makeEnemyShip4()),
+                JsonUtil.toString(makeWave1()),
+                JsonUtil.toString(makeWave2()),
+                JsonUtil.toString(makeWave3()),
+                JsonUtil.toString(makeWave4()),
                 JsonUtil.toString(makeTitleCredits()),
                 JsonUtil.toString(makeShield()));
     }
@@ -50,8 +57,46 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeEnemyShip1() {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "enemy1");
-        obj.put(SpriteComponent.NAME, new SpriteComponent("images/tarentulaAlpha.png", 60, 60, 10, 4, 0, -1, false).toJson());
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 0, -1, false).toJson());
         obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
+        obj.put(EntityTemplate.GROUP, "ENEMY");
+        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
+        // note, relative coordinates
+        obj.put(PositionComponent.NAME, new PositionComponent(100, 50, -Math.PI/2).toJson());
+        return obj;
+    }
+
+    private Json.Object makeEnemyShip2() {
+        Json.Object obj = json().createObject();
+        obj.put(EntityTemplate.NAME, "enemy2");
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 40, -1, false).toJson());
+        obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
+        obj.put(EntityTemplate.GROUP, "ENEMY");
+        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
+        // note, relative coordinates
+        obj.put(PositionComponent.NAME, new PositionComponent(100, 25, -Math.PI/2
+        ).toJson());
+        return obj;
+    }
+
+    private Json.Object makeEnemyShip3() {
+        Json.Object obj = json().createObject();
+        obj.put(EntityTemplate.NAME, "enemy3");
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/tarentulaAlpha.png", 60, 60, 10, 4, 0, -1, false).toJson());
+        obj.put(MovementComponent.NAME, new MovementComponent(-10, 0, MovementComponent.MotionType.SINUSOIDAL, false).toJson());
+        obj.put(EntityTemplate.GROUP, "ENEMY");
+        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
+        // note, relative coordinates
+        obj.put(PositionComponent.NAME, new PositionComponent(100, 70, 0).toJson());
+        return obj;
+    }
+
+
+    private Json.Object makeEnemyShip4() {
+        Json.Object obj = json().createObject();
+        obj.put(EntityTemplate.NAME, "enemy4");
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 80, -1, false).toJson());
+        obj.put(MovementComponent.NAME, new MovementComponent(-10, 0, MovementComponent.MotionType.SINUSOIDAL, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
@@ -59,17 +104,50 @@ public class StaticEntityDatabase implements EntityDatabase {
         return obj;
     }
 
-    private Json.Object makeWave() {
+
+    private Json.Object makeWave1() {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "wave1");
         List<WaveComponent.SpawnComponent> spawns = new ArrayList<WaveComponent.SpawnComponent>();
         for (int i = 0; i < 5; i++) {
-            spawns.add(new WaveComponent.SpawnComponent("enemy1", i == 4 ? 2000 : 300));
+            spawns.add(new WaveComponent.SpawnComponent("enemy1", i == 0 ? 2000 : 300));
+        }
+        obj.put(WaveComponent.NAME, new WaveComponent(spawns, "wave2", "foo").toJson());
+        return obj;
+    }
+
+    private Json.Object makeWave2() {
+        Json.Object obj = json().createObject();
+        obj.put(EntityTemplate.NAME, "wave2");
+        List<WaveComponent.SpawnComponent> spawns = new ArrayList<WaveComponent.SpawnComponent>();
+        for (int i = 0; i < 5; i++) {
+            spawns.add(new WaveComponent.SpawnComponent("enemy2", i == 0 ? 2000 : 300));
+        }
+        obj.put(WaveComponent.NAME, new WaveComponent(spawns, "wave3", "foo").toJson());
+        return obj;
+    }
+
+    private Json.Object makeWave3() {
+        Json.Object obj = json().createObject();
+        obj.put(EntityTemplate.NAME, "wave3");
+        List<WaveComponent.SpawnComponent> spawns = new ArrayList<WaveComponent.SpawnComponent>();
+        for (int i = 0; i < 5; i++) {
+            spawns.add(new WaveComponent.SpawnComponent("enemy3", i == 0 ? 2000 : 300));
+        }
+        obj.put(WaveComponent.NAME, new WaveComponent(spawns, "wave4", "foo").toJson());
+        return obj;
+    }
+
+    private Json.Object makeWave4() {
+        Json.Object obj = json().createObject();
+        obj.put(EntityTemplate.NAME, "wave4");
+        List<WaveComponent.SpawnComponent> spawns = new ArrayList<WaveComponent.SpawnComponent>();
+        for (int i = 0; i < 5; i++) {
+            spawns.add(new WaveComponent.SpawnComponent("enemy" + (i % 4 + 1), i == 0 ? 2000 : 300));
         }
         obj.put(WaveComponent.NAME, new WaveComponent(spawns, "wave1", "foo").toJson());
         return obj;
     }
-
 
     private Json.Object makeExplosion() {
         Json.Object obj = json().createObject();

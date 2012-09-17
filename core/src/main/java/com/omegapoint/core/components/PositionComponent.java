@@ -72,6 +72,10 @@ public class PositionComponent extends BaseComponent {
         return new Codec().toJson(this);
     }
 
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
     public static class Codec implements Jsonable<PositionComponent> {
 
         @Override

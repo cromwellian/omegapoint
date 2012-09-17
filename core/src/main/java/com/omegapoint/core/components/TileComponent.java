@@ -1,7 +1,6 @@
 package com.omegapoint.core.components;
 
 import com.omegapoint.core.data.Jsonable;
-import com.omegapoint.core.util.Base91;
 import playn.core.Json;
 import playn.core.PlayN;
 
@@ -70,6 +69,7 @@ public class TileComponent extends BaseComponent {
 
         private final TileRow row;
         private final int col;
+        private int rowNum;
 
         public int getCol() {
             return col;
@@ -80,10 +80,11 @@ public class TileComponent extends BaseComponent {
             return row;
         }
 
-        public TilePos(TileRow row, int col) {
+        public TilePos(TileRow row, int col, int rowNum) {
 
             this.row = row;
             this.col = col;
+            this.rowNum = rowNum;
         }
 
         public int getTile() {
@@ -106,23 +107,29 @@ public class TileComponent extends BaseComponent {
         TileRow[] rows = getArrangement().getRows();
         if (row >= 0 && row < rows.length) {
             if (col >= 0 && col < rows[0].getIndices().length) {
-                return new TilePos(rows[row], col);
+                return new TilePos(rows[row], col, row);
             }
         }
         return null;
     }
 
-    public TilePos setTile(float x, float y, int tile) {
+    public TilePos setTile(float x, float y, int tile, boolean fillUnderMode) {
         TilePos pos = localCoord2TilePos(x, y);
         if (pos != null) {
             pos.setTile(tile);
+            if (fillUnderMode) {
+                int r = pos.rowNum + 1;
+                for (int i = r; i < getArrangement().getRows().length; i++) {
+                   new TilePos(getArrangement().getRows()[i], pos.col, i).setTile(tile);
+                }
+            }
             return pos;
         }
         return null;
     }
 
     public TilePos eraseTile(float x, float y) {
-        return setTile(x, y, TileComponent.EMPTY_SPACE);
+        return setTile(x, y, TileComponent.EMPTY_SPACE, false);
     }
 
     public static class TileRow {

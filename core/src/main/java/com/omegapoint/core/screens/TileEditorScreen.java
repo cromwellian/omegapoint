@@ -12,10 +12,7 @@ import com.omegapoint.core.systems.*;
 import playn.core.*;
 import react.UnitSlot;
 import tripleplay.game.UIAnimScreen;
-import tripleplay.ui.Button;
-import tripleplay.ui.Label;
-import tripleplay.ui.Root;
-import tripleplay.ui.SimpleStyles;
+import tripleplay.ui.*;
 import tripleplay.ui.layout.AxisLayout;
 
 import javax.inject.Inject;
@@ -45,6 +42,7 @@ public class TileEditorScreen extends UIAnimScreen {
     private boolean erasing;
     private boolean drawing;
     private final String tileEntityName;
+    private boolean fillUnderMode = false;
 
     @Inject
     public TileEditorScreen(EntityTemplates templateManager, EventBus eventBus) {
@@ -79,7 +77,7 @@ public class TileEditorScreen extends UIAnimScreen {
             public void onMouseDown(Mouse.ButtonEvent event) {
                 if (event.button() == Mouse.BUTTON_LEFT) {
 
-                    TileComponent.TilePos pos = tileComponent.setTile(event.localX(), event.localY(), tileSelector.getCurrentTile());
+                    TileComponent.TilePos pos = tileComponent.setTile(event.localX(), event.localY(), tileSelector.getCurrentTile(), fillUnderMode);
                     if (pos != null) {
                         drawing = true;
                     }
@@ -100,7 +98,7 @@ public class TileEditorScreen extends UIAnimScreen {
             @Override
             public void onMouseMove(Mouse.MotionEvent event) {
                 if (drawing) {
-                    tileComponent.setTile(event.localX(), event.localY(), tileSelector.getCurrentTile());
+                    tileComponent.setTile(event.localX(), event.localY(), tileSelector.getCurrentTile(), fillUnderMode);
                 } else if (erasing) {
                     tileComponent.eraseTile(event.localX(), event.localY());
                 }
@@ -117,6 +115,15 @@ public class TileEditorScreen extends UIAnimScreen {
         _root.setSize(width(), height());
         Button nowEditing = new Button("Editing: " + tileEntityName);
         _root.add(nowEditing);
+        ToggleButton fillUnder = new ToggleButton("Fill under?");
+        _root.add(fillUnder);
+        fillUnder.clicked().connect(new UnitSlot() {
+            @Override
+            public void onEmit() {
+              fillUnderMode = !fillUnderMode;
+            }
+        });
+
         Button backButton = new Button("Back");
         _root.add(backButton);
         backButton.clicked().connect(new UnitSlot() {

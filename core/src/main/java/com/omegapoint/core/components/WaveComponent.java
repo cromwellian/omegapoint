@@ -64,9 +64,15 @@ public class WaveComponent extends BaseComponent {
     }
 
     public SpawnComponent dequeueNextSpawn() {
+        PlayN.log().debug("Spawning " + curSpawn + " delta =" + (PlayN.currentTime() - lastSpawned + " nextWaveDelay = " + getNextDelay()));
+
         SpawnComponent comp = spawnEntities.get(curSpawn++);
         lastSpawned = PlayN.currentTime();
         return comp;
+    }
+
+    public void initTimeStamp() {
+        lastSpawned = PlayN.currentTime();
     }
 
     public static class SpawnComponent extends BaseComponent {

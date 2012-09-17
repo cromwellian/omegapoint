@@ -218,9 +218,9 @@ public class GameScreen extends Screen {
     private PositionComponent makeShip() {
         shipEntity = templateManager.lookupAndInstantiate("playerShip", world);
         shipPosition = shipEntity.getComponent(PositionComponent.class);
-//        Entity shield =templateManager.lookupAndInstantiate("shield", world);
-//        shield.addComponent(shipPosition);
-//        shield.refresh();
+        Entity shield =templateManager.lookupAndInstantiate("shield", world);
+        shield.addComponent(shipPosition);
+        shield.refresh();
         return shipPosition;
     }
 
