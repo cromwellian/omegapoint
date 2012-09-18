@@ -156,7 +156,12 @@ public class TileComponent extends BaseComponent {
             if (fillUnderMode) {
                 int r = pos.rowNum + 1;
                 for (int i = r; i < getArrangement().getRows().length; i++) {
-                   new TilePos(getArrangement().getRows()[i], pos.col, i).setTile(tile);
+                    TilePos tilePos = new TilePos(getArrangement().getRows()[i], pos.col, i);
+                    if (tilePos.getTile() == TileComponent.EMPTY_SPACE) {
+                      tilePos.setTile(tile);
+                    } else {
+                        break;
+                    }
                 }
             }
             return pos;

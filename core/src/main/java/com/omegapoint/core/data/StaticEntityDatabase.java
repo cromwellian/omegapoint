@@ -61,6 +61,7 @@ public class StaticEntityDatabase implements EntityDatabase {
         obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
+        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 100).toJson());
         // note, relative coordinates
         obj.put(PositionComponent.NAME, new PositionComponent(100, 50, -Math.PI/2).toJson());
         return obj;
@@ -74,8 +75,9 @@ public class StaticEntityDatabase implements EntityDatabase {
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
-        obj.put(PositionComponent.NAME, new PositionComponent(100, 25, -Math.PI/2
-        ).toJson());
+        obj.put(PositionComponent.NAME, new PositionComponent(100, 25, -Math.PI/2).toJson());
+        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 200).toJson());
+
         return obj;
     }
 
@@ -87,6 +89,8 @@ public class StaticEntityDatabase implements EntityDatabase {
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
+        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 500).toJson());
+
         obj.put(PositionComponent.NAME, new PositionComponent(100, 70, 0).toJson());
         return obj;
     }
@@ -101,6 +105,7 @@ public class StaticEntityDatabase implements EntityDatabase {
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
         obj.put(PositionComponent.NAME, new PositionComponent(100, 50, 0).toJson());
+        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 100).toJson());
         return obj;
     }
 

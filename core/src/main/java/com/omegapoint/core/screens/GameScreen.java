@@ -111,7 +111,10 @@ public class GameScreen extends Screen {
             @Override
             public void onEnemyKilled(EnemyKilledEvent event) {
                 numKilled++;
-                inventory.incrementScore(1); // TODO(pdr): get points from enemy.
+                EnemyComponent enemyComp = event.getEnemyComponent();
+                if (enemyComp != null) {
+                  inventory.incrementScore(enemyComp.getPoints());
+                }
                 hud.update();
                 if (numKilled % 5 == 0) {
                     GameScreen.useBeam = !GameScreen.useBeam;
