@@ -11,6 +11,7 @@ import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
 import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.components.PositionComponent;
+import playn.core.PlayN;
 import pythagoras.i.Rectangle;
 
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ public class CollisionSystem extends EntitySystem {
           Entity e = entities.get(i);
           CollisionComponent colComp = collisionMapper.get(e);
           PositionComponent pos = positionMapper.get(e);
+
           // TODO (ray) remove excessive object allocation (don't clone!)
           Rectangle rect1 = colComp.getBounds().clone();
           rect1.translate(pos.getX() - colComp.getBounds().width/2 - colComp.getBounds().x() ,

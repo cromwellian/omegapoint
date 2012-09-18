@@ -109,9 +109,7 @@ public class SpriteRenderSystem extends EntityProcessingSystem implements Immedi
 
           surface.translate(pos.getX(), pos.getY());
           surface.rotate((float) pos.getAngle());
-          if (spr.isCyclic()) {
-//                  surface.scale(2, 2);
-          }
+
           surface.translate(-cx, -cy);
           if (Debug.isCollisionBoundingBoxesEnabled()) {
             CollisionComponent colComp = new ComponentMapper<CollisionComponent>(CollisionComponent.class, world).get(e);
@@ -124,6 +122,9 @@ public class SpriteRenderSystem extends EntityProcessingSystem implements Immedi
               surface.fillRect(0, 0, colComp.getBounds().width(), colComp.getBounds().height());
               surface.restore();
             }
+          }
+          if (spr.isCyclic()) {
+//                  surface.scale(2, 2);
           }
           surface.drawImage(image, 0, 0);
           surface.restore();

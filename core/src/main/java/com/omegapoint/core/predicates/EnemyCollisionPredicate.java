@@ -46,7 +46,6 @@ public class EnemyCollisionPredicate implements CollisionPredicate, HasName {
                     explosionEntity.addComponent(pos);
                     explosionEntity.addComponent(mov);
                     explosionEntity.refresh();
-                    collisionEntities[1].delete();
                     // let game compute score or other actions
                     eventBus.fireEvent(new EnemyKilledEvent(enemyComponent));
                     // let game update state of # of enemies

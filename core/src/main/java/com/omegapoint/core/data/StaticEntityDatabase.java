@@ -199,8 +199,8 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeRightBounds() {
         Json.Object rightBounds = json().createObject();
         rightBounds.put(EntityTemplate.NAME, "rightBounds");
-        rightBounds.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 100, graphics().height() + 200).toJson());
-        rightBounds.put(PositionComponent.NAME, new PositionComponent(graphics().width(), -100, 0).toJson());
+        rightBounds.put(CollisionComponent.NAME, new CollisionComponent(0, 0, graphics().width(), graphics().height() + 200).toJson());
+        rightBounds.put(PositionComponent.NAME, new PositionComponent((int) (1.5 * graphics().width()), graphics().height()/2, 0).toJson());
         rightBounds.put(EntityTemplate.GROUP, "BOUNDS");
         return rightBounds;
     }
@@ -208,8 +208,8 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeLeftBounds() {
         Json.Object leftBounds = json().createObject();
         leftBounds.put(EntityTemplate.NAME, "leftBounds");
-        leftBounds.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 100, graphics().height() + 200).toJson());
-        leftBounds.put(PositionComponent.NAME, new PositionComponent(-100, -100, 0).toJson());
+        leftBounds.put(CollisionComponent.NAME, new CollisionComponent(0, 0, graphics().width(), graphics().height() + 200).toJson());
+        leftBounds.put(PositionComponent.NAME, new PositionComponent(-100 - graphics().width()/2, graphics().height()/2, 0).toJson());
         leftBounds.put(EntityTemplate.GROUP, "BOUNDS");
         return leftBounds;
     }
