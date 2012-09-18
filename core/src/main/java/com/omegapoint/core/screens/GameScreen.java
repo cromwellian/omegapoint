@@ -12,6 +12,7 @@ import com.omegapoint.core.events.*;
 import com.omegapoint.core.Playfield;
 import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
+import com.omegapoint.core.util.Scheduler;
 import playn.core.*;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
@@ -33,6 +34,7 @@ public class GameScreen extends Screen {
     private EntityTemplates templateManager;
     private EventBus eventBus;
     private Enemies enemies;
+    private Scheduler scheduler;
     private Entity shipEntity;
 
     private PositionComponent shipPosition;
@@ -45,6 +47,9 @@ public class GameScreen extends Screen {
     private double fps;
     private final ScreenStack screens;
     private Entity waveEntity;
+    private int lastShipX;
+    private int lastShipY;
+    private Entity shield;
 
     @Inject
     public GameScreen(World world,
@@ -55,7 +60,8 @@ public class GameScreen extends Screen {
                       @Named("renderSystems") List<EntitySystem> renderSystems,
                       EntityTemplates templateManager,
                       EventBus eventBus,
-                      Enemies enemies) {
+                      Enemies enemies,
+                      Scheduler scheduler) {
         this.world = world;
         this.systemManager = systemManager;
         this.playfield = playfield;
@@ -65,6 +71,7 @@ public class GameScreen extends Screen {
         this.templateManager = templateManager;
         this.eventBus = eventBus;
         this.enemies = enemies;
+        this.scheduler = scheduler;
     }
 
     public GroupLayer layer() {
@@ -109,6 +116,7 @@ public class GameScreen extends Screen {
 
     private void initEntities() {
         systemManager.initializeAll();
+        shipEntity = null;
         tileEntity = templateManager.lookupAndInstantiate("level1tiles", world);
         waveEntity = templateManager.lookupAndInstantiate("wave1", world);
         shipPosition = makeShip();
@@ -209,8 +217,10 @@ public class GameScreen extends Screen {
 
                 @Override
                 public void onMouseMove(Mouse.MotionEvent event) {
-                    shipPosition.setX((int) event.x());
-                    shipPosition.setY((int) event.y());
+                    lastShipX = (int) event.x();
+                    shipPosition.setX(lastShipX);
+                    lastShipY = (int) event.y();
+                    shipPosition.setY(lastShipY);
                 }
             });
         }
@@ -240,8 +250,14 @@ public class GameScreen extends Screen {
     }
 
     private PositionComponent makeShip() {
+        if (shipEntity != null) {
+            return shipPosition;
+        }
         shipEntity = templateManager.lookupAndInstantiate("playerShip", world);
         shipPosition = shipEntity.getComponent(PositionComponent.class);
+        shipPosition.setX(lastShipX);
+        shipPosition.setY(lastShipY);
+
         SpriteComponent ship = new ComponentMapper<SpriteComponent>(SpriteComponent.class, world).get(shipEntity);
         final Image image = PlayN.assets().getImage(ship.getImg());
         tileComponent = new ComponentMapper<TileComponent>(TileComponent.class, world).get(tileEntity);
@@ -249,10 +265,14 @@ public class GameScreen extends Screen {
             @Override
             public void done(final Image resource) {
                 shipImage = resource;
-                CollisionComponent colComp = new CollisionComponent(0, 0, (int) image.height(), (int) image.width(),
+                // sprite has a lot of whitespace, this is a tighter bounding box
+                CollisionComponent colComp = new CollisionComponent(16, 6, 60, 40,
                         new CollisionPredicate() {
                             @Override
                             public boolean collides(Entity entity, Entity collidesWith, World world) {
+                                if (shipEntity == null) {
+                                    return false;
+                                }
                                 String group = world.getGroupManager().getGroupOf(collidesWith);
                                 if ("ENEMY".equals(group) || "BULLET".equals(group)) {
                                     return true;
@@ -263,8 +283,16 @@ public class GameScreen extends Screen {
 
                             @Override
                             public PredicateAction[] actions() {
-                                PlayN.log().debug("Ship hit");
-                                return new PredicateAction[0];
+
+                                return new PredicateAction[]  {
+                                  new PredicateAction() {
+
+                                      @Override
+                                      public void exec(EventBus eventBus, World world, EntityTemplates templateManager, Entity... collisionEntities) {
+                                          blowUpShip();
+                                      }
+                                  }
+                                };
                             }
                         });
                 shipEntity.addComponent(colComp);
@@ -276,10 +304,30 @@ public class GameScreen extends Screen {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
-        Entity shield = templateManager.lookupAndInstantiate("shield", world);
+        shield = templateManager.lookupAndInstantiate("shield", world);
         shield.addComponent(shipPosition);
         shield.refresh();
         return shipPosition;
+    }
+
+    private void blowUpShip() {
+        Entity explosionEntity = templateManager.lookupAndInstantiate("explosion", world);
+        // explosion starts with same speed and position of the object that blew up
+
+        explosionEntity.addComponent(new PositionComponent(shipPosition.getX(), shipPosition.getY(), 0));
+        explosionEntity.refresh();
+
+        shipEntity.delete();
+        shipEntity = null;
+        shield.delete();
+        shield = null;
+        eventBus.fireEvent(new PlayerKilledEvent());
+        scheduler.schedule(2000, new Runnable() {
+            @Override
+            public void run() {
+                makeShip();
+            }
+        });
     }
 
     private void makeGameBounds() {
@@ -292,7 +340,7 @@ public class GameScreen extends Screen {
     private int lastFire = 0;
 
     private void fireBullet(int x, int y) {
-        if (Bullets.maxedOut()) {
+        if (Bullets.maxedOut() || isShipDead()) {
             return;
         }
 
@@ -304,6 +352,10 @@ public class GameScreen extends Screen {
         }
         bulletEntity.addComponent(new PositionComponent(x, y, 0));
         Bullets.inc();
+    }
+
+    private boolean isShipDead() {
+        return shipEntity == null;
     }
 
 
@@ -349,14 +401,17 @@ public class GameScreen extends Screen {
         world.loopStart(); // signals loop start
         world.setDelta((int) delta); // sets delta for systems to use
 
+        scheduler.update(delta);
+
         for (EntitySystem es : updateSystems) {
             es.process();
         }
 
-        if (shipImage != null && tileComponent != null && tileComponent.collides(shipPosition, shipImage.height(),
+        if (shipEntity != null && shipImage != null && tileComponent != null && tileComponent.collides(shipPosition, shipImage.height(),
                 shipImage.width())) {
-            PlayN.log().debug("Tile collision");
+            blowUpShip();
         }
+
     }
 
     public static boolean useBeam = true;

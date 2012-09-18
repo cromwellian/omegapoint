@@ -12,6 +12,7 @@ import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.data.MemoryEntityDatabase;
 import com.omegapoint.core.state.*;
 import com.omegapoint.core.systems.*;
+import com.omegapoint.core.util.Scheduler;
 import playn.core.Game;
 import tripleplay.game.ScreenStack;
 
@@ -59,7 +60,7 @@ public class IOSInjector {
                         tileRenderSystem, tileEditorRenderSystem), playfield,
                 screens, updateSystems,
                 renderSystems,
-                templateManager, eventBus, enemies);
+                templateManager, eventBus, enemies, new Scheduler());
         PlayGameState playState = new PlayGameState(gameScreen);
         return new OmegaPointGame(module.providesStateMachine(new OmegaStateMachineBuilder(screens, loadState,
                 introGameState, playState, new PauseGameState(new PauseMenuScreen(eventBus)),

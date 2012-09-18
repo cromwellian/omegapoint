@@ -6,6 +6,7 @@ import com.artemis.EntitySystem;
 import com.artemis.utils.ImmutableBag;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.components.CollisionComponent;
+import com.omegapoint.core.components.SpriteComponent;
 import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
 import com.omegapoint.core.data.EntityTemplates;

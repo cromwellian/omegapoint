@@ -17,6 +17,7 @@ import com.omegapoint.core.screens.GameScreen;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.state.*;
 import com.omegapoint.core.systems.*;
+import com.omegapoint.core.util.Scheduler;
 import playn.core.PlayN;
 import se.hiflyer.fettle.StateMachine;
 import tripleplay.game.Screen;
@@ -52,7 +53,7 @@ public abstract class OmegaPointBaseModule {
         binder.bind(PauseGameState.class).in(Singleton.class);
         binder.bind(TileEditorState.class).in(Singleton.class);
         binder.bind(DebugGameState.class).in(Singleton.class);
-
+        binder.bind(Scheduler.class).in(Singleton.class);
 //        binder.bind(ScreenStack.class).to(ScreenStackImpl.class).in(Singleton.class);
 //        binder.bind(EntityDatabase.class).to(StaticEntityDatabase.class).in(Singleton.class);
 //        binder.bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);

@@ -60,7 +60,7 @@ public class StaticEntityDatabase implements EntityDatabase {
         obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 0, -1, false).toJson());
         obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
-        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
+        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
         obj.put(PositionComponent.NAME, new PositionComponent(100, 50, -Math.PI/2).toJson());
         return obj;
@@ -72,7 +72,7 @@ public class StaticEntityDatabase implements EntityDatabase {
         obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 40, -1, false).toJson());
         obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
-        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
+        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
         obj.put(PositionComponent.NAME, new PositionComponent(100, 25, -Math.PI/2
         ).toJson());
@@ -98,7 +98,7 @@ public class StaticEntityDatabase implements EntityDatabase {
         obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 80, -1, false).toJson());
         obj.put(MovementComponent.NAME, new MovementComponent(-10, 0, MovementComponent.MotionType.SINUSOIDAL, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
-        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
+        obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
         obj.put(PositionComponent.NAME, new PositionComponent(100, 50, 0).toJson());
         return obj;

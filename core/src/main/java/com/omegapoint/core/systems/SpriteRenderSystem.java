@@ -3,6 +3,7 @@ package com.omegapoint.core.systems;
 import com.artemis.*;
 import com.omegapoint.core.Debug;
 import com.omegapoint.core.Playfield;
+import com.omegapoint.core.components.CollisionComponent;
 import com.omegapoint.core.components.PositionComponent;
 import com.omegapoint.core.components.SpriteComponent;
 import playn.core.*;
@@ -113,8 +114,16 @@ public class SpriteRenderSystem extends EntityProcessingSystem implements Immedi
           }
           surface.translate(-cx, -cy);
           if (Debug.isCollisionBoundingBoxesEnabled()) {
-            surface.setFillColor(0xffffffff);
-            surface.fillRect(0, 0, width, height);
+            CollisionComponent colComp = new ComponentMapper<CollisionComponent>(CollisionComponent.class, world).get(e);
+            if (colComp != null) {
+              surface.save();
+              surface.setFillColor(0xffffffff);
+              surface.translate(cx, cy);
+              surface.rotate((float) -pos.getAngle());
+              surface.translate(-cx, -cy);
+              surface.fillRect(colComp.getBounds().x(), colComp.getBounds().y(), colComp.getBounds().width(), colComp.getBounds().height());
+              surface.restore();
+            }
           }
           surface.drawImage(image, 0, 0);
           surface.restore();
