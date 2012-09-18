@@ -2,6 +2,7 @@ package com.omegapoint.core.data;
 
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.predicates.BulletCollisionPredicate;
+import com.omegapoint.core.predicates.EnemyBulletCollisionPredicate;
 import com.omegapoint.core.predicates.EnemyCollisionPredicate;
 import com.omegapoint.core.tween.TextColorChanger;
 import com.omegapoint.core.util.JsonUtil;
@@ -38,6 +39,8 @@ public class StaticEntityDatabase implements EntityDatabase {
                 JsonUtil.toString(makeWave3()),
                 JsonUtil.toString(makeWave4()),
                 JsonUtil.toString(makeTitleCredits()),
+                JsonUtil.toString(makeEnemyShot1()),
+                JsonUtil.toString(makeEnemyShot2()),
                 JsonUtil.toString(makeShield()));
     }
 
@@ -45,7 +48,7 @@ public class StaticEntityDatabase implements EntityDatabase {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "shield");
         obj.put(EntityTemplate.GROUP, "PASSIVES");
-        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shieldAlphaGreen.png", 48, 48, 10, 4, 0, 16, true).toJson());
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shieldAlphaGreen.png", 48, 48, 10, 4, 0, 0, 16, true).toJson());
         return obj;
     }
 
@@ -57,11 +60,11 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeEnemyShip1() {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "enemy1");
-        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 0, -1, false).toJson());
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 0, 0, -1, false).toJson());
         obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
-        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 100).toJson());
+        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 100, EnemyComponent.AiType.NONE, 0, "enemyShot1").toJson());
         // note, relative coordinates
         obj.put(PositionComponent.NAME, new PositionComponent(100, 50, -Math.PI/2).toJson());
         return obj;
@@ -70,13 +73,14 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeEnemyShip2() {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "enemy2");
-        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 40, -1, false).toJson());
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 40, 0, -1, false).toJson());
         obj.put(MovementComponent.NAME, new MovementComponent(-5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
         obj.put(PositionComponent.NAME, new PositionComponent(100, 25, -Math.PI/2).toJson());
-        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 200).toJson());
+        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 200, EnemyComponent.AiType.SHOOT_LEFT, 1000,
+                "enemyShot2").toJson());
 
         return obj;
     }
@@ -84,12 +88,12 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeEnemyShip3() {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "enemy3");
-        obj.put(SpriteComponent.NAME, new SpriteComponent("images/tarentulaAlpha.png", 60, 60, 10, 4, 0, -1, false).toJson());
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/tarentulaAlpha.png", 60, 60, 10, 4, 0, 0, -1, false).toJson());
         obj.put(MovementComponent.NAME, new MovementComponent(-10, 0, MovementComponent.MotionType.SINUSOIDAL, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 72, 72, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
-        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 500).toJson());
+        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 500, EnemyComponent.AiType.SHOOT_LEFT, 1000, "enemyShot1").toJson());
 
         obj.put(PositionComponent.NAME, new PositionComponent(100, 70, 0).toJson());
         return obj;
@@ -99,16 +103,37 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeEnemyShip4() {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "enemy4");
-        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 80, -1, false).toJson());
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/shipsAlpha.png", 36, 36, 10, 32, 80, 0, -1, false).toJson());
         obj.put(MovementComponent.NAME, new MovementComponent(-10, 0, MovementComponent.MotionType.SINUSOIDAL, false).toJson());
         obj.put(EntityTemplate.GROUP, "ENEMY");
         obj.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 36, 36, new EnemyCollisionPredicate()).toJson());
         // note, relative coordinates
         obj.put(PositionComponent.NAME, new PositionComponent(100, 50, 0).toJson());
-        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 100).toJson());
+        obj.put(EnemyComponent.NAME, new EnemyComponent(EnemyComponent.EnemyType.BASIC, 100, 100, EnemyComponent.AiType.SHOOT_LEFT, 1000, "enemyShot2").toJson());
         return obj;
     }
 
+    private Json.Object makeEnemyShot1() {
+        Json.Object shot = json().createObject();
+
+        shot.put(EntityTemplate.NAME, "enemyShot1");
+        shot.put(EntityTemplate.GROUP, "ENEMYBULLET");
+        shot.put(SpriteComponent.NAME, new SpriteComponent("images/bombsAlpha.png", 16, 16, 10, 13, 0, 10, 33, true).toJson());
+        shot.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 16, 16, new EnemyBulletCollisionPredicate()).toJson());
+        shot.put(DamageComponent.NAME, new DamageComponent().toJson());
+        return shot;
+    }
+
+    private Json.Object makeEnemyShot2() {
+        Json.Object shot = json().createObject();
+
+        shot.put(EntityTemplate.NAME, "enemyShot2");
+        shot.put(EntityTemplate.GROUP, "ENEMYBULLET");
+        shot.put(SpriteComponent.NAME, new SpriteComponent("images/bombsAlpha.png", 16, 16, 10, 13, 120, 130, 33, true).toJson());
+        shot.put(CollisionComponent.NAME, new CollisionComponent(0, 0, 16, 16, new EnemyBulletCollisionPredicate()).toJson());
+        shot.put(DamageComponent.NAME, new DamageComponent().toJson());
+        return shot;
+    }
 
     private Json.Object makeWave1() {
         Json.Object obj = json().createObject();
@@ -157,7 +182,7 @@ public class StaticEntityDatabase implements EntityDatabase {
     private Json.Object makeExplosion() {
         Json.Object obj = json().createObject();
         obj.put(EntityTemplate.NAME, "explosion");
-        obj.put(SpriteComponent.NAME, new SpriteComponent("images/explode2Alpha.png", 80, 80, 4, 11, 0, 8, false).toJson());
+        obj.put(SpriteComponent.NAME, new SpriteComponent("images/explode2Alpha.png", 80, 80, 4, 11, 0, 0, 8, false).toJson());
         obj.put(AudioComponent.NAME, new AudioComponent("sounds/bomb").toJson());
         return obj;
     }

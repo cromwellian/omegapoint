@@ -38,11 +38,12 @@ public class IOSInjector {
         Enemies enemies = new Enemies();
         Playfield playfield = new Playfield();
         SimpleTweenSystem simpleTweenSystem = new SimpleTweenSystem();
-        WaveSystem enemySystem = new WaveSystem(enemies, templateManager, eventBus);
+        WaveSystem waveSystem = new WaveSystem(enemies, templateManager, eventBus);
         MovementSystem movementSystem = new MovementSystem();
         CollisionSystem collisionSystem = new CollisionSystem(eventBus, templateManager);
-        List<EntitySystem> updateSystems = module.providesUpdateSystems(simpleTweenSystem, enemySystem,
-                movementSystem, collisionSystem);
+        EnemySystem enemySystem = new EnemySystem(templateManager, world);
+        List<EntitySystem> updateSystems = module.providesUpdateSystems(simpleTweenSystem, waveSystem,
+                movementSystem, collisionSystem, enemySystem);
         TextRenderSystem textRenderSystem = new TextRenderSystem(playfield);
         SpriteRenderSystem spriteRenderSystem = new SpriteRenderSystem(playfield);
         BeamRenderSystem beamRenderSystem = new BeamRenderSystem(playfield);
@@ -55,9 +56,9 @@ public class IOSInjector {
                 spriteRenderSystem, beamRenderSystem, audioSystem, starRenderSystem, tileRenderSystem,
                 tileEditorRenderSystem);
         GameScreen gameScreen = new GameScreen(world,
-                module.getSystemManager(world, simpleTweenSystem, textRenderSystem, enemySystem, movementSystem,
+                module.getSystemManager(world, simpleTweenSystem, textRenderSystem, waveSystem, movementSystem,
                         collisionSystem, spriteRenderSystem, beamRenderSystem, audioSystem, starRenderSystem,
-                        tileRenderSystem, tileEditorRenderSystem), playfield,
+                        tileRenderSystem, tileEditorRenderSystem, enemySystem), playfield,
                 screens, updateSystems,
                 renderSystems,
                 templateManager, eventBus, enemies, new Scheduler());

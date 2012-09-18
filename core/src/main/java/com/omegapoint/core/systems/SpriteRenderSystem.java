@@ -84,25 +84,34 @@ public class SpriteRenderSystem extends EntityProcessingSystem implements Immedi
           float cx = (width / 2);
           float cy = (height/ 2);
 
+          int endFrame = spr.getEndFrame() == 0 ? spr.getCols() * spr.getRows() : spr.getEndFrame();
+          boolean wrapped = false;
           if (spr.getCols() > 0) {
               int frame = spr.getCurFrame();
               int prev = frame;
               if (spr.getMsPerFrame() >= 0) {
                   int timeLeft = spr.getTimeToNextFrame() - world.getDelta();
                   if (timeLeft < 0) {
-                      frame += spr.getTimeToNextFrame() > 0 ? world.getDelta() / spr.getTimeToNextFrame() : 1;
-                      spr.setCurFrame(frame % (spr.getCols() * spr.getRows()));
+                      //TODO(ray) fix this
+                      frame += spr.getTimeToNextFrame() > 0 ? 1 /*world.getDelta() / spr.getTimeToNextFrame()*/ : 1;
+                      int numFrames = endFrame - spr.getStartFrame();
+                      if (frame >= numFrames) {
+                          frame = frame % numFrames;
+                          wrapped = true;
+                      }
+                      spr.setCurFrame(frame);
                       spr.setTimeToNextFrame(spr.getMsPerFrame());
                   } else {
                       spr.setTimeToNextFrame(timeLeft);
                   }
               }
 
+              prev += spr.getStartFrame();
               int row = prev / spr.getCols();
               int col = prev % spr.getCols();
 
               image.setBounds(spr.getSw() * col, spr.getSh() * row, spr.getSw(), spr.getSh());
-              if (spr.getMsPerFrame() >= 0 && frame >= spr.getCols() * spr.getRows() && !spr.isCyclic()) {
+              if (spr.getMsPerFrame() >= 0 && wrapped && !spr.isCyclic()) {
                   e.delete();
               }
           }

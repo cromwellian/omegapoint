@@ -20,7 +20,8 @@ public class EnemyCollisionPredicate implements CollisionPredicate, HasName {
 
     @Override
     public boolean collides(Entity entity, Entity collidesWith, World world) {
-        boolean xx = collidesWith.getComponent(DamageComponent.class) != null || "BOUNDS".equals(world.getGroupManager().getGroupOf(collidesWith));
+        String group = world.getGroupManager().getGroupOf(collidesWith);
+        boolean xx = (!"ENEMYBULLET".equals(group) && collidesWith.getComponent(DamageComponent.class) != null) || "BOUNDS".equals(group);
         return xx;
     }
 

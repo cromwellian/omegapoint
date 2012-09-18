@@ -271,6 +271,7 @@ public class GameScreen extends Screen {
             return shipPosition;
         }
         shipEntity = templateManager.lookupAndInstantiate("playerShip", world);
+        shipEntity.setGroup("PLAYER");
         shipPosition = shipEntity.getComponent(PositionComponent.class);
         shipPosition.setX(lastShipX);
         shipPosition.setY(lastShipY);
@@ -291,7 +292,7 @@ public class GameScreen extends Screen {
                                     return false;
                                 }
                                 String group = world.getGroupManager().getGroupOf(collidesWith);
-                                if ("ENEMY".equals(group) || "BULLET".equals(group)) {
+                                if ("ENEMY".equals(group) || "ENEMYBULLET".equals(group)) {
                                     return true;
                                 }
 
@@ -321,9 +322,9 @@ public class GameScreen extends Screen {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
-        shield = templateManager.lookupAndInstantiate("shield", world);
-        shield.addComponent(shipPosition);
-        shield.refresh();
+//        shield = templateManager.lookupAndInstantiate("shield", world);
+//        shield.addComponent(shipPosition);
+//        shield.refresh();
         return shipPosition;
     }
 
@@ -336,7 +337,7 @@ public class GameScreen extends Screen {
 
         shipEntity.delete();
         shipEntity = null;
-        shield.delete();
+//        shield.delete();
         shield = null;
         eventBus.fireEvent(new PlayerKilledEvent());
         scheduler.schedule(2000, new Runnable() {
