@@ -5,12 +5,15 @@ import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Bullets;
 import com.omegapoint.core.Enemies;
+import com.omegapoint.core.Inventory;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.events.*;
 import com.omegapoint.core.Playfield;
 import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
+import com.omegapoint.core.systems.HudSystem;
+
 import playn.core.*;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
@@ -33,6 +36,7 @@ public class GameScreen extends Screen {
     private EventBus eventBus;
     private Enemies enemies;
     private Entity shipEntity;
+    private Inventory inventory;
 
     private Entity titleTextEntity;
     private PositionComponent shipPosition;
@@ -42,6 +46,7 @@ public class GameScreen extends Screen {
     private boolean inited = false;
     private TileComponent tileComponent;
     private Image shipImage;
+    private HudSystem hud;
 
     @Inject
     public GameScreen(World world,
@@ -96,12 +101,15 @@ public class GameScreen extends Screen {
             @Override
             public void onEnemyKilled(EnemyKilledEvent event) {
                 numKilled++;
+                inventory.incrementScore(1); // TODO(pdr): get points from enemy.
+                hud.update();
                 if (numKilled % 5 == 0) {
                     GameScreen.useBeam = !GameScreen.useBeam;
                 }
             }
         });
         initEntities();
+        initHud();
     }
 
     private void initEntities() {
@@ -109,12 +117,17 @@ public class GameScreen extends Screen {
         tileEntity = templateManager.lookupAndInstantiate("level1tiles", world);
         waveEntity = templateManager.lookupAndInstantiate("wave1", world);
         shipPosition = makeShip();
+        inventory = makeInventory();
         makeGameBounds();
         makeStars();
         makeBackgroundMusic();
-
     }
 
+    private void initHud() {
+        if (hud == null)
+            hud = new HudSystem(inventory, layer());
+        hud.update();
+    }
 
     public void reset() {
       world = new World();
@@ -258,6 +271,10 @@ public class GameScreen extends Screen {
         shield.addComponent(shipPosition);
         shield.refresh();
         return shipPosition;
+    }
+
+    private Inventory makeInventory() {
+        return new Inventory();
     }
 
     private void makeGameBounds() {
