@@ -35,23 +35,23 @@ public class DebugScreen extends UIAnimScreen {
         final ToggleButton button = new ToggleButton("Collision Bounding Boxes?");
         _root.add(button);
         if (Debug.isCollisionBoundingBoxesEnabled()) {
-            button.setSelected(true);
+            //button.setSelected(true);
         }
         button.clicked().connect(new UnitSlot() {
             @Override
             public void onEmit() {
-                Debug.setCollisionBoundingBoxes(button.isSelected());
+                //Debug.setCollisionBoundingBoxes(button.isSelected());
             }
         });
         final ToggleButton frameRateButton = new ToggleButton("Show Frame Rate?");
         _root.add(frameRateButton);
         if (Debug.isShowFrameRateEnabled()) {
-            button.setSelected(true);
+            //button.setSelected(true);
         }
         frameRateButton.clicked().connect(new UnitSlot() {
             @Override
             public void onEmit() {
-                Debug.setShowFrameRate(frameRateButton.isSelected());
+                //Debug.setShowFrameRate(frameRateButton.isSelected());
             }
         });
 
