@@ -21,9 +21,9 @@ public class HudSystem {
 
     public HudSystem(Inventory inventory, GroupLayer parent) {
         this.inventory = inventory;
-        hud = graphics().createImage(graphics().width(), 30);
+        hud = graphics().createImage(graphics().width(), 25);
         layer = graphics().createImageLayer(hud);
-        layer.setTranslation(0, graphics().height() - 30);
+        layer.setTranslation(0, 0);
         layer.setInteractive(false);
         parent.add(layer);
 
@@ -38,9 +38,9 @@ public class HudSystem {
         hud.canvas().fillRect(0, 0, hud.width(), hud.height());
         hud.canvas().setFillColor(Color.rgb(0, 0, 255));
         TextLayout tl = graphics().layoutText("SCORE " + inventory.score(), scoreFormat);
-        hud.canvas().fillText(tl, 0, 5);
+        hud.canvas().fillText(tl, 0, 0);
         hud.canvas().setFillColor(Color.rgb(0, 0, 255));
         tl = graphics().layoutText("RESOURCES " + inventory.resources(), resourcesFormat);
-        hud.canvas().fillText(tl, hud.width() / 1.7f, 5);
+        hud.canvas().fillText(tl, hud.width() / 1.7f, 0);
     }
 }
