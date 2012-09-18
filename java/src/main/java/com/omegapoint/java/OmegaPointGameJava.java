@@ -15,6 +15,8 @@ public class OmegaPointGameJava {
     public static void main(String[] args) {
         JavaPlatform platform = JavaPlatform.register();
         platform.assets().setPathPrefix("com/omegapoint/resources");
+        platform.graphics().registerFont("Space Age", "fonts/spaceage.ttf");
+
         Injector injector = Guice.createInjector(new JavaModule());
         PlayN.run(injector.getInstance(OmegaPointGame.class));
     }
