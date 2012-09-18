@@ -63,7 +63,8 @@ public class IOSInjector {
         PlayGameState playState = new PlayGameState(gameScreen);
         return new OmegaPointGame(module.providesStateMachine(new OmegaStateMachineBuilder(screens, loadState,
                 introGameState, playState, new PauseGameState(new PauseMenuScreen(eventBus)),
-                new TileEditorState(new TileEditorScreen(templateManager, eventBus)))), screens, gameScreen,
+                new TileEditorState(new TileEditorScreen(templateManager, eventBus)),
+                new DebugGameState(new DebugScreen(eventBus)))), screens, gameScreen,
                 eventBus);
     }
 }

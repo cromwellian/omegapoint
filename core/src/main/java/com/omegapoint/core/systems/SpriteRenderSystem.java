@@ -1,6 +1,7 @@
 package com.omegapoint.core.systems;
 
 import com.artemis.*;
+import com.omegapoint.core.Debug;
 import com.omegapoint.core.Playfield;
 import com.omegapoint.core.components.PositionComponent;
 import com.omegapoint.core.components.SpriteComponent;
@@ -106,13 +107,15 @@ public class SpriteRenderSystem extends EntityProcessingSystem implements Immedi
           }
 
           surface.translate(pos.getX(), pos.getY());
-//          surface.setFillColor(0xffffffff);
           surface.rotate((float) pos.getAngle());
           if (spr.isCyclic()) {
 //                  surface.scale(2, 2);
           }
           surface.translate(-cx, -cy);
-//          surface.fillRect(0, 0, width, height);
+          if (Debug.isCollisionBoundingBoxesEnabled()) {
+            surface.setFillColor(0xffffffff);
+            surface.fillRect(0, 0, width, height);
+          }
           surface.drawImage(image, 0, 0);
           surface.restore();
       }

@@ -4,6 +4,7 @@ import com.artemis.*;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Bullets;
+import com.omegapoint.core.Debug;
 import com.omegapoint.core.Enemies;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.data.EntityTemplates;
@@ -34,14 +35,16 @@ public class GameScreen extends Screen {
     private Enemies enemies;
     private Entity shipEntity;
 
-    private Entity titleTextEntity;
     private PositionComponent shipPosition;
-    private ScreenStack screens;
     private Entity tileEntity;
-    private Entity waveEntity;
     private boolean inited = false;
     private TileComponent tileComponent;
     private Image shipImage;
+    private Entity frameRateEntity;
+    private TextComponent fpsComponent;
+    private double fps;
+    private final ScreenStack screens;
+    private Entity waveEntity;
 
     @Inject
     public GameScreen(World world,
@@ -112,24 +115,43 @@ public class GameScreen extends Screen {
         makeGameBounds();
         makeStars();
         makeBackgroundMusic();
+        if (Debug.isShowFrameRateEnabled()) {
+            makeFrameRate();
+        } else {
+            frameRateEntity = null;
+            fpsComponent = null;
+        }
+    }
 
+    private Entity makeFrameRate() {
+        frameRateEntity = world.createEntity();
+        fpsComponent = new TextComponent(getFps() + " fps",
+                graphics().createFont("Space Age", Font.Style.PLAIN, 30), TextFormat.Alignment.LEFT, 0xffffffff);
+        frameRateEntity.addComponent(fpsComponent);
+        frameRateEntity.addComponent(new PositionComponent(0, 90, 0));
+        frameRateEntity.refresh();
+        return frameRateEntity;
+    }
+
+    private String getFps() {
+        return String.valueOf(fps);
     }
 
 
     public void reset() {
-      world = new World();
-      systemManager = world.getSystemManager();
-      for (EntitySystem sys : updateSystems) {
-          systemManager.setSystem(sys);
-      }
+        world = new World();
+        systemManager = world.getSystemManager();
+        for (EntitySystem sys : updateSystems) {
+            systemManager.setSystem(sys);
+        }
 
-      for (EntitySystem sys : renderSystems) {
-          systemManager.setSystem(sys);
-      }
-      playfield.layer().clear();
-      initEntities();
-      Enemies.reset();
-      Bullets.reset();
+        for (EntitySystem sys : renderSystems) {
+            systemManager.setSystem(sys);
+        }
+        playfield.layer().clear();
+        initEntities();
+        Enemies.reset();
+        Bullets.reset();
     }
 
     private void makeStars() {
@@ -254,7 +276,7 @@ public class GameScreen extends Screen {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
-        Entity shield =templateManager.lookupAndInstantiate("shield", world);
+        Entity shield = templateManager.lookupAndInstantiate("shield", world);
         shield.addComponent(shipPosition);
         shield.refresh();
         return shipPosition;
@@ -285,18 +307,39 @@ public class GameScreen extends Screen {
     }
 
 
-    int logoFrame = 0;
+    double fpsCountStart = -1;
+    int fpsNumFrames = 0;
 
     @Override
     public void paint(float alpha) {
         super.paint(alpha);
-        logoFrame++;
-        if (logoFrame > 60 * 7 && titleTextEntity != null) {
-            titleTextEntity.delete();
-            titleTextEntity = null;
-        }
+        updateFps();
         for (EntitySystem es : renderSystems) {
             es.process();
+        }
+
+        maybeDisplayFps();
+    }
+
+    private void maybeDisplayFps() {
+        if (Debug.isShowFrameRateEnabled()) {
+            if (fpsNumFrames >= 60) {
+                fps = (int) (1000 * fpsNumFrames / (PlayN.currentTime() - fpsCountStart));
+                fpsNumFrames = 0;
+                if (frameRateEntity != null) {
+                    frameRateEntity.delete();
+                    makeFrameRate();
+                }
+            }
+        }
+    }
+
+    private void updateFps() {
+        if (Debug.isShowFrameRateEnabled()) {
+            if (fpsNumFrames == 0) {
+                fpsCountStart = PlayN.currentTime();
+            }
+            fpsNumFrames++;
         }
     }
 
