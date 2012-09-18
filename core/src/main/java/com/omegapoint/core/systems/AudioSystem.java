@@ -24,6 +24,7 @@ public class AudioSystem extends EntityProcessingSystem {
 
     @Override
     protected void process(Entity e) {
+    	
         AudioComponent audioComp = audioMapper.get(e);
         if (audioComp == null) {
             return;

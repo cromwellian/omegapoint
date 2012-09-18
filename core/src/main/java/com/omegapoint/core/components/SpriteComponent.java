@@ -15,6 +15,7 @@ public class SpriteComponent extends BaseComponent {
     private int cols;
     private int rows;
     private int startFrame;
+    private int endFrame;
     private int msPerFrame;
     private int curFrame;
     private boolean cyclic;
@@ -31,7 +32,7 @@ public class SpriteComponent extends BaseComponent {
     }
 
     public SpriteComponent(String img) {
-        this(img, 0, 0, 0, 0, 0, -1, false);
+        this(img, 0, 0, 0, 0, 0, 0, -1, false);
     }
 
     public void setCurFrame(int curFrame) {
@@ -71,13 +72,14 @@ public class SpriteComponent extends BaseComponent {
         return cyclic;
     }
 
-    public SpriteComponent(String img, int sw, int sh, int cols, int rows, int startFrame, int msPerFrame, boolean cyclic) {
+    public SpriteComponent(String img, int sw, int sh, int cols, int rows, int startFrame, int endFrame, int msPerFrame, boolean cyclic) {
         this.img = img;
         this.sw = sw;
         this.sh = sh;
         this.cols = cols;
         this.rows = rows;
         this.startFrame = startFrame;
+        this.endFrame = endFrame;
         this.msPerFrame = msPerFrame;
         this.curFrame = startFrame;
         this.cyclic = cyclic;
@@ -95,7 +97,7 @@ public class SpriteComponent extends BaseComponent {
     @Override
     public BaseComponent duplicate() {
         return new SpriteComponent(this.getImg(), this.getSw(), this.getSh(), this.getCols(), this.getRows(),
-                this.getStartFrame(), this.getMsPerFrame(),
+                this.getStartFrame(), this.getEndFrame(), this.getMsPerFrame(),
                 this.isCyclic());
     }
 
@@ -109,6 +111,10 @@ public class SpriteComponent extends BaseComponent {
         watcher.add(PlayN.assets().getImage(getImg()));
     }
 
+    public int getEndFrame() {
+        return endFrame;
+    }
+
     public static class Codec implements Jsonable<SpriteComponent> {
 
         @Override
@@ -119,7 +125,7 @@ public class SpriteComponent extends BaseComponent {
                     object.getInt("sheetColumns"),
                     object.getInt("sheetRows"),
                     object.getInt("startFrame"),
-                    object.getInt("msPerFrame"),
+                    object.getInt("endFrame"), object.getInt("msPerFrame"),
                     object.getBoolean("cyclic"));
         }
 
@@ -132,6 +138,7 @@ public class SpriteComponent extends BaseComponent {
             obj.put("sheetColumns", object.getCols());
             obj.put("sheetRows", object.getRows());
             obj.put("startFrame", object.getStartFrame());
+            obj.put("endFrame", object.getEndFrame());
             obj.put("msPerFrame", object.getMsPerFrame());
             obj.put("cyclic", object.isCyclic());
             return obj;

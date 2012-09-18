@@ -6,10 +6,12 @@ import com.artemis.EntitySystem;
 import com.artemis.utils.ImmutableBag;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.components.CollisionComponent;
+import com.omegapoint.core.components.SpriteComponent;
 import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
 import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.components.PositionComponent;
+import playn.core.PlayN;
 import pythagoras.i.Rectangle;
 
 import javax.inject.Inject;
@@ -36,16 +38,21 @@ public class CollisionSystem extends EntitySystem {
           Entity e = entities.get(i);
           CollisionComponent colComp = collisionMapper.get(e);
           PositionComponent pos = positionMapper.get(e);
+
+          // TODO (ray) remove excessive object allocation (don't clone!)
           Rectangle rect1 = colComp.getBounds().clone();
-          rect1.translate(pos.getX() - colComp.getBounds().width/2 , pos.getY()  - colComp.getBounds().height/2);
+          rect1.translate(pos.getX() - colComp.getBounds().width/2 - colComp.getBounds().x() ,
+                  pos.getY()  - colComp.getBounds().height/2 - colComp.getBounds().y());
           
           for (int j = 0; j < entities.size(); j++) {
               if (i != j) {
                   Entity e2 = entities.get(j);
                   CollisionComponent colComp2 = collisionMapper.get(e2);
                   PositionComponent pos2 = positionMapper.get(e2);
+                  // TODO (ray) remove excessive object allocation (don't clone!)
                   Rectangle rect2 = colComp2.getBounds().clone();
-                  rect2.translate(pos2.getX() - colComp2.getBounds().width/2, pos2.getY() - colComp2.getBounds().height/2);
+                  rect2.translate(pos2.getX() - colComp2.getBounds().width/2 - colComp2.getBounds().x(),
+                          pos2.getY() - colComp2.getBounds().height/2 - colComp2.getBounds().y());
 
                   if (rect1.intersects(rect2)) {
                       for (CollisionPredicate cp : colComp.getPredicates()) {

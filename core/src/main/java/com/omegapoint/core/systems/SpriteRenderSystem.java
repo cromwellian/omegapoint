@@ -1,7 +1,9 @@
 package com.omegapoint.core.systems;
 
 import com.artemis.*;
+import com.omegapoint.core.Debug;
 import com.omegapoint.core.Playfield;
+import com.omegapoint.core.components.CollisionComponent;
 import com.omegapoint.core.components.PositionComponent;
 import com.omegapoint.core.components.SpriteComponent;
 import playn.core.*;
@@ -82,37 +84,57 @@ public class SpriteRenderSystem extends EntityProcessingSystem implements Immedi
           float cx = (width / 2);
           float cy = (height/ 2);
 
+          int endFrame = spr.getEndFrame() == 0 ? spr.getCols() * spr.getRows() : spr.getEndFrame();
+          boolean wrapped = false;
           if (spr.getCols() > 0) {
               int frame = spr.getCurFrame();
               int prev = frame;
               if (spr.getMsPerFrame() >= 0) {
                   int timeLeft = spr.getTimeToNextFrame() - world.getDelta();
                   if (timeLeft < 0) {
-                      frame += spr.getTimeToNextFrame() > 0 ? world.getDelta() / spr.getTimeToNextFrame() : 1;
-                      spr.setCurFrame(frame % (spr.getCols() * spr.getRows()));
+                      //TODO(ray) fix this
+                      frame += spr.getTimeToNextFrame() > 0 ? 1 /*world.getDelta() / spr.getTimeToNextFrame()*/ : 1;
+                      int numFrames = endFrame - spr.getStartFrame();
+                      if (frame >= numFrames) {
+                          frame = frame % numFrames;
+                          wrapped = true;
+                      }
+                      spr.setCurFrame(frame);
                       spr.setTimeToNextFrame(spr.getMsPerFrame());
                   } else {
                       spr.setTimeToNextFrame(timeLeft);
                   }
               }
 
+              prev += spr.getStartFrame();
               int row = prev / spr.getCols();
               int col = prev % spr.getCols();
 
               image.setBounds(spr.getSw() * col, spr.getSh() * row, spr.getSw(), spr.getSh());
-              if (spr.getMsPerFrame() >= 0 && frame >= spr.getCols() * spr.getRows() && !spr.isCyclic()) {
+              if (spr.getMsPerFrame() >= 0 && wrapped && !spr.isCyclic()) {
                   e.delete();
               }
           }
 
           surface.translate(pos.getX(), pos.getY());
-//          surface.setFillColor(0xffffffff);
           surface.rotate((float) pos.getAngle());
+
+          surface.translate(-cx, -cy);
+          if (Debug.isCollisionBoundingBoxesEnabled()) {
+            CollisionComponent colComp = new ComponentMapper<CollisionComponent>(CollisionComponent.class, world).get(e);
+            if (colComp != null) {
+              surface.save();
+              surface.setFillColor(0xffffffff);
+              surface.translate(cx, cy);
+              surface.rotate((float) -pos.getAngle());
+              surface.translate(-colComp.getBounds().width()/2, -colComp.getBounds().height()/2);
+              surface.fillRect(0, 0, colComp.getBounds().width(), colComp.getBounds().height());
+              surface.restore();
+            }
+          }
           if (spr.isCyclic()) {
 //                  surface.scale(2, 2);
           }
-          surface.translate(-cx, -cy);
-//          surface.fillRect(0, 0, width, height);
           surface.drawImage(image, 0, 0);
           surface.restore();
       }

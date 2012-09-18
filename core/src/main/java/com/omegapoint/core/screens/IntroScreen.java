@@ -87,7 +87,6 @@ public class IntroScreen extends UIScreen {
             }
         });
         _root.add(button);
-
     }
 
     @Override

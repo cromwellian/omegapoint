@@ -11,12 +11,14 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 import com.omegapoint.core.data.*;
 import com.omegapoint.core.predicates.BulletCollisionPredicate;
 import com.omegapoint.core.Enemies;
+import com.omegapoint.core.predicates.EnemyBulletCollisionPredicate;
 import com.omegapoint.core.predicates.EnemyCollisionPredicate;
 import com.omegapoint.core.Playfield;
 import com.omegapoint.core.screens.GameScreen;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.state.*;
 import com.omegapoint.core.systems.*;
+import com.omegapoint.core.util.Scheduler;
 import playn.core.PlayN;
 import se.hiflyer.fettle.StateMachine;
 import tripleplay.game.Screen;
@@ -39,6 +41,7 @@ public abstract class OmegaPointBaseModule {
         binder.bind(TextRenderSystem.class).in(Singleton.class);
         binder.bind(TileEditorRenderSystem.class).in(Singleton.class);
         binder.bind(BeamRenderSystem.class).in(Singleton.class);
+        binder.bind(EnemySystem.class).in(Singleton.class);
         binder.bind(AudioSystem.class).in(Singleton.class);
         binder.bind(StarRenderSystem.class).in(Singleton.class);
         binder.bind(TileRenderSystem.class).in(Singleton.class);
@@ -51,7 +54,8 @@ public abstract class OmegaPointBaseModule {
         binder.bind(PlayGameState.class).in(Singleton.class);
         binder.bind(PauseGameState.class).in(Singleton.class);
         binder.bind(TileEditorState.class).in(Singleton.class);
-
+        binder.bind(DebugGameState.class).in(Singleton.class);
+        binder.bind(Scheduler.class).in(Singleton.class);
 //        binder.bind(ScreenStack.class).to(ScreenStackImpl.class).in(Singleton.class);
 //        binder.bind(EntityDatabase.class).to(StaticEntityDatabase.class).in(Singleton.class);
 //        binder.bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
@@ -62,7 +66,7 @@ public abstract class OmegaPointBaseModule {
     public SystemManager getSystemManager(World world,
                                           SimpleTweenSystem simpleTweenSystem,
                                           TextRenderSystem textRenderSystem,
-                                          WaveSystem enemySystem,
+                                          WaveSystem waveSystem,
                                           MovementSystem movementSystem,
                                           CollisionSystem collisionSystem,
                                           SpriteRenderSystem spriteRenderSystem,
@@ -70,11 +74,12 @@ public abstract class OmegaPointBaseModule {
                                           AudioSystem audioSystem,
                                           StarRenderSystem starRenderSystem,
                                           TileRenderSystem tileRenderSystem,
-                                          TileEditorRenderSystem tileEditorRenderSystem) {
+                                          TileEditorRenderSystem tileEditorRenderSystem,
+                                          EnemySystem enemySystem) {
         SystemManager sm = world.getSystemManager();
         sm.setSystem(simpleTweenSystem);
         sm.setSystem(textRenderSystem);
-        sm.setSystem(enemySystem);
+        sm.setSystem(waveSystem);
         sm.setSystem(movementSystem);
         sm.setSystem(collisionSystem);
         sm.setSystem(spriteRenderSystem);
@@ -82,6 +87,7 @@ public abstract class OmegaPointBaseModule {
         sm.setSystem(audioSystem);
         sm.setSystem(starRenderSystem);
         sm.setSystem(tileRenderSystem);
+        sm.setSystem(enemySystem);
         return sm;
     }
 
@@ -110,12 +116,14 @@ public abstract class OmegaPointBaseModule {
     @Singleton
     @Named("updateSystems")
     public List<EntitySystem> providesUpdateSystems(SimpleTweenSystem simpleTweenSystem,
-                                                    WaveSystem enemySystem,
+                                                    WaveSystem waveSystem,
                                                     MovementSystem movementSystem,
-                                                    CollisionSystem collisionSystem) {
+                                                    CollisionSystem collisionSystem,
+                                                    EnemySystem enemySystem) {
         ArrayList<EntitySystem> list = new ArrayList<EntitySystem>();
-        list.add(simpleTweenSystem);
         list.add(enemySystem);
+        list.add(simpleTweenSystem);
+        list.add(waveSystem);
         list.add(movementSystem);
         list.add(collisionSystem);
         return list;
@@ -139,6 +147,7 @@ public abstract class OmegaPointBaseModule {
         registry.register(TileComponent.NAME, new TileComponent.Codec());
         registry.register(WaveComponent.NAME, new WaveComponent.Codec());
         registry.register(SimpleTweenComponent.NAME, new SimpleTweenComponent.Codec());
+        registry.register(EnemyComponent.NAME, new EnemyComponent.Codec());
         return registry;
     }
 
@@ -168,6 +177,7 @@ public abstract class OmegaPointBaseModule {
     @Named("entityDatabases")
     public List<EntityDatabase> providesEntityDatabases(@Named("persistentEntityDatabase") EntityDatabase persistent) {
         CollisionPredicates.register(BulletCollisionPredicate.NAME, new BulletCollisionPredicate());
+        CollisionPredicates.register(EnemyBulletCollisionPredicate.NAME, new EnemyBulletCollisionPredicate());
         CollisionPredicates.register(EnemyCollisionPredicate.NAME, new EnemyCollisionPredicate());
         ArrayList<EntityDatabase> list = new ArrayList<EntityDatabase>();
         list.add(new StaticEntityDatabase());

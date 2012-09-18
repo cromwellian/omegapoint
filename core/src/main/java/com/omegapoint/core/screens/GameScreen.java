@@ -4,13 +4,17 @@ import com.artemis.*;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Bullets;
+import com.omegapoint.core.Debug;
 import com.omegapoint.core.Enemies;
+import com.omegapoint.core.Inventory;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.events.*;
 import com.omegapoint.core.Playfield;
 import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
+import com.omegapoint.core.util.Scheduler;
+import com.omegapoint.core.systems.HudSystem;
 import playn.core.*;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
@@ -32,16 +36,25 @@ public class GameScreen extends Screen {
     private EntityTemplates templateManager;
     private EventBus eventBus;
     private Enemies enemies;
+    private Scheduler scheduler;
     private Entity shipEntity;
+    private Inventory inventory;
 
-    private Entity titleTextEntity;
     private PositionComponent shipPosition;
-    private ScreenStack screens;
     private Entity tileEntity;
-    private Entity waveEntity;
     private boolean inited = false;
     private TileComponent tileComponent;
     private Image shipImage;
+    private Entity frameRateEntity;
+    private TextComponent fpsComponent;
+    private double fps;
+    private final ScreenStack screens;
+    private Entity waveEntity;
+    private int lastShipX;
+    private int lastShipY;
+    private Entity shield;
+    private HudSystem hud;
+    private CollisionComponent shipCollisionComponent;
 
     @Inject
     public GameScreen(World world,
@@ -52,7 +65,8 @@ public class GameScreen extends Screen {
                       @Named("renderSystems") List<EntitySystem> renderSystems,
                       EntityTemplates templateManager,
                       EventBus eventBus,
-                      Enemies enemies) {
+                      Enemies enemies,
+                      Scheduler scheduler) {
         this.world = world;
         this.systemManager = systemManager;
         this.playfield = playfield;
@@ -62,6 +76,7 @@ public class GameScreen extends Screen {
         this.templateManager = templateManager;
         this.eventBus = eventBus;
         this.enemies = enemies;
+        this.scheduler = scheduler;
     }
 
     public GroupLayer layer() {
@@ -96,40 +111,72 @@ public class GameScreen extends Screen {
             @Override
             public void onEnemyKilled(EnemyKilledEvent event) {
                 numKilled++;
+                EnemyComponent enemyComp = event.getEnemyComponent();
+                if (enemyComp != null) {
+                  inventory.incrementScore(enemyComp.getPoints());
+                }
+                hud.update();
                 if (numKilled % 5 == 0) {
                     GameScreen.useBeam = !GameScreen.useBeam;
                 }
             }
         });
         initEntities();
+        initHud();
     }
 
     private void initEntities() {
         systemManager.initializeAll();
+        shipEntity = null;
         tileEntity = templateManager.lookupAndInstantiate("level1tiles", world);
         waveEntity = templateManager.lookupAndInstantiate("wave1", world);
         shipPosition = makeShip();
+        inventory = makeInventory();
         makeGameBounds();
         makeStars();
         makeBackgroundMusic();
-
+        if (Debug.isShowFrameRateEnabled()) {
+            makeFrameRate();
+        } else {
+            frameRateEntity = null;
+            fpsComponent = null;
+        }
     }
 
+    private Entity makeFrameRate() {
+        frameRateEntity = world.createEntity();
+        fpsComponent = new TextComponent(getFps() + " fps",
+                graphics().createFont("Space Age", Font.Style.PLAIN, 30), TextFormat.Alignment.LEFT, 0xffffffff);
+        frameRateEntity.addComponent(fpsComponent);
+        frameRateEntity.addComponent(new PositionComponent(0, 90, 0));
+        frameRateEntity.refresh();
+        return frameRateEntity;
+    }
+
+    private String getFps() {
+        return String.valueOf(fps);
+    }
+
+    private void initHud() {
+        if (hud == null)
+            hud = new HudSystem(inventory, layer());
+        hud.update();
+    }
 
     public void reset() {
-      world = new World();
-      systemManager = world.getSystemManager();
-      for (EntitySystem sys : updateSystems) {
-          systemManager.setSystem(sys);
-      }
+        world = new World();
+        systemManager = world.getSystemManager();
+        for (EntitySystem sys : updateSystems) {
+            systemManager.setSystem(sys);
+        }
 
-      for (EntitySystem sys : renderSystems) {
-          systemManager.setSystem(sys);
-      }
-      playfield.layer().clear();
-      initEntities();
-      Enemies.reset();
-      Bullets.reset();
+        for (EntitySystem sys : renderSystems) {
+            systemManager.setSystem(sys);
+        }
+        playfield.layer().clear();
+        initEntities();
+        Enemies.reset();
+        Bullets.reset();
     }
 
     private void makeStars() {
@@ -187,8 +234,10 @@ public class GameScreen extends Screen {
 
                 @Override
                 public void onMouseMove(Mouse.MotionEvent event) {
-                    shipPosition.setX((int) event.x());
-                    shipPosition.setY((int) event.y());
+                    lastShipX = (int) event.x();
+                    shipPosition.setX(lastShipX);
+                    lastShipY = (int) event.y();
+                    shipPosition.setY(lastShipY);
                 }
             });
         }
@@ -218,8 +267,15 @@ public class GameScreen extends Screen {
     }
 
     private PositionComponent makeShip() {
+        if (shipEntity != null) {
+            return shipPosition;
+        }
         shipEntity = templateManager.lookupAndInstantiate("playerShip", world);
+        shipEntity.setGroup("PLAYER");
         shipPosition = shipEntity.getComponent(PositionComponent.class);
+        shipPosition.setX(lastShipX);
+        shipPosition.setY(lastShipY);
+
         SpriteComponent ship = new ComponentMapper<SpriteComponent>(SpriteComponent.class, world).get(shipEntity);
         final Image image = PlayN.assets().getImage(ship.getImg());
         tileComponent = new ComponentMapper<TileComponent>(TileComponent.class, world).get(tileEntity);
@@ -227,12 +283,16 @@ public class GameScreen extends Screen {
             @Override
             public void done(final Image resource) {
                 shipImage = resource;
-                CollisionComponent colComp = new CollisionComponent(0, 0, (int) image.height(), (int) image.width(),
+                // sprite has a lot of whitespace, this is a tighter bounding box
+                shipCollisionComponent = new CollisionComponent(16, 6, 60, 40,
                         new CollisionPredicate() {
                             @Override
                             public boolean collides(Entity entity, Entity collidesWith, World world) {
+                                if (shipEntity == null) {
+                                    return false;
+                                }
                                 String group = world.getGroupManager().getGroupOf(collidesWith);
-                                if ("ENEMY".equals(group) || "BULLET".equals(group)) {
+                                if ("ENEMY".equals(group) || "ENEMYBULLET".equals(group)) {
                                     return true;
                                 }
 
@@ -241,11 +301,19 @@ public class GameScreen extends Screen {
 
                             @Override
                             public PredicateAction[] actions() {
-                                PlayN.log().debug("Ship hit");
-                                return new PredicateAction[0];
+
+                                return new PredicateAction[]  {
+                                  new PredicateAction() {
+
+                                      @Override
+                                      public void exec(EventBus eventBus, World world, EntityTemplates templateManager, Entity... collisionEntities) {
+                                          blowUpShip();
+                                      }
+                                  }
+                                };
                             }
                         });
-                shipEntity.addComponent(colComp);
+                shipEntity.addComponent(shipCollisionComponent);
 
             }
 
@@ -254,10 +322,34 @@ public class GameScreen extends Screen {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
-        Entity shield =templateManager.lookupAndInstantiate("shield", world);
-        shield.addComponent(shipPosition);
-        shield.refresh();
+//        shield = templateManager.lookupAndInstantiate("shield", world);
+//        shield.addComponent(shipPosition);
+//        shield.refresh();
         return shipPosition;
+    }
+
+    private void blowUpShip() {
+        Entity explosionEntity = templateManager.lookupAndInstantiate("explosion", world);
+        // explosion starts with same speed and position of the object that blew up
+
+        explosionEntity.addComponent(new PositionComponent(shipPosition.getX(), shipPosition.getY(), 0));
+        explosionEntity.refresh();
+
+        shipEntity.delete();
+        shipEntity = null;
+//        shield.delete();
+        shield = null;
+        eventBus.fireEvent(new PlayerKilledEvent());
+        scheduler.schedule(2000, new Runnable() {
+            @Override
+            public void run() {
+                makeShip();
+            }
+        });
+    }
+
+    private Inventory makeInventory() {
+        return new Inventory();
     }
 
     private void makeGameBounds() {
@@ -270,7 +362,7 @@ public class GameScreen extends Screen {
     private int lastFire = 0;
 
     private void fireBullet(int x, int y) {
-        if (Bullets.maxedOut()) {
+        if (Bullets.maxedOut() || isShipDead()) {
             return;
         }
 
@@ -284,19 +376,44 @@ public class GameScreen extends Screen {
         Bullets.inc();
     }
 
+    private boolean isShipDead() {
+        return shipEntity == null;
+    }
 
-    int logoFrame = 0;
+
+    double fpsCountStart = -1;
+    int fpsNumFrames = 0;
 
     @Override
     public void paint(float alpha) {
         super.paint(alpha);
-        logoFrame++;
-        if (logoFrame > 60 * 7 && titleTextEntity != null) {
-            titleTextEntity.delete();
-            titleTextEntity = null;
-        }
+        updateFps();
         for (EntitySystem es : renderSystems) {
             es.process();
+        }
+
+        maybeDisplayFps();
+    }
+
+    private void maybeDisplayFps() {
+        if (Debug.isShowFrameRateEnabled()) {
+            if (fpsNumFrames >= 60) {
+                fps = (int) (1000 * fpsNumFrames / (PlayN.currentTime() - fpsCountStart));
+                fpsNumFrames = 0;
+                if (frameRateEntity != null) {
+                    frameRateEntity.delete();
+                    makeFrameRate();
+                }
+            }
+        }
+    }
+
+    private void updateFps() {
+        if (Debug.isShowFrameRateEnabled()) {
+            if (fpsNumFrames == 0) {
+                fpsCountStart = PlayN.currentTime();
+            }
+            fpsNumFrames++;
         }
     }
 
@@ -306,14 +423,18 @@ public class GameScreen extends Screen {
         world.loopStart(); // signals loop start
         world.setDelta((int) delta); // sets delta for systems to use
 
+        scheduler.update(delta);
+
         for (EntitySystem es : updateSystems) {
             es.process();
         }
 
-        if (shipImage != null && tileComponent != null && tileComponent.collides(shipPosition, shipImage.height(),
-                shipImage.width())) {
-            PlayN.log().debug("Tile collision");
+
+        if (shipEntity != null && shipImage != null && tileComponent != null && tileComponent.collides(shipPosition,
+             shipCollisionComponent.getBounds().width(), shipCollisionComponent.getBounds().height())) {
+            blowUpShip();
         }
+
     }
 
     public static boolean useBeam = true;

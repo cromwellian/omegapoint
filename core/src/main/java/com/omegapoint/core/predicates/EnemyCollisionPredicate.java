@@ -20,7 +20,8 @@ public class EnemyCollisionPredicate implements CollisionPredicate, HasName {
 
     @Override
     public boolean collides(Entity entity, Entity collidesWith, World world) {
-        boolean xx = collidesWith.getComponent(DamageComponent.class) != null || "BOUNDS".equals(world.getGroupManager().getGroupOf(collidesWith));
+        String group = world.getGroupManager().getGroupOf(collidesWith);
+        boolean xx = (!"ENEMYBULLET".equals(group) && collidesWith.getComponent(DamageComponent.class) != null) || "BOUNDS".equals(group);
         return xx;
     }
 
@@ -41,13 +42,13 @@ public class EnemyCollisionPredicate implements CollisionPredicate, HasName {
                     // explosion starts with same speed and position of the object that blew up
                     PositionComponent pos = new ComponentMapper<PositionComponent>(PositionComponent.class, world).get(collisionEntities[0]);
                     MovementComponent mov = new ComponentMapper<MovementComponent>(MovementComponent.class, world).get(collisionEntities[0]);
+                    EnemyComponent enemyComponent = new ComponentMapper<EnemyComponent>(EnemyComponent.class, world).get(collisionEntities[0]);
 
                     explosionEntity.addComponent(pos);
                     explosionEntity.addComponent(mov);
                     explosionEntity.refresh();
-                    collisionEntities[1].delete();
                     // let game compute score or other actions
-                    eventBus.fireEvent(new EnemyKilledEvent());
+                    eventBus.fireEvent(new EnemyKilledEvent(enemyComponent));
                     // let game update state of # of enemies
                     eventBus.fireEvent(new EnemyDeleteEvent());
                 }
