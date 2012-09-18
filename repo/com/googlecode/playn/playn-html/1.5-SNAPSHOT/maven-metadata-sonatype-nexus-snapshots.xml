@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.googlecode.playn</groupId>
+  <artifactId>playn-html</artifactId>
+  <version>1.5-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20120830.181737</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20120830181737</lastUpdated>
+  </versioning>
+</metadata>
