@@ -120,8 +120,8 @@ public class SpriteRenderSystem extends EntityProcessingSystem implements Immedi
               surface.setFillColor(0xffffffff);
               surface.translate(cx, cy);
               surface.rotate((float) -pos.getAngle());
-              surface.translate(-cx, -cy);
-              surface.fillRect(colComp.getBounds().x(), colComp.getBounds().y(), colComp.getBounds().width(), colComp.getBounds().height());
+              surface.translate(-colComp.getBounds().width()/2, -colComp.getBounds().height()/2);
+              surface.fillRect(0, 0, colComp.getBounds().width(), colComp.getBounds().height());
               surface.restore();
             }
           }

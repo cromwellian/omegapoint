@@ -54,6 +54,7 @@ public class GameScreen extends Screen {
     private int lastShipY;
     private Entity shield;
     private HudSystem hud;
+    private CollisionComponent shipCollisionComponent;
 
     @Inject
     public GameScreen(World world,
@@ -279,7 +280,7 @@ public class GameScreen extends Screen {
             public void done(final Image resource) {
                 shipImage = resource;
                 // sprite has a lot of whitespace, this is a tighter bounding box
-                CollisionComponent colComp = new CollisionComponent(16, 6, 60, 40,
+                shipCollisionComponent = new CollisionComponent(16, 6, 60, 40,
                         new CollisionPredicate() {
                             @Override
                             public boolean collides(Entity entity, Entity collidesWith, World world) {
@@ -308,7 +309,7 @@ public class GameScreen extends Screen {
                                 };
                             }
                         });
-                shipEntity.addComponent(colComp);
+                shipEntity.addComponent(shipCollisionComponent);
 
             }
 
@@ -424,8 +425,9 @@ public class GameScreen extends Screen {
             es.process();
         }
 
-        if (shipEntity != null && shipImage != null && tileComponent != null && tileComponent.collides(shipPosition, shipImage.height(),
-                shipImage.width())) {
+
+        if (shipEntity != null && shipImage != null && tileComponent != null && tileComponent.collides(shipPosition,
+             shipCollisionComponent.getBounds().width(), shipCollisionComponent.getBounds().height())) {
             blowUpShip();
         }
 
