@@ -5,6 +5,7 @@ import com.artemis.World;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Enemies;
 import com.omegapoint.core.Playfield;
+import com.omegapoint.core.achievements.AchievementManagerSystem;
 import com.omegapoint.core.data.PlayNStorageEntityDatabase;
 import com.omegapoint.core.screens.*;
 import com.omegapoint.core.OmegaPointGame;
@@ -42,8 +43,9 @@ public class IOSInjector {
         MovementSystem movementSystem = new MovementSystem();
         CollisionSystem collisionSystem = new CollisionSystem(eventBus, templateManager);
         EnemySystem enemySystem = new EnemySystem(templateManager, world);
+        AchievementManagerSystem achievementManagerSystem = new AchievementManagerSystem(eventBus);
         List<EntitySystem> updateSystems = module.providesUpdateSystems(simpleTweenSystem, waveSystem,
-                movementSystem, collisionSystem, enemySystem);
+                movementSystem, collisionSystem, enemySystem, achievementManagerSystem);
         TextRenderSystem textRenderSystem = new TextRenderSystem(playfield);
         HudRenderSystem hudRenderSystem = new HudRenderSystem(playfield);
         SpriteRenderSystem spriteRenderSystem = new SpriteRenderSystem(playfield);
@@ -59,7 +61,7 @@ public class IOSInjector {
         GameScreen gameScreen = new GameScreen(world,
                 module.getSystemManager(world, simpleTweenSystem, textRenderSystem, hudRenderSystem, waveSystem, movementSystem,
                         collisionSystem, spriteRenderSystem, beamRenderSystem, audioSystem, starRenderSystem,
-                        tileRenderSystem, tileEditorRenderSystem, enemySystem), playfield,
+                        tileRenderSystem, tileEditorRenderSystem, enemySystem, achievementManagerSystem), playfield,
                 screens, updateSystems,
                 renderSystems,
                 templateManager, eventBus, enemies, new Scheduler());

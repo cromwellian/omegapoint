@@ -8,6 +8,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+import com.omegapoint.core.achievements.AchievementManagerSystem;
 import com.omegapoint.core.data.*;
 import com.omegapoint.core.predicates.BulletCollisionPredicate;
 import com.omegapoint.core.Enemies;
@@ -57,6 +58,7 @@ public abstract class OmegaPointBaseModule {
         binder.bind(TileEditorState.class).in(Singleton.class);
         binder.bind(DebugGameState.class).in(Singleton.class);
         binder.bind(Scheduler.class).in(Singleton.class);
+        binder.bind(AchievementManagerSystem.class).in(Singleton.class);
 //        binder.bind(ScreenStack.class).to(ScreenStackImpl.class).in(Singleton.class);
 //        binder.bind(EntityDatabase.class).to(StaticEntityDatabase.class).in(Singleton.class);
 //        binder.bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
@@ -77,7 +79,8 @@ public abstract class OmegaPointBaseModule {
                                           StarRenderSystem starRenderSystem,
                                           TileRenderSystem tileRenderSystem,
                                           TileEditorRenderSystem tileEditorRenderSystem,
-                                          EnemySystem enemySystem) {
+                                          EnemySystem enemySystem,
+                                          AchievementManagerSystem achievementManagerSystem) {
         SystemManager sm = world.getSystemManager();
         sm.setSystem(simpleTweenSystem);
         sm.setSystem(textRenderSystem);
@@ -91,6 +94,7 @@ public abstract class OmegaPointBaseModule {
         sm.setSystem(starRenderSystem);
         sm.setSystem(tileRenderSystem);
         sm.setSystem(enemySystem);
+        sm.setSystem(achievementManagerSystem);
         return sm;
     }
 
@@ -124,13 +128,15 @@ public abstract class OmegaPointBaseModule {
                                                     WaveSystem waveSystem,
                                                     MovementSystem movementSystem,
                                                     CollisionSystem collisionSystem,
-                                                    EnemySystem enemySystem) {
+                                                    EnemySystem enemySystem,
+                                                    AchievementManagerSystem achievementManagerSystem) {
         ArrayList<EntitySystem> list = new ArrayList<EntitySystem>();
         list.add(enemySystem);
         list.add(simpleTweenSystem);
         list.add(waveSystem);
         list.add(movementSystem);
         list.add(collisionSystem);
+        list.add(achievementManagerSystem);
         return list;
     }
 

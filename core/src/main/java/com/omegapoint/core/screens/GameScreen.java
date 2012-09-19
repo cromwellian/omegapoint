@@ -6,12 +6,14 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Bullets;
 import com.omegapoint.core.Debug;
 import com.omegapoint.core.Enemies;
+import com.omegapoint.core.achievements.Achievement;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.events.*;
 import com.omegapoint.core.Playfield;
 import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
+import com.omegapoint.core.tween.TextColorChanger;
 import com.omegapoint.core.util.Scheduler;
 import com.omegapoint.core.util.WorldUtil;
 import playn.core.*;
@@ -117,6 +119,26 @@ public class GameScreen extends Screen {
                 if (numKilled % 5 == 0) {
                     GameScreen.useBeam = !GameScreen.useBeam;
                 }
+            }
+        });
+
+        eventBus.addHandler(AchievementAchievedEvent.TYPE, new AchievementAchievedHandler() {
+            @Override
+            public void onAchievement(AchievementAchievedEvent achievementAchievedEvent) {
+                final Entity achievementEntity = world.createEntity();
+                Achievement achievement = achievementAchievedEvent.getAchievement();
+                achievementEntity.addComponent(new TextComponent("Achievement Unlocked: " + achievement.getDisplayMessage()
+                        ,graphics().createFont("Space Age", Font.Style.PLAIN, 15), TextFormat.Alignment.CENTER, 0xffffffff));
+                achievementEntity.addComponent(new PositionComponent(0, 60, 0));
+                achievementEntity.addComponent(new SimpleTweenComponent(0.0f, 1.0f, 500, new TextColorChanger(0xff808080, 0xffffffff), true, true));
+                PlayN.log().debug("****** Achieved: " + achievement.getDisplayMessage());
+                scheduler.schedule(5000, new Runnable() {
+                    @Override
+                    public void run() {
+                        achievementEntity.delete();
+                    }
+                });
+                achievementEntity.refresh();
             }
         });
         initEntities();
