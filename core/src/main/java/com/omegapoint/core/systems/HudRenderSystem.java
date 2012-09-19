@@ -40,7 +40,7 @@ public class HudRenderSystem extends EntityProcessingSystem {
     protected void initialize() {
         inventoryMapper = new ComponentMapper<InventoryComponent>(InventoryComponent.class, world);
 
-        hud = graphics().createImage(graphics().width(), 250);
+        hud = graphics().createImage(graphics().width(), 25);
         layer = graphics().createImageLayer(hud);
         layer.setTranslation(0, 0);
         layer.setInteractive(false);
