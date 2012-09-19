@@ -39,6 +39,7 @@ public abstract class OmegaPointBaseModule {
         binder.bind(CollisionSystem.class).in(Singleton.class);
         binder.bind(SpriteRenderSystem.class).in(Singleton.class);
         binder.bind(TextRenderSystem.class).in(Singleton.class);
+        binder.bind(HudRenderSystem.class).in(Singleton.class);
         binder.bind(TileEditorRenderSystem.class).in(Singleton.class);
         binder.bind(BeamRenderSystem.class).in(Singleton.class);
         binder.bind(EnemySystem.class).in(Singleton.class);
@@ -66,6 +67,7 @@ public abstract class OmegaPointBaseModule {
     public SystemManager getSystemManager(World world,
                                           SimpleTweenSystem simpleTweenSystem,
                                           TextRenderSystem textRenderSystem,
+                                          HudRenderSystem hudRenderSystem,
                                           WaveSystem waveSystem,
                                           MovementSystem movementSystem,
                                           CollisionSystem collisionSystem,
@@ -79,6 +81,7 @@ public abstract class OmegaPointBaseModule {
         SystemManager sm = world.getSystemManager();
         sm.setSystem(simpleTweenSystem);
         sm.setSystem(textRenderSystem);
+        sm.setSystem(hudRenderSystem);
         sm.setSystem(waveSystem);
         sm.setSystem(movementSystem);
         sm.setSystem(collisionSystem);
@@ -96,6 +99,7 @@ public abstract class OmegaPointBaseModule {
     @Singleton
     @Named("renderSystems")
     public List<EntitySystem> providesRenderSystems(TextRenderSystem textRenderSystem,
+                                                    HudRenderSystem hudRenderSystem,
                                                     SpriteRenderSystem spriteRenderSystem,
                                                     BeamRenderSystem beamRenderSystem,
                                                     AudioSystem audioSystem,
@@ -104,6 +108,7 @@ public abstract class OmegaPointBaseModule {
                                                     TileEditorRenderSystem tileEditorRenderSystem) {
         ArrayList<EntitySystem> list = new ArrayList<EntitySystem>();
         list.add(textRenderSystem);
+        list.add(hudRenderSystem);
         list.add(starRenderSystem);
         list.add(spriteRenderSystem);
         list.add(beamRenderSystem);
@@ -140,6 +145,7 @@ public abstract class OmegaPointBaseModule {
         registry.register(AudioComponent.NAME, new AudioComponent.Codec());
         registry.register(SpriteComponent.NAME, new SpriteComponent.Codec());
         registry.register(TextComponent.NAME, new TextComponent.Codec());
+        registry.register(InventoryComponent.NAME, new InventoryComponent.Codec());
         registry.register(BeamComponent.NAME, new BeamComponent.Codec());
         registry.register(DamageComponent.NAME, new DamageComponent.Codec());
         registry.register(EnemyComponent.NAME, new EnemyComponent.Codec());

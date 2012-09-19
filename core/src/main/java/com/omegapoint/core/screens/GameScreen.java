@@ -6,7 +6,6 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.Bullets;
 import com.omegapoint.core.Debug;
 import com.omegapoint.core.Enemies;
-import com.omegapoint.core.Inventory;
 import com.omegapoint.core.components.*;
 import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.events.*;
@@ -14,7 +13,6 @@ import com.omegapoint.core.Playfield;
 import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
 import com.omegapoint.core.util.Scheduler;
-import com.omegapoint.core.systems.HudSystem;
 import playn.core.*;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
@@ -38,7 +36,8 @@ public class GameScreen extends Screen {
     private Enemies enemies;
     private Scheduler scheduler;
     private Entity shipEntity;
-    private Inventory inventory;
+    private Entity inventoryEntity;
+    private InventoryComponent inventory;
 
     private PositionComponent shipPosition;
     private Entity tileEntity;
@@ -53,7 +52,6 @@ public class GameScreen extends Screen {
     private int lastShipX;
     private int lastShipY;
     private Entity shield;
-    private HudSystem hud;
     private CollisionComponent shipCollisionComponent;
 
     @Inject
@@ -113,16 +111,14 @@ public class GameScreen extends Screen {
                 numKilled++;
                 EnemyComponent enemyComp = event.getEnemyComponent();
                 if (enemyComp != null) {
-                  inventory.incrementScore(enemyComp.getPoints());
+                    inventory.addScore(enemyComp.getPoints());
                 }
-                hud.update();
                 if (numKilled % 5 == 0) {
                     GameScreen.useBeam = !GameScreen.useBeam;
                 }
             }
         });
         initEntities();
-        initHud();
     }
 
     private void initEntities() {
@@ -131,7 +127,7 @@ public class GameScreen extends Screen {
         tileEntity = templateManager.lookupAndInstantiate("level1tiles", world);
         waveEntity = templateManager.lookupAndInstantiate("wave1", world);
         shipPosition = makeShip();
-        inventory = makeInventory();
+        makeInventory();
         makeGameBounds();
         makeStars();
         makeBackgroundMusic();
@@ -155,12 +151,6 @@ public class GameScreen extends Screen {
 
     private String getFps() {
         return String.valueOf(fps);
-    }
-
-    private void initHud() {
-        if (hud == null)
-            hud = new HudSystem(inventory, layer());
-        hud.update();
     }
 
     public void reset() {
@@ -328,6 +318,14 @@ public class GameScreen extends Screen {
         return shipPosition;
     }
 
+    private void makeInventory() {
+        if (inventoryEntity != null)
+            return;
+
+        inventoryEntity = templateManager.lookupAndInstantiate("inventory", world);
+        inventory = inventoryEntity.getComponent(InventoryComponent.class);
+    }
+
     private void blowUpShip() {
         Entity explosionEntity = templateManager.lookupAndInstantiate("explosion", world);
         // explosion starts with same speed and position of the object that blew up
@@ -346,10 +344,6 @@ public class GameScreen extends Screen {
                 makeShip();
             }
         });
-    }
-
-    private Inventory makeInventory() {
-        return new Inventory();
     }
 
     private void makeGameBounds() {
@@ -431,7 +425,7 @@ public class GameScreen extends Screen {
 
 
         if (shipEntity != null && shipImage != null && tileComponent != null && tileComponent.collides(shipPosition,
-             shipCollisionComponent.getBounds().width(), shipCollisionComponent.getBounds().height())) {
+            shipCollisionComponent.getBounds().width(), shipCollisionComponent.getBounds().height())) {
             blowUpShip();
         }
 
