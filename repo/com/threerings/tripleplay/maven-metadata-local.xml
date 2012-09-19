@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.threerings</groupId>
+  <artifactId>tripleplay</artifactId>
+  <versioning>
+    <release>1.4.working</release>
+    <versions>
+      <version>1.4</version>
+      <version>1.4.working</version>
+      <version>1.5-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20120918230017</lastUpdated>
+  </versioning>
+</metadata>

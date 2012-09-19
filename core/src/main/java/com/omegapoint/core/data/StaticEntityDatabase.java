@@ -26,6 +26,7 @@ public class StaticEntityDatabase implements EntityDatabase {
     @Override
     public Collection<String> getTemplates() {
         return Arrays.asList(JsonUtil.toString(makePlayerShip()),
+                JsonUtil.toString(makeInventory()),
                 JsonUtil.toString(makeExplosion()), JsonUtil.toString(makeTitleMusic()), JsonUtil.toString(makeTitleText()),
                 JsonUtil.toString(makeTopBounds()), JsonUtil.toString(makeLeftBounds()), JsonUtil.toString(makeRightBounds()),
                 JsonUtil.toString(makeBottomBounds()), JsonUtil.toString(makeLaser()), JsonUtil.toString(makeBeam()),
@@ -282,6 +283,13 @@ public class StaticEntityDatabase implements EntityDatabase {
         ship.put(SpriteComponent.NAME, new SpriteComponent("images/ship.png").toJson());
         ship.put(PositionComponent.NAME, new PositionComponent(0, 0, -Math.PI / 2).toJson());
         return ship;
+    }
+
+    private Json.Object makeInventory() {
+        Json.Object inventory = json().createObject();
+        inventory.put(EntityTemplate.NAME, "inventory");
+        inventory.put(InventoryComponent.NAME, new InventoryComponent(0, 0).toJson());
+        return inventory;
     }
 
     private Json.Object makeLaser() {

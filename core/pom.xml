@@ -13,11 +13,16 @@
     <packaging>jar</packaging>
     <name>OmegaPointGame Core</name>
 
+    <properties>
+      <repo.home>${user.home}/work/omegapoint2</repo.home>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>fettle</groupId>
             <artifactId>fettle</artifactId>
             <version>0.6.0</version>
+	    <scope>system</scope>
+	    <systemPath>${basedir}/../repo/fettle/fettle/0.6.0/fettle-0.6.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
@@ -38,22 +43,35 @@
             <groupId>com.googlecode.gwt.inject</groupId>
             <artifactId>gin</artifactId>
             <version>1.5-post-gwt-2.2</version>
+	    <scope>system</scope>
+	    <systemPath>${basedir}/../repo/com/googlecode/gwt/inject/gin/1.5-post-gwt-2.2/gin-1.5-post-gwt-2.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0-no_aop</version>
+	    <scope>system</scope>
+	    <systemPath>${basedir}/../repo/com/google/inject/guice/3.0-no_aop/guice-3.0-no_aop.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.googlecode.playn</groupId>
             <artifactId>playn-core</artifactId>
             <version>${playn.version}</version>
         </dependency>
+	<dependency>
+	  <groupId>com.threerings</groupId>
+	  <artifactId>react</artifactId>
+	  <version>1.2</version>
+        </dependency>
+
         <dependency>
             <groupId>com.threerings</groupId>
             <artifactId>tripleplay</artifactId>
-            <version>1.4</version>
+            <version>1.5-SNAPSHOT</version>
+	    <scope>system</scope>
+	    <systemPath>${basedir}/../repo/com/threerings/tripleplay/1.5-SNAPSHOT/tripleplay-1.5-SNAPSHOT.jar</systemPath>
         </dependency>
+
         <!--<dependency>-->
             <!--<groupId>com.google.gwt</groupId>-->
             <!--<artifactId>gwt-servlet</artifactId>-->
