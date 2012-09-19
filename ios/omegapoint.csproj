@@ -30,7 +30,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -40,7 +40,6 @@
     <MtouchI18n />
     <MtouchUseSGen>True</MtouchUseSGen>
     <MtouchUseRefCounting>True</MtouchUseRefCounting>
-    <MtouchUseLlvm>True</MtouchUseLlvm>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>True</DebugSymbols>
@@ -132,6 +131,7 @@
     <Content Include="assets\images\audit_ship.png" />
     <Content Include="assets\images\audit_weapon.png" />
     <Content Include="assets\images\bombs.png" />
+    <Content Include="assets\images\bombsAlpha.png" />
     <Content Include="assets\images\bombtargeter.png" />
     <Content Include="assets\images\bombtargetertrails.png" />
     <Content Include="assets\images\bombtrail.png" />
@@ -167,6 +167,7 @@
     <Content Include="assets\images\ship4.png" />
     <Content Include="assets\images\ship8.png" />
     <Content Include="assets\images\ships.png" />
+    <Content Include="assets\images\shipsAlpha.png" />
     <Content Include="assets\images\skycrane.jpeg" />
     <Content Include="assets\images\smallturret.png" />
     <Content Include="assets\images\spectate.png" />

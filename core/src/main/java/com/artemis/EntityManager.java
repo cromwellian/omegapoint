@@ -4,6 +4,9 @@ import com.artemis.utils.Bag;
 import com.artemis.utils.EntityDebugger;
 import com.artemis.utils.ImmutableBag;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EntityManager {
     private World world;
     private Bag<Entity> activeEntities;
@@ -172,4 +175,14 @@ public class EntityManager {
         return entityComponents;
     }
 
+    public List<Entity> getAllActiveEntities() {
+       List<Entity> toReturn = new ArrayList<Entity>();
+       for (int i = 0; i < activeEntities.size(); i++) {
+           Entity e = activeEntities.get(i);
+           if (e != null) {
+              toReturn.add(e);
+           }
+       }
+        return toReturn;
+    }
 }

@@ -13,6 +13,7 @@ import com.omegapoint.core.Playfield;
 import com.omegapoint.core.predicates.CollisionPredicate;
 import com.omegapoint.core.predicates.PredicateAction;
 import com.omegapoint.core.util.Scheduler;
+import com.omegapoint.core.util.WorldUtil;
 import playn.core.*;
 import tripleplay.game.Screen;
 import tripleplay.game.ScreenStack;
@@ -208,6 +209,12 @@ public class GameScreen extends Screen {
                 }
                 if (event.typedChar() == 'r') {
                     reset();
+                }
+                if (event.typedChar() == 'd') {
+                    String json = WorldUtil.serialize(world, CollisionComponent.class, EnemyComponent.class, DamageComponent.class,
+                            AudioComponent.class, WaveComponent.class, StarComponent.class, AppearanceComponent.class,
+                            TextComponent.class);
+                    World newWorld = WorldUtil.deserialize(json, templateManager);
                 }
             }
         });

@@ -73,4 +73,8 @@ public class EntityTemplates {
         }
         watcher.start();
     }
+
+    public EntityDatabase.JsonableRegistry<BaseComponent> getJsonableComponentRegistry() {
+        return jsonableComponentRegistry;
+    }
 }
