@@ -1,0 +1,5 @@
+Quick setup guide
+
+1) Maven Import the omegapoint projects into Eclipse
+2) You'll need a few extra deps for lwjgl and can get them by running "mvn test -P test-java"
+3) Add the following VM args to the Java run configuration (note, adjust the path!): "-Djava.library.path=[absolute path to your omegapoint directory]/java/target/natives -Xms1024m -Xmx1024m"

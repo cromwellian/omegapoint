@@ -22,7 +22,7 @@
             <artifactId>fettle</artifactId>
             <version>0.6.0</version>
 	    <scope>system</scope>
-	    <systemPath>${user.home}/work/omegapoint2/repo/fettle/fettle/0.6.0/fettle-0.6.0.jar</systemPath>
+	    <systemPath>${basedir}/../repo/fettle/fettle/0.6.0/fettle-0.6.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
@@ -44,14 +44,14 @@
             <artifactId>gin</artifactId>
             <version>1.5-post-gwt-2.2</version>
 	    <scope>system</scope>
-	    <systemPath>${user.home}/work/omegapoint2/repo/com/googlecode/gwt/inject/gin/1.5-post-gwt-2.2/gin-1.5-post-gwt-2.2.jar</systemPath>
+	    <systemPath>${basedir}/../repo/com/googlecode/gwt/inject/gin/1.5-post-gwt-2.2/gin-1.5-post-gwt-2.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0-no_aop</version>
 	    <scope>system</scope>
-	    <systemPath>${user.home}/work/omegapoint2/repo/com/google/inject/guice/3.0-no_aop/guice-3.0-no_aop.jar</systemPath>
+	    <systemPath>${basedir}/../repo/com/google/inject/guice/3.0-no_aop/guice-3.0-no_aop.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.googlecode.playn</groupId>
@@ -69,7 +69,7 @@
             <artifactId>tripleplay</artifactId>
             <version>1.5-SNAPSHOT</version>
 	    <scope>system</scope>
-	    <systemPath>${user.home}/work/omegapoint2/repo/com/threerings/tripleplay/1.5-SNAPSHOT/tripleplay-1.5-SNAPSHOT.jar</systemPath>
+	    <systemPath>${basedir}/../repo/com/threerings/tripleplay/1.5-SNAPSHOT/tripleplay-1.5-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <!--<dependency>-->
