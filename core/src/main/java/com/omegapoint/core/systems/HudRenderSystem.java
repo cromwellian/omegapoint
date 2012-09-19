@@ -23,7 +23,6 @@ public class HudRenderSystem extends EntityProcessingSystem {
     private CanvasImage hud;
     private ImageLayer layer;
     private TextFormat scoreFormat;
-    private TextFormat resourcesFormat;
     private Font font;
 
     // For caching
@@ -40,17 +39,14 @@ public class HudRenderSystem extends EntityProcessingSystem {
     protected void initialize() {
         inventoryMapper = new ComponentMapper<InventoryComponent>(InventoryComponent.class, world);
 
-        hud = graphics().createImage(graphics().width(), 25);
+        hud = graphics().createImage(graphics().width(), 24);
         layer = graphics().createImageLayer(hud);
         layer.setTranslation(0, 0);
         layer.setInteractive(false);
-        hud.canvas().setFillColor(Color.rgb(255, 0, 0));
-        hud.canvas().fillRect(0, 0, 100, 100);
         screen.layer().add(layer);
 
-        font = graphics().createFont("Space Age", Style.PLAIN, 25);
+        font = graphics().createFont("Space Age", Style.PLAIN, 22);
         scoreFormat = new TextFormat(font, graphics().width(), Alignment.LEFT);
-        resourcesFormat = new TextFormat(font, graphics().width(), Alignment.LEFT);
 
         prevScore = -1;
         prevResources = -1;
@@ -74,14 +70,13 @@ public class HudRenderSystem extends EntityProcessingSystem {
             return;
 
         hud.canvas().clear();
-        hud.canvas().setFillColor(Color.argb(200, 0, 0, 0));
+        hud.canvas().setFillColor(Color.argb(20, 255, 255, 255));
         hud.canvas().fillRect(0, 0, hud.width(), hud.height());
+        hud.canvas().setFillColor(Color.argb(30, 255, 255, 255));
+        hud.canvas().fillRect(0, 23, hud.width(), 1);
         hud.canvas().setFillColor(Color.rgb(0, 0, 255));
-        TextLayout tl = graphics().layoutText("SCORE " + inventory.score(), scoreFormat);
-        hud.canvas().fillText(tl, 0, 0);
-        hud.canvas().setFillColor(Color.rgb(0, 0, 255));
-        tl = graphics().layoutText("RESOURCES " + inventory.resources(), resourcesFormat);
-        hud.canvas().fillText(tl, hud.width() / 1.7f, 0);
+        TextLayout tl = graphics().layoutText("SCORE " + inventory.score() /*+ "   RESOURCES " + inventory.resources()*/, scoreFormat);
+        hud.canvas().fillText(tl, 7, 0);
 
         prevScore = inventory.score();
         prevResources = inventory.resources();
