@@ -48,9 +48,9 @@
 
   <modules>
     <module>core</module>
-    <module>ios</module>
+<!--    <module>ios</module>
     <module>tools</module>
-    <module>demo</module>
+    <module>demo</module> -->
   </modules>
 
   <profiles>
