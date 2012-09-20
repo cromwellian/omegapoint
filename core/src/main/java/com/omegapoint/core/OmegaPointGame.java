@@ -1,6 +1,5 @@
 package com.omegapoint.core;
 
-import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import com.omegapoint.core.events.ChangeStateEvent;
 import com.omegapoint.core.events.ChangeStateHandler;
@@ -12,6 +11,8 @@ import playn.core.PlayN;
 import se.hiflyer.fettle.Arguments;
 import se.hiflyer.fettle.StateMachine;
 import tripleplay.game.ScreenStack;
+
+import javax.inject.Inject;
 
 public class OmegaPointGame implements Game {
 

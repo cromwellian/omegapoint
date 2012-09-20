@@ -68,8 +68,6 @@
             <groupId>com.threerings</groupId>
             <artifactId>tripleplay</artifactId>
             <version>1.5-SNAPSHOT</version>
-	    <scope>system</scope>
-	    <systemPath>${basedir}/../repo/com/threerings/tripleplay/1.5-SNAPSHOT/tripleplay-1.5-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <!--<dependency>-->

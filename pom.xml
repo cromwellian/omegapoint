@@ -20,12 +20,13 @@
   <modules>
     <module>core</module>
     <module>java</module>
+      <module>html</module>
   </modules>
 
   <profiles>
    <profile>
       <id>html</id>
-      <modules><module>html</module></modules>
+      <modules></modules>
     </profile>
 
    <profile>

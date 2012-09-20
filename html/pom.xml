@@ -22,6 +22,20 @@
 
   <dependencies>
 
+      <dependency>
+          <groupId>com.googlecode.gwt.inject</groupId>
+          <artifactId>gin</artifactId>
+          <version>1.5-post-gwt-2.2</version>
+          <scope>system</scope>
+          <systemPath>${basedir}/../repo/com/googlecode/gwt/inject/gin/1.5-post-gwt-2.2/gin-1.5-post-gwt-2.2.jar</systemPath>
+      </dependency>
+      <dependency>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+          <version>3.0-no_aop</version>
+          <scope>system</scope>
+          <systemPath>${basedir}/../repo/com/google/inject/guice/3.0-no_aop/guice-3.0-no_aop.jar</systemPath>
+      </dependency>
     <dependency>
       <groupId>com.omegapoint</groupId>
       <artifactId>omegapoint-core</artifactId>
