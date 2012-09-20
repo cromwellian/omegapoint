@@ -1,0 +1,8 @@
+.classpath
+.project
+*.iml
+.settings/
+target
+demo/ios/bin
+demo/ios/obj
+demo/ios/demo.userprefs

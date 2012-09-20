@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<project name="playn-jbox2d" default="compile">
+  <property name="aux.src.dir" value="gwtemul"/>
+  <import file="../etc/build-common.xml"/>
+</project>

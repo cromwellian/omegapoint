@@ -1,0 +1,7 @@
+<module rename-to="tripledemo">
+  <inherits name="com.google.common.collect.Collect"/>
+  <inherits name="tripleplay.TriplePlay"/>
+  <source path="demo"/>
+  <public path="rsrc"/>
+  <entry-point class="tripleplay.demo.TripleDemoHtml"/>
+</module>

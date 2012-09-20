@@ -1,0 +1,15 @@
+<!-- defines our GWT module -->
+<module>
+  <inherits name="playn.PlayN"/>
+  <inherits name="react"/>
+
+  <source path="anim"/>
+  <source path="flump"/>
+  <source path="game"/>
+  <source path="particle"/>
+  <source path="platform"/>
+  <source path="shaders"/>
+  <source path="sound"/>
+  <source path="ui"/>
+  <source path="util"/>
+</module>
