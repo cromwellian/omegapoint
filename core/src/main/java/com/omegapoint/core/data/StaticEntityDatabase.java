@@ -193,6 +193,8 @@ public class StaticEntityDatabase implements EntityDatabase {
         tiles.put(EntityTemplate.NAME, "level1tiles");
         tiles.put(TileComponent.NAME, new TileComponent("images/defaultTileset.png", 16, 16, 10, 19, 0, 2,
                 new TileComponent.TileArrangement(makeLevel1())).toJson());
+        tiles.put(PositionComponent.NAME, new PositionComponent(0, 0, 0).toJson());
+        tiles.put(MovementComponent.NAME, new MovementComponent(5, 0, MovementComponent.MotionType.LINEAR, false).toJson());
         return tiles;
     }
 

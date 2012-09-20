@@ -4,6 +4,8 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
 import com.omegapoint.core.Playfield;
+import com.omegapoint.core.components.MovementComponent;
+import com.omegapoint.core.components.PositionComponent;
 import com.omegapoint.core.components.TileComponent;
 import playn.core.*;
 
@@ -20,16 +22,18 @@ public class TileRenderSystem extends EntityProcessingSystem {
     private Map<Entity, Layer> entity2imageLayer = new HashMap<Entity, Layer>();
     private Map<String, Image> imageCache = new HashMap<String, Image>();
     private Playfield screen;
+    private ComponentMapper<PositionComponent> posMapper;
 
     @Inject
     public TileRenderSystem(Playfield screen) {
-        super(TileComponent.class);
+        super(TileComponent.class, PositionComponent.class);
         this.screen = screen;
     }
 
     @Override
     protected void initialize() {
         tileMapper = new ComponentMapper<TileComponent>(TileComponent.class, world);
+        posMapper = new ComponentMapper<PositionComponent>(PositionComponent.class, world);
     }
 
     @Override
@@ -63,8 +67,10 @@ public class TileRenderSystem extends EntityProcessingSystem {
     @Override
     protected void process(Entity e) {
         TileComponent tileComponent = tileMapper.get(e);
+        PositionComponent posComp = posMapper.get(e);
+
         // 2 pixels per frame, at 30fps, move approximation 1 tile per second if tile is 60 pixels across
-        tileComponent.setCurrentScreenPosition(tileComponent.getCurrentScreenPosition() + tileComponent.getParallaxSpeed());
+        tileComponent.setCurrentScreenPosition(posComp.getX());
     }
 
     class TileRenderer implements ImmediateLayer.Renderer {

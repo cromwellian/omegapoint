@@ -56,7 +56,7 @@ public class GameScreen extends Screen {
     private int lastShipY;
     private Entity shield;
     private CollisionComponent shipCollisionComponent;
-
+    private boolean paused = false;
     @Inject
     public GameScreen(World world,
                       SystemManager systemManager,
@@ -237,6 +237,9 @@ public class GameScreen extends Screen {
                             AudioComponent.class, WaveComponent.class, StarComponent.class, AppearanceComponent.class,
                             TextComponent.class);
                     World newWorld = WorldUtil.deserialize(json, templateManager);
+                }
+                if (event.typedChar() == 'p') {
+                    paused = !paused;
                 }
             }
         });
@@ -446,10 +449,13 @@ public class GameScreen extends Screen {
         world.loopStart(); // signals loop start
         world.setDelta((int) delta); // sets delta for systems to use
 
-        scheduler.update(delta);
 
-        for (EntitySystem es : updateSystems) {
+        if (!paused) {
+            scheduler.update(delta);
+
+            for (EntitySystem es : updateSystems) {
             es.process();
+        }
         }
 
 
