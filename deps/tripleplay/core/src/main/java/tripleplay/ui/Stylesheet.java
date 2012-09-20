@@ -70,11 +70,12 @@ public class Stylesheet
 
         // otherwise check our parent class
         Class<?> parent = eclass.getSuperclass();
-        if (parent == null) {
+	if (parent == null) {
             // TEMP: avoid confusion while PlayN POM disables class metadata by default
-            throw new RuntimeException(
-                "Your PlayN application must not be compiled with -XdisableClassMetadata. " +
-                "It breaks TriplePlay stylesheets.");
+	    //    throw new RuntimeException(
+	    //  "Your PlayN application must not be compiled with -XdisableClassMetadata. " +
+	    //  "It breaks TriplePlay stylesheets.");
+	    return null;
         }
         return this.<V>get(key, parent, elem);
     }
