@@ -29,7 +29,10 @@ public class IOSInjector {
 
         ScreenStack screens = module.providesScreenStack();
         EventBus eventBus = module.providesEventBus();
-        EntityTemplates templateManager = module.providesEntityTemplates(module.providesEntityDatabases(new PlayNStorageEntityDatabase()),
+        Scheduler scheduler = new Scheduler();
+
+        EntityTemplates templateManager = module.providesEntityTemplates(module.providesEntityDatabases(new PlayNStorageEntityDatabase(),
+                module.providesEnemyCollisionPredicate(scheduler)),
                 module.providesJsonableComponentRegistry());
 
         IntroScreen screen = new IntroScreen(templateManager, eventBus);
@@ -64,7 +67,7 @@ public class IOSInjector {
                         tileRenderSystem, tileEditorRenderSystem, enemySystem, achievementManagerSystem), playfield,
                 screens, updateSystems,
                 renderSystems,
-                templateManager, eventBus, enemies, new Scheduler());
+                templateManager, eventBus, enemies, scheduler);
         PlayGameState playState = new PlayGameState(gameScreen);
         return new OmegaPointGame(module.providesStateMachine(new OmegaStateMachineBuilder(screens, loadState,
                 introGameState, playState, new PauseGameState(new PauseMenuScreen(eventBus)),

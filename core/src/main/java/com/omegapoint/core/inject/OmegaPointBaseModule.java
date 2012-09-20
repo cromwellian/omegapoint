@@ -187,14 +187,22 @@ public abstract class OmegaPointBaseModule {
     @Provides
     @Singleton
     @Named("entityDatabases")
-    public List<EntityDatabase> providesEntityDatabases(@Named("persistentEntityDatabase") EntityDatabase persistent) {
+    public List<EntityDatabase> providesEntityDatabases(@Named("persistentEntityDatabase") EntityDatabase persistent,
+                                                        EnemyCollisionPredicate epred) {
         CollisionPredicates.register(BulletCollisionPredicate.NAME, new BulletCollisionPredicate());
         CollisionPredicates.register(EnemyBulletCollisionPredicate.NAME, new EnemyBulletCollisionPredicate());
-        CollisionPredicates.register(EnemyCollisionPredicate.NAME, new EnemyCollisionPredicate());
+        CollisionPredicates.register(EnemyCollisionPredicate.NAME, epred);
         ArrayList<EntityDatabase> list = new ArrayList<EntityDatabase>();
         list.add(new StaticEntityDatabase());
         list.add(persistent);
         return list;
+    }
+
+
+    @Provides
+    @Singleton
+    public EnemyCollisionPredicate providesEnemyCollisionPredicate(Scheduler scheduler) {
+        return new EnemyCollisionPredicate(scheduler);
     }
 
     @Provides

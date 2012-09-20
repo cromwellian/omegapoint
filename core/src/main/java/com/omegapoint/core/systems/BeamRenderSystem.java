@@ -49,12 +49,14 @@ public class BeamRenderSystem extends EntityProcessingSystem implements Immediat
     protected void added(Entity e) {
         super.added(e);
         BeamComponent beam = beamMapper.get(e);
-        CanvasImage canvasImg = PlayN.graphics().createImage(beam.getFinalLength(), 10);
+        CanvasImage canvasImg = PlayN.graphics().createImage(beam.getFinalLength(), 16);
         Canvas canvas = canvasImg.canvas();
-        canvas.setFillColor(alpha(beam.getColor(), 0.10));
+        canvas.setFillColor(0x10ff0000);
+        canvas.setStrokeWidth(50);
+
 
         for (int i = 0; i < 16; i++) {
-            canvas.fillRect(i * 4, 0, beam.getFinalLength(), 2);
+            canvas.fillRect(i * 16, 8-i/2, beam.getFinalLength(), 2*Math.max(8-i/2, 2));
         }
         beams.put(beam, canvasImg);
     }
@@ -83,8 +85,8 @@ public class BeamRenderSystem extends EntityProcessingSystem implements Immediat
             PositionComponent pos = positionMapper.get(e);
             BeamComponent beam = beamMapper.get(e);
             surface.drawImage(beams.get(beam), pos.getX(), pos.getY());
-            surface.setFillColor(alpha(0xffffffff, 1.0 / beam.strobe()));
-            surface.fillRect(pos.getX(), pos.getY(), beam.getFinalLength(), 2);
+//            surface.setFillColor(alpha(0xffffffff, 1.0 / beam.strobe()));
+//            surface.fillRect(pos.getX(), pos.getY(), beam.getFinalLength(), 2);
         }
     }
 }

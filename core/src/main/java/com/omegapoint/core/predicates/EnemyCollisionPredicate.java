@@ -9,6 +9,9 @@ import com.omegapoint.core.data.EntityTemplates;
 import com.omegapoint.core.data.HasName;
 import com.omegapoint.core.events.EnemyDeleteEvent;
 import com.omegapoint.core.events.EnemyKilledEvent;
+import com.omegapoint.core.util.Scheduler;
+
+import javax.inject.Inject;
 
 /**
  *
@@ -17,6 +20,12 @@ public class EnemyCollisionPredicate implements CollisionPredicate, HasName {
 
 
     public static final String NAME = "enemy";
+    private Scheduler scheduler;
+
+    @Inject
+    public EnemyCollisionPredicate(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 
     @Override
     public boolean collides(Entity entity, Entity collidesWith, World world) {
